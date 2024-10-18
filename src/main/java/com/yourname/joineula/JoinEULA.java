@@ -10,6 +10,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
@@ -51,6 +52,25 @@ public class JoinEULA extends JavaPlugin implements Listener {
         if (!agreedPlayers.contains(player.getUniqueId().toString())) {
             openAgreementUI(player);
             teleportToSpawn(player); // 传送到主世界出生点
+        }
+    }
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        ItemStack item = event.getItem();
+
+        // 检查玩家是否使用未署名的书与笔
+        if (item != null && item.getType() == Material.WRITABLE_BOOK) {
+            BookMeta meta = (BookMeta) item.getItemMeta();
+            if (meta != null && meta.hasTitle() && meta.getTitle().equals(ChatColor.GOLD + "Server EULA")) {
+                // 检查书是否已签名
+                if (meta.hasAuthor()) {
+                    // 玩家同意 EULA
+                    addPlayerToAgreedList(player);
+                    player.sendMessage(ChatColor.GREEN + "您已同意服务器 EULA。");
+                }
+            }
         }
     }
 
@@ -137,6 +157,4 @@ public class JoinEULA extends JavaPlugin implements Listener {
         Location spawnLocation = world.getSpawnLocation(); // 获取出生点
         player.teleport(spawnLocation); // 传送到出生点
     }
-
-    // TODO: 添加方法以处理玩家同意或不同意 EULA，更新 agreedPlayers 列表并保存到文件
 }
