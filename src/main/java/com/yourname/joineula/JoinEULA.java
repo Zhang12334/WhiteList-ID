@@ -85,25 +85,18 @@ public class JoinEULA extends JavaPlugin implements Listener {
                 player.getInventory().addItem(book); // 将书放入玩家的物品栏
             }
         }
-        player.sendMessage(ChatColor.GREEN + "请阅读 EULA 后通过下蹲同意来进入服务器");
+        player.sendMessage(ChatColor.GREEN + "使用下蹲并丢出本书 (Shift+Q) 来同意 EULA");
     }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-
-        // 检查玩家是否在蹲下状态并持有未署名的书
-        if (event.getItem() != null && event.getItem().getType() == Material.WRITTEN_BOOK &&
-            event.getItem().getItemMeta() != null && event.getItem().getItemMeta().getDisplayName().contains("Server EULA")) {
-            if (player.isSneaking()) {
-                playerAgrees(player); // 记录同意
-                // 收回书
-                player.getInventory().remove(event.getItem());
-                player.sendMessage(ChatColor.GREEN + "感谢您同意 EULA！");
-            }
-        } else {
-            // 确保无论持有什么，玩家都能收到提示
-            player.sendMessage(ChatColor.GREEN + "请阅读 EULA 后通过下蹲同意来进入服务器");
+        //是否蹲下
+        if (player.isSneaking()) {
+            playerAgrees(player); // 记录同意
+            // 收回书
+            player.getInventory().remove(event.getItem());
+            player.sendMessage(ChatColor.GREEN + "感谢您同意 EULA！");
         }
     }
 
@@ -111,13 +104,11 @@ public class JoinEULA extends JavaPlugin implements Listener {
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
         ItemStack droppedItem = event.getItemDrop().getItemStack();
-
-        // 检查玩家是否扔出未署名的书
-        if (droppedItem.getType() == Material.WRITTEN_BOOK &&
-            droppedItem.getItemMeta() != null && droppedItem.getItemMeta().getDisplayName().contains("Server EULA")) {
-            playerAgrees(player); // 记录同意
+        //是否蹲下
+        if (player.isSneaking()) {
             event.getItemDrop().remove(); // 删除掉落物
-            player.sendMessage(ChatColor.GREEN + "感谢您同意 EULA！"); // 提示玩家
+            playerAgrees(player); // 记录同意
+            player.sendMessage(ChatColor.GREEN + "感谢您同意 EULA！");
         }
     }
 
