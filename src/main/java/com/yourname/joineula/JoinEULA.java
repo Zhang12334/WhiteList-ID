@@ -53,6 +53,8 @@ public class JoinEULA extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         if (!agreedPlayers.contains(player.getUniqueId().toString())) {
             teleportToSpawn(player); // 传送到主世界出生点
+            player.sendMessage(ChatColor.YELLOW + "请阅读并签署 EULA 协议！");
+            giveUnsignedBook(player); // 给玩家未签名的书
         }
     }
 
