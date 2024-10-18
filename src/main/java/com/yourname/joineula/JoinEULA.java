@@ -81,6 +81,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
                 player.getInventory().addItem(book); // 将书放入玩家的物品栏
             }
 
+            // 提示玩家阅读 EULA
             player.sendMessage(ChatColor.GREEN + "请阅读 EULA 后通过下蹲同意来进入服务器");
         }
     }
@@ -153,5 +154,6 @@ public class JoinEULA extends JavaPlugin implements Listener {
     public void playerAgrees(Player player) {
         agreedPlayers.add(player.getUniqueId().toString());
         saveAgreedPlayers();
+        player.sendMessage(ChatColor.GREEN + "您已同意 EULA！"); // 确保同意时也发送消息
     }
 }
