@@ -2,25 +2,16 @@ plugins {
     id 'java'
 }
 
-group 'com.yourname' // 修改为你的包名
+group 'com.yourname'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+sourceCompatibility = '17'
 
 repositories {
     mavenCentral()
-    maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' } // Spigot Snapshots
 }
 
 dependencies {
-    compileOnly 'org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT' // 使用最新的 Spigot API 版本
-}
-
-jar {
-    manifest {
-        attributes(
-                'Main-Class': 'com.yourname.eulaplugin.Main' // 修改为你的主类
-        )
-    }
+    // 添加你的依赖项
+    compileOnly 'org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT'
 }
