@@ -35,9 +35,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
             meta.addPage("欢迎来到服务器！\n\n请阅读以下协议:\n\n1. 不得使用任何作弊插件。\n2. 尊重其他玩家。\n3. 不得发布任何不当言论。\n\n是否同意？");
 
             book.setItemMeta(meta);
-            player.openBook(book); // 模拟打开书
+            player.openBook(book);
         }
     }
-
-    // TODO: 添加事件处理逻辑以确认同意或不同意
 }
