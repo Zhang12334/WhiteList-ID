@@ -6,7 +6,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,7 +27,7 @@ import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
-public class JoinEULA extends JavaPlugin implements Listener {
+public class JoinEULA extends JavaPlugin implements Listener, CommandExecutor {
 
     private String eulaContent; // EULA 内容
     private Set<String> agreedPlayers; // 同意 EULA 的玩家名字列表
@@ -34,6 +36,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(this, this);
+        getCommand("JoinEULA").setExecutor(this); // 注册指令
         gson = new Gson();
         loadEULAContent();
         loadAgreedPlayers(); // 加载同意 EULA 的玩家
@@ -73,7 +76,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
                 break;
             }
         }
-        
+
         if (!hasBook) {
             // 创建未署名的书
             ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
@@ -155,4 +158,18 @@ public class JoinEULA extends JavaPlugin implements Listener {
         player.sendMessage(ChatColor.GREEN + "您已同意 EULA！");
     }
 
+    // 处理指令
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (command.getName().equalsIgnoreCase("JoinEULA")) {
+            if (args.length > 0 && args[0].equalsIgnoreCase("reload")) {
+                loadEULAContent();
+                sender.sendMessage(ChatColor.GREEN + "EULA 内容已重载！");
+                return true;
+            }
+            sender.sendMessage(ChatColor.YELLOW + "用法: /JoinEULA reload");
+            return true;
+        }
+        return false;
+    }
 }
