@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
+<project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -6,21 +6,17 @@
     <groupId>com.yourname</groupId>
     <artifactId>EULA-Plugin</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>EULA Plugin</name>
-    <description>A simple EULA agreement plugin for Spigot</description>
-    <url>http://yourwebsite.com</url>
+    <packaging>jar</packaging>
 
     <properties>
-        <maven.compiler.source>1.20.1</maven.compiler.source>
-        <maven.compiler.target>1.20.1</maven.compiler.target>
-        <spigot.version>1.20.1-R0.1-SNAPSHOT</spigot.version>
+        <spigot.version>1.20.1</spigot.version> <!-- 更新 Spigot 版本 -->
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>${spigot.version}</version>
+            <version>${spigot.version}</version> <!-- 使用更新后的 Spigot 版本 -->
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -32,8 +28,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -44,7 +40,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.yourname.eula.EULAMain</mainClass>
+                            <mainClass>com.yourname.eulaplugin.Main</mainClass> <!-- 修改为你的主类 -->
                         </manifest>
                     </archive>
                 </configuration>
