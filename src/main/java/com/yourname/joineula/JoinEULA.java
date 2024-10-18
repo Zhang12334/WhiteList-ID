@@ -36,13 +36,32 @@ public class JoinEULA extends JavaPlugin implements Listener {
         gson = new Gson();
         loadEULAContent();
         loadAgreedPlayers(); // 加载同意 EULA 的玩家
+        createEULABook(); // 在讲台上创建 EULA 书
+    }
+
+    private void createEULABook() {
+        World world = Bukkit.getWorlds().get(0); // 获取主世界
+        Location lecternLocation = new Location(world, 0, 64, 0); // 指定讲台位置
+
+        ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+        BookMeta meta = (BookMeta) book.getItemMeta();
+        if (meta != null) {
+            meta.setTitle(ChatColor.GOLD + "Server EULA");
+            meta.setAuthor("Server Admin");
+            meta.addPage(eulaContent);
+            book.setItemMeta(meta);
+        }
+
+        // 在讲台上放置书
+        world.dropItem(lecternLocation, book);
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         if (!player.hasPlayedBefore()) {
-            openAgreementUI(player);
+            // 在玩家加入时提醒他们查看讲台上的书
+            player.sendMessage(ChatColor.YELLOW + "请查看讲台上的 EULA 书以同意协议。");
         }
     }
 
@@ -50,7 +69,6 @@ public class JoinEULA extends JavaPlugin implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         if (!agreedPlayers.contains(player.getUniqueId().toString())) {
-            openAgreementUI(player);
             teleportToSpawn(player); // 传送到主世界出生点
         }
     }
@@ -60,30 +78,14 @@ public class JoinEULA extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         ItemStack item = event.getItem();
 
-        // 检查玩家是否使用未署名的书与笔
-        if (item != null && item.getType() == Material.WRITABLE_BOOK) {
+        // 检查玩家是否拿到了书
+        if (item != null && item.getType() == Material.WRITTEN_BOOK) {
             BookMeta meta = (BookMeta) item.getItemMeta();
             if (meta != null && meta.hasTitle() && meta.getTitle().equals(ChatColor.GOLD + "Server EULA")) {
-                // 检查书是否已签名
-                if (meta.hasAuthor()) {
-                    // 玩家同意 EULA
-                    addPlayerToAgreedList(player);
-                    player.sendMessage(ChatColor.GREEN + "您已同意服务器 EULA。");
-                }
+                // 玩家同意 EULA
+                addPlayerToAgreedList(player);
+                player.sendMessage(ChatColor.GREEN + "您已同意服务器 EULA。");
             }
-        }
-    }
-
-    private void openAgreementUI(Player player) {
-        ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-        BookMeta meta = (BookMeta) book.getItemMeta();
-        if (meta != null) {
-            meta.setTitle(ChatColor.GOLD + "Server EULA");
-            meta.setAuthor("Server Admin");
-            meta.addPage(eulaContent);
-
-            book.setItemMeta(meta);
-            player.openBook(book); // 模拟打开书
         }
     }
 
