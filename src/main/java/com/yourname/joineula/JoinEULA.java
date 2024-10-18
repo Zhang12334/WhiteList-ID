@@ -28,7 +28,7 @@ import java.util.Set;
 public class JoinEULA extends JavaPlugin implements Listener {
 
     private String eulaContent; // EULA 内容
-    private Set<String> agreedPlayers; // 同意 EULA 的玩家 ID 列表
+    private Set<String> agreedPlayers; // 同意 EULA 的玩家名字列表
     private Gson gson; // Gson 实例
 
     @Override
@@ -43,6 +43,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         if (!player.hasPlayedBefore()) {
+            teleportToSpawn(player); // 传送到主世界出生点
             player.sendMessage(ChatColor.YELLOW + "请阅读并签署 EULA 协议！");
             giveUnsignedBook(player); // 给玩家未签名的书
         }
@@ -51,7 +52,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        if (!agreedPlayers.contains(player.getUniqueId().toString())) {
+        if (!agreedPlayers.contains(player.getName())) {
             teleportToSpawn(player); // 传送到主世界出生点
             player.sendMessage(ChatColor.YELLOW + "请阅读并签署 EULA 协议！");
             giveUnsignedBook(player); // 给玩家未签名的书
@@ -89,26 +90,13 @@ public class JoinEULA extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        //是否蹲下
-        if (player.isSneaking()) {
-            playerAgrees(player); // 记录同意
-            // 收回书
-            player.getInventory().remove(event.getItem());
-            player.sendMessage(ChatColor.GREEN + "感谢您同意 EULA！");
-        }
-    }
-
-    @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
         ItemStack droppedItem = event.getItemDrop().getItemStack();
-        //是否蹲下
-        if (player.isSneaking()) {
+        // 是否蹲下
+        if (player.isSneaking() && droppedItem.getType() == Material.WRITTEN_BOOK) {
             event.getItemDrop().remove(); // 删除掉落物
             playerAgrees(player); // 记录同意
-            player.sendMessage(ChatColor.GREEN + "感谢您同意 EULA！");
         }
     }
 
@@ -120,7 +108,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
                 Files.createFile(path);
                 // 在文件中写入默认 EULA 内容
                 try (BufferedWriter writer = Files.newBufferedWriter(path)) {
-                    writer.write("欢迎来到服务器！\n\n请阅读以下协议:\n\n1. 不得使用任何作弊插件。\n2. 尊重其他玩家。\n3. 不得发布任何不当言论。\n\n是否同意？");
+                    writer.write("欢迎来到本服务器！\n\n请阅读以下协议:\n\n1. 不得有作弊行为\n2. 尊重其他玩家\n3. 不得发布任何不当言论\n\n是否同意？");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -162,8 +150,9 @@ public class JoinEULA extends JavaPlugin implements Listener {
     }
 
     public void playerAgrees(Player player) {
-        agreedPlayers.add(player.getUniqueId().toString());
+        agreedPlayers.add(player.getName()); // 使用玩家名字
         saveAgreedPlayers();
-        player.sendMessage(ChatColor.GREEN + "您已同意 EULA！"); // 确保同意时也发送消息
+        player.sendMessage(ChatColor.GREEN + "您已同意 EULA！");
     }
+
 }
