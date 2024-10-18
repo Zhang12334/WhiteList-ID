@@ -12,8 +12,15 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <bukkit.version>1.19.2-R0.1-SNAPSHOT</bukkit.version> <!-- 替换为所需的 Bukkit 版本 -->
+        <bukkit.version>1.19.2-R0.1</bukkit.version> <!-- 使用稳定版本 -->
     </properties>
+
+    <repositories>
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/repository/maven-public/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
