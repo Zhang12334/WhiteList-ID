@@ -5,14 +5,12 @@ import com.google.gson.reflect.TypeToken;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,7 +24,7 @@ import java.util.Set;
 
 public class JoinEULA extends JavaPlugin implements Listener {
 
-    private String eulaContent;
+    private String eulaContent; // EULA 内容
     private Set<String> agreedPlayers; // 同意 EULA 的玩家 ID 列表
     private Gson gson; // Gson 实例
 
@@ -36,32 +34,14 @@ public class JoinEULA extends JavaPlugin implements Listener {
         gson = new Gson();
         loadEULAContent();
         loadAgreedPlayers(); // 加载同意 EULA 的玩家
-        createEULABook(); // 在讲台上创建 EULA 书
-    }
-
-    private void createEULABook() {
-        World world = Bukkit.getWorlds().get(0); // 获取主世界
-        Location lecternLocation = new Location(world, 0, 64, 0); // 指定讲台位置
-
-        ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-        BookMeta meta = (BookMeta) book.getItemMeta();
-        if (meta != null) {
-            meta.setTitle(ChatColor.GOLD + "Server EULA");
-            meta.setAuthor("Server Admin");
-            meta.addPage(eulaContent);
-            book.setItemMeta(meta);
-        }
-
-        // 在讲台上放置书
-        world.dropItem(lecternLocation, book);
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         if (!player.hasPlayedBefore()) {
-            // 在玩家加入时提醒他们查看讲台上的书
-            player.sendMessage(ChatColor.YELLOW + "请查看讲台上的 EULA 书以同意协议。");
+            // 在玩家加入时提醒他们
+            player.sendMessage(ChatColor.YELLOW + "请阅读并签署 EULA 协议！");
         }
     }
 
@@ -82,15 +62,23 @@ public class JoinEULA extends JavaPlugin implements Listener {
         if (item != null && item.getType() == Material.WRITTEN_BOOK) {
             BookMeta meta = (BookMeta) item.getItemMeta();
             if (meta != null && meta.hasTitle() && meta.getTitle().equals(ChatColor.GOLD + "Server EULA")) {
-                // 模拟取书同意
-                player.sendMessage(ChatColor.GREEN + "您已取下 EULA 书，签署书籍以同意协议。");
-                // 给玩家书与笔
-                givePlayerSignedBookAndPen(player);
+                // 模拟签名过程
+                if (meta.hasAuthor() && meta.getAuthor().equals("Server Admin")) {
+                    player.sendMessage(ChatColor.GREEN + "您已同意 EULA！");
+                    addPlayerToAgreedList(player); // 添加玩家到同意列表
+                    return; // 退出，不再处理其他逻辑
+                }
+                player.sendMessage(ChatColor.RED + "请使用笔签署以同意协议。");
             }
+        }
+
+        // 如果玩家没有书，给他们一本 EULA 书
+        if (event.getAction().toString().contains("RIGHT_CLICK")) {
+            givePlayerEULABook(player);
         }
     }
 
-    private void givePlayerSignedBookAndPen(Player player) {
+    private void givePlayerEULABook(Player player) {
         ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
         BookMeta meta = (BookMeta) book.getItemMeta();
         if (meta != null) {
@@ -98,11 +86,9 @@ public class JoinEULA extends JavaPlugin implements Listener {
             meta.setAuthor("Server Admin");
             meta.addPage(eulaContent);
             book.setItemMeta(meta);
+            player.getInventory().addItem(book); // 给玩家一本 EULA 书
+            player.sendMessage(ChatColor.YELLOW + "您获得了一本 EULA 书，请阅读并签署！");
         }
-        
-        ItemStack quill = new ItemStack(Material.WRITABLE_BOOK);
-        player.getInventory().addItem(book);
-        player.getInventory().addItem(quill); // 给玩家书与笔
     }
 
     private void loadEULAContent() {
@@ -171,8 +157,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
     }
 
     private void teleportToSpawn(Player player) {
-        World world = Bukkit.getWorlds().get(0); // 获取主世界
-        Location spawnLocation = world.getSpawnLocation(); // 获取出生点
+        Location spawnLocation = player.getWorld().getSpawnLocation(); // 获取出生点
         player.teleport(spawnLocation); // 传送到出生点
     }
 }
