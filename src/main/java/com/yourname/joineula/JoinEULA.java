@@ -91,26 +91,26 @@ public class JoinEULA extends JavaPlugin implements Listener {
                 player.getInventory().addItem(pen); // 将笔放入玩家的物品栏
             }
 
-            player.sendMessage(ChatColor.GREEN + "请阅读 EULA 后通过下蹲同意来进入服务器。");
+            player.sendMessage(ChatColor.GREEN + "请阅读 EULA 后通过下蹲同意来进入服务器");
         }
     }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        // 检查玩家是否使用了书与笔
+        // 检查玩家是否使用
         if (event.getItem() != null && event.getItem().getType() == Material.WRITTEN_BOOK && 
             event.getItem().getItemMeta() != null && event.getItem().getItemMeta().getDisplayName().contains("Server EULA")) {
-            // 玩家在书上进行签名
+            // 玩家蹲下
             if (event.getPlayer().isSneaking()) {
                 playerAgrees(player); // 记录同意
-                // 收回签名后的书
+                // 收回书
                 player.getInventory().remove(event.getItem());
                 player.sendMessage(ChatColor.GREEN + "感谢您同意 EULA！");
             }
         } else if (event.getItem() != null && event.getItem().getType() == Material.FEATHER) {
             // 玩家在使用签名笔
-            player.sendMessage(ChatColor.YELLOW + "请使用书进行签名。");
+            player.sendMessage(ChatColor.GREEN + "请阅读 EULA 后通过下蹲同意来进入服务器");
         }
     }
 
