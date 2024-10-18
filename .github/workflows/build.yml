@@ -14,13 +14,13 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3  # 更新到 v3
+        uses: actions/checkout@v3
 
       - name: Set up JDK 11
-        uses: actions/setup-java@v3  # 更新到 v3
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
-          distribution: 'temurin'  # 指定 JDK 发行版
+          distribution: 'temurin'
 
       - name: Build with Maven
         run: mvn clean package
@@ -28,5 +28,5 @@ jobs:
       - name: Upload JAR file
         uses: actions/upload-artifact@v3
         with:
-          name: joineula-jar
+          name: joineula-${{ github.run_number }} # 使用构建编号
           path: target/*.jar
