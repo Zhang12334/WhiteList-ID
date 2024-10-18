@@ -119,7 +119,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
             ItemStack item = inventory[i];
             // 检查玩家是否持有用户协议书
             if (item != null && item.getType() == Material.WRITTEN_BOOK) {
-                inventory[i] = null; // 移除用户协议书
+                inventory[i] = null; // 书移除走
             }
         }
         player.getInventory().setContents(inventory); // 更新物品栏
