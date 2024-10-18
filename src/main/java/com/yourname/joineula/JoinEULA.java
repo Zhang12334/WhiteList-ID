@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerQuitEvent; // 导入 PlayerQuitEvent
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -93,15 +93,24 @@ public class JoinEULA extends JavaPlugin implements Listener {
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
         ItemStack droppedItem = event.getItemDrop().getItemStack();
-        // 是否蹲下
-        if (player.isSneaking() && droppedItem.getType() == Material.WRITTEN_BOOK) {
-            event.getItemDrop().remove(); // 删除掉落物
-            playerAgrees(player); // 记录同意
+        
+        // 检查掉落的物品是否是用户协议书
+        if (droppedItem.getType() == Material.WRITTEN_BOOK) {
+            // 如果玩家没有下蹲
+            if (!player.isSneaking()) {
+                event.getItemDrop().remove(); // 删除掉落的书
+                giveUnsignedBook(player); // 给玩家新的未签名的书
+                player.sendMessage(ChatColor.RED + "请使用下蹲来同意 EULA。");
+            } else {
+                // 如果玩家下蹲，记录同意
+                event.getItemDrop().remove(); // 删除掉落的书
+                playerAgrees(player); // 记录同意
+            }
         }
     }
 
     @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) { // 添加退出事件监听
+    public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         ItemStack[] inventory = player.getInventory().getContents();
         
