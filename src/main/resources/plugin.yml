@@ -1,0 +1,4 @@
+name: Joineula
+version: 1.0-SNAPSHOT
+main: com.yourname.joineula.MainClass  # 替换为你的主类全名
+api-version: 1.20
