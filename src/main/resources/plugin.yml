@@ -1,5 +1,8 @@
-name: join_eula
+name: EULAPlugin
 version: 1.0
-main: com.example.joineula.JoinEulaPlugin
-api-version: 1.17
-description: "一个在玩家首次进服时展示游玩协议的插件"
+main: com.yourname.eula.EULAMain
+api-version: 1.20
+commands:
+  eula:
+    description: Agree to the server EULA
+    usage: /<command>
