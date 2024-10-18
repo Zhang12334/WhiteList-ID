@@ -3,15 +3,17 @@ plugins {
 }
 
 group 'com.yourname'
-version '1.0-SNAPSHOT'
-
-sourceCompatibility = '17'
+version '1.0'
 
 repositories {
     mavenCentral()
+    maven { url 'https://repo.spigotmc.org/snapshots' }
 }
 
 dependencies {
-    // 添加你的依赖项
-    compileOnly 'org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT'
+    compile 'org.spigotmc:spigot-api:1.20-R0.1-SNAPSHOT'
+}
+
+jar {
+    from 'src/main/resources' // 将资源复制到插件 jar 文件中
 }

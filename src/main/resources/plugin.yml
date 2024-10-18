@@ -1,8 +1,7 @@
-name: EULAPlugin
+name: join_eula
 version: 1.0
-main: com.yourname.eula.EULAMain
+main: com.yourname.joineula.Main
 api-version: 1.20
-commands:
-  eula:
-    description: Agree to the server EULA
-    usage: /<command>
+permissions:
+  joineula.agree:
+    default: false
