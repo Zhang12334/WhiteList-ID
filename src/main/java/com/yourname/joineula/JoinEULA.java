@@ -1,39 +1,56 @@
 package com.yourname.joineula;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
 
 public class JoinEULA extends JavaPlugin implements Listener {
 
     private String eulaContent;
+    private Set<String> agreedPlayers; // 同意 EULA 的玩家 ID 列表
+    private Gson gson; // Gson 实例
 
     @Override
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(this, this);
+        gson = new Gson();
         loadEULAContent();
+        loadAgreedPlayers(); // 加载同意 EULA 的玩家
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        if (!player.hasPlayedBefore()) {
+            openAgreementUI(player);
+        }
     }
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        if (!player.hasPlayedBefore()) {
+        if (!agreedPlayers.contains(player.getUniqueId().toString())) {
             openAgreementUI(player);
+            teleportToSpawn(player); // 传送到主世界出生点
         }
     }
 
@@ -65,7 +82,6 @@ public class JoinEULA extends JavaPlugin implements Listener {
                 eulaContent = "EULA content could not be loaded.";
             }
         } else {
-            // 创建 EULA 文件并写入默认内容
             createDefaultEULAFile(path);
             eulaContent = "EULA file created with default content.";
         }
@@ -86,4 +102,41 @@ public class JoinEULA extends JavaPlugin implements Listener {
             getLogger().severe("Failed to create EULA file: " + e.getMessage());
         }
     }
+
+    private void loadAgreedPlayers() {
+        agreedPlayers = new HashSet<>();
+        Path path = Paths.get(getDataFolder().toString(), "agreed_players.json");
+        if (Files.exists(path)) {
+            try (Reader reader = Files.newBufferedReader(path)) {
+                Set<String> loadedPlayers = gson.fromJson(reader, new TypeToken<Set<String>>(){}.getType());
+                if (loadedPlayers != null) {
+                    agreedPlayers.addAll(loadedPlayers);
+                }
+            } catch (IOException e) {
+                getLogger().severe("Failed to load agreed players: " + e.getMessage());
+            }
+        }
+    }
+
+    private void saveAgreedPlayers() {
+        Path path = Paths.get(getDataFolder().toString(), "agreed_players.json");
+        try (Writer writer = Files.newBufferedWriter(path)) {
+            gson.toJson(agreedPlayers, writer);
+        } catch (IOException e) {
+            getLogger().severe("Failed to save agreed players: " + e.getMessage());
+        }
+    }
+
+    private void addPlayerToAgreedList(Player player) {
+        agreedPlayers.add(player.getUniqueId().toString());
+        saveAgreedPlayers(); // 保存到文件
+    }
+
+    private void teleportToSpawn(Player player) {
+        World world = Bukkit.getWorlds().get(0); // 获取主世界
+        Location spawnLocation = world.getSpawnLocation(); // 获取出生点
+        player.teleport(spawnLocation); // 传送到出生点
+    }
+
+    // TODO: 添加方法以处理玩家同意或不同意 EULA，更新 agreedPlayers 列表并保存到文件
 }
