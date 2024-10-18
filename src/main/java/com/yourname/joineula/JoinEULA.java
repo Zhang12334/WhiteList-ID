@@ -6,9 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,6 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerQuitEvent; // 导入 PlayerQuitEvent
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,7 +25,7 @@ import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
-public class JoinEULA extends JavaPlugin implements Listener, CommandExecutor {
+public class JoinEULA extends JavaPlugin implements Listener {
 
     private String eulaContent; // EULA 内容
     private Set<String> agreedPlayers; // 同意 EULA 的玩家名字列表
@@ -36,7 +34,6 @@ public class JoinEULA extends JavaPlugin implements Listener, CommandExecutor {
     @Override
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(this, this);
-        getCommand("JoinEULA").setExecutor(this); // 注册指令
         gson = new Gson();
         loadEULAContent();
         loadAgreedPlayers(); // 加载同意 EULA 的玩家
@@ -76,7 +73,7 @@ public class JoinEULA extends JavaPlugin implements Listener, CommandExecutor {
                 break;
             }
         }
-
+        
         if (!hasBook) {
             // 创建未署名的书
             ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
@@ -101,6 +98,22 @@ public class JoinEULA extends JavaPlugin implements Listener, CommandExecutor {
             event.getItemDrop().remove(); // 删除掉落物
             playerAgrees(player); // 记录同意
         }
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) { // 添加退出事件监听
+        Player player = event.getPlayer();
+        ItemStack[] inventory = player.getInventory().getContents();
+        
+        // 遍历玩家的物品栏
+        for (int i = 0; i < inventory.length; i++) {
+            ItemStack item = inventory[i];
+            // 检查玩家是否持有用户协议书
+            if (item != null && item.getType() == Material.WRITTEN_BOOK) {
+                inventory[i] = null; // 移除用户协议书
+            }
+        }
+        player.getInventory().setContents(inventory); // 更新物品栏
     }
 
     private void loadEULAContent() {
@@ -156,20 +169,5 @@ public class JoinEULA extends JavaPlugin implements Listener, CommandExecutor {
         agreedPlayers.add(player.getName()); // 使用玩家名字
         saveAgreedPlayers();
         player.sendMessage(ChatColor.GREEN + "您已同意 EULA！");
-    }
-
-    // 处理指令
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (command.getName().equalsIgnoreCase("JoinEULA")) {
-            if (args.length > 0 && args[0].equalsIgnoreCase("reload")) {
-                loadEULAContent();
-                sender.sendMessage(ChatColor.GREEN + "EULA 内容已重载！");
-                return true;
-            }
-            sender.sendMessage(ChatColor.YELLOW + "用法: /JoinEULA reload");
-            return true;
-        }
-        return false;
     }
 }
