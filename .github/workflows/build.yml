@@ -19,7 +19,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: '17'  # 或你的 Java 版本
+          java-version: '17'          # 或你的 Java 版本
+          distribution: 'temurin'     # 添加 distribution 参数
 
       - name: Build with Gradle
         run: ./gradlew build
