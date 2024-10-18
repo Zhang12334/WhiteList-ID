@@ -82,11 +82,27 @@ public class JoinEULA extends JavaPlugin implements Listener {
         if (item != null && item.getType() == Material.WRITTEN_BOOK) {
             BookMeta meta = (BookMeta) item.getItemMeta();
             if (meta != null && meta.hasTitle() && meta.getTitle().equals(ChatColor.GOLD + "Server EULA")) {
-                // 玩家同意 EULA
-                addPlayerToAgreedList(player);
-                player.sendMessage(ChatColor.GREEN + "您已同意服务器 EULA。");
+                // 模拟取书同意
+                player.sendMessage(ChatColor.GREEN + "您已取下 EULA 书，签署书籍以同意协议。");
+                // 给玩家书与笔
+                givePlayerSignedBookAndPen(player);
             }
         }
+    }
+
+    private void givePlayerSignedBookAndPen(Player player) {
+        ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+        BookMeta meta = (BookMeta) book.getItemMeta();
+        if (meta != null) {
+            meta.setTitle(ChatColor.GOLD + "Server EULA");
+            meta.setAuthor("Server Admin");
+            meta.addPage(eulaContent);
+            book.setItemMeta(meta);
+        }
+        
+        ItemStack quill = new ItemStack(Material.WRITABLE_BOOK);
+        player.getInventory().addItem(book);
+        player.getInventory().addItem(quill); // 给玩家书与笔
     }
 
     private void loadEULAContent() {
