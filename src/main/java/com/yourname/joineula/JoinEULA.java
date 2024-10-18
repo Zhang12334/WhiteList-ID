@@ -14,7 +14,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
@@ -51,7 +50,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         if (!agreedPlayers.contains(player.getUniqueId().toString())) {
             teleportToSpawn(player); // 传送到主世界出生点
-            giveUnsignedBook(player); // 给玩家未签名的书与笔
+            giveUnsignedBook(player); // 给玩家未签名的书
         }
     }
 
@@ -61,16 +60,16 @@ public class JoinEULA extends JavaPlugin implements Listener {
     }
 
     private void giveUnsignedBook(Player player) {
-        // 检查玩家的物品栏是否已存在未署名的书与笔
-        boolean hasBookAndPen = false;
+        // 检查玩家的物品栏是否已存在未署名的书
+        boolean hasBook = false;
         for (ItemStack item : player.getInventory()) {
             if (item != null && item.getType() == Material.WRITTEN_BOOK) {
-                hasBookAndPen = true;
+                hasBook = true;
                 break;
             }
         }
         
-        if (!hasBookAndPen) {
+        if (!hasBook) {
             // 创建未署名的书
             ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
             BookMeta meta = (BookMeta) book.getItemMeta();
@@ -82,15 +81,6 @@ public class JoinEULA extends JavaPlugin implements Listener {
                 player.getInventory().addItem(book); // 将书放入玩家的物品栏
             }
 
-            // 创建笔
-            ItemStack pen = new ItemStack(Material.FEATHER);
-            ItemMeta penMeta = pen.getItemMeta();
-            if (penMeta != null) {
-                penMeta.setDisplayName(ChatColor.GOLD + "签名笔");
-                pen.setItemMeta(penMeta);
-                player.getInventory().addItem(pen); // 将笔放入玩家的物品栏
-            }
-
             player.sendMessage(ChatColor.GREEN + "请阅读 EULA 后通过下蹲同意来进入服务器");
         }
     }
@@ -98,19 +88,16 @@ public class JoinEULA extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        // 检查玩家是否使用
-        if (event.getItem() != null && event.getItem().getType() == Material.WRITTEN_BOOK && 
+
+        // 检查玩家是否在蹲下状态并持有未署名的书
+        if (event.getItem() != null && event.getItem().getType() == Material.WRITTEN_BOOK &&
             event.getItem().getItemMeta() != null && event.getItem().getItemMeta().getDisplayName().contains("Server EULA")) {
-            // 玩家蹲下
-            if (event.getPlayer().isSneaking()) {
+            if (player.isSneaking()) {
                 playerAgrees(player); // 记录同意
                 // 收回书
                 player.getInventory().remove(event.getItem());
                 player.sendMessage(ChatColor.GREEN + "感谢您同意 EULA！");
             }
-        } else if (event.getItem() != null && event.getItem().getType() == Material.FEATHER) {
-            // 玩家在使用签名笔
-            player.sendMessage(ChatColor.GREEN + "请阅读 EULA 后通过下蹲同意来进入服务器");
         }
     }
 
