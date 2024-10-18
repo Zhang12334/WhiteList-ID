@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.yourname</groupId>
-    <artifactId>joineula</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>JoinEULA</artifactId>
+    <version>beta</version>
     <packaging>jar</packaging>
 
     <name>Joineula</name>
