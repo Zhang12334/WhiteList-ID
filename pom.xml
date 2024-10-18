@@ -12,7 +12,6 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <spigot.version>1.16.5</spigot.version> <!-- 修改为1.16.5 -->
     </properties>
 
     <repositories>
@@ -26,7 +25,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>${spigot.version}</version>
+            <version>1.18.2</version> <!-- 使用1.18.2版本 -->
             <scope>provided</scope>
         </dependency>
     </dependencies>
