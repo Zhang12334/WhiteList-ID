@@ -86,7 +86,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
                 player.getInventory().addItem(book); // 将书放入玩家的物品栏
             }
         }
-        player.sendMessage(ChatColor.GREEN + "使用下蹲并丢出本书 (Shift+Q) 来同意 EULA");
+        player.sendMessage(ChatColor.GREEN + "请下蹲并丢出本书 (Shift+Q) 来同意 EULA");
     }
 
     @EventHandler
@@ -100,7 +100,6 @@ public class JoinEULA extends JavaPlugin implements Listener {
             if (!player.isSneaking()) {
                 event.getItemDrop().remove(); // 删除掉落的书
                 giveUnsignedBook(player); // 给玩家新的未签名的书
-                player.sendMessage(ChatColor.RED + "请使用下蹲来同意 EULA。");
             } else {
                 // 如果玩家下蹲，记录同意
                 event.getItemDrop().remove(); // 删除掉落的书
