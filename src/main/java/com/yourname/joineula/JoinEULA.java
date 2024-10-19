@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
@@ -188,9 +189,11 @@ public class JoinEULA extends JavaPlugin implements Listener {
     private void removePlayerAgreement(String playerName) {
         if (connection != null) {
             try {
-                Statement statement = connection.createStatement();
-                String sql = "DELETE FROM eula_agreements WHERE player_name = '" + playerName + "'";
-                statement.executeUpdate(sql);
+                String sql = "DELETE FROM eula_agreements WHERE player_name = ?";
+                try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                    preparedStatement.setString(1, playerName);
+                    preparedStatement.executeUpdate();
+                }
             } catch (SQLException e) {
                 getLogger().severe("删除玩家协议时出错: " + e.getMessage());
             }
@@ -203,7 +206,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if (!player.hasPlayedBefore()) {
+        if (!agreedPlayers.contains(player.getName())) {
             teleportToSpawn(player); // 传送到主世界出生点
             player.sendMessage(ChatColor.YELLOW + "请阅读并签署 EULA 协议！");
             giveUnsignedBook(player); // 给玩家未签名的书
@@ -253,7 +256,6 @@ public class JoinEULA extends JavaPlugin implements Listener {
         player.sendMessage(ChatColor.GREEN + "请下蹲并丢出本书 (Shift+Q) 来同意 EULA");
     }
 
-
     private void loadEULAContent() {
         // 从文件加载 EULA 内容
         try {
@@ -292,7 +294,22 @@ public class JoinEULA extends JavaPlugin implements Listener {
     }
 
     private void saveAgreedPlayers() {
-        if (connection == null) {
+        if (connection != null) {
+            // 使用 MySQL 保存同意的玩家
+            try {
+                for (String playerName : agreedPlayers) {
+                    String sql = "INSERT INTO eula_agreements (player_name) VALUES (?) ON DUPLICATE KEY UPDATE player_name = player_name";
+                    try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                        preparedStatement.setString(1, playerName);
+                        preparedStatement.executeUpdate();
+                    }
+                }
+                getLogger().info("已同意玩家信息已保存到 MySQL 数据库。");
+            } catch (SQLException e) {
+                getLogger().severe("保存已同意玩家到 MySQL 时出错: " + e.getMessage());
+            }
+        } else {
+            // 如果没有数据库连接，保存到 JSON 文件
             File file = new File(getDataFolder(), "agreedPlayers.json");
             try (Writer writer = new FileWriter(file)) {
                 gson.toJson(agreedPlayers, writer);
@@ -321,19 +338,40 @@ public class JoinEULA extends JavaPlugin implements Listener {
         }
     }
 
-
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        // 可以在此处保存玩家状态或其他操作
+        ItemStack[] inventory = player.getInventory().getContents();
+        
+        for (int i = 0; i < inventory.length; i++) {
+            ItemStack item = inventory[i];
+            if (item != null && item.getType() == Material.WRITTEN_BOOK) {
+                inventory[i] = null; // 书移除走
+            }
+        }
+        player.getInventory().setContents(inventory); // 更新物品栏
     }
 
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
-        if (!agreedPlayers.contains(player.getName())) {
-            event.setCancelled(true);
-            player.sendMessage(ChatColor.RED + "您必须同意 EULA 才能丢弃物品。");
+        ItemStack droppedItem = event.getItemDrop().getItemStack();
+        
+        if (droppedItem.getType() == Material.WRITTEN_BOOK) {
+            if (!player.isSneaking()) {
+                event.getItemDrop().remove(); // 删除掉落的书
+                giveUnsignedBook(player); // 给玩家新的未签名的书
+            } else {
+                event.getItemDrop().remove(); // 删除掉落的书
+                playerAgrees(player); // 记录同意
+            }
         }
+    }
+
+    private void playerAgrees(Player player) {
+        // 记录玩家同意的逻辑
+        agreedPlayers.add(player.getName());
+        saveAgreedPlayers(); // 保存同意记录
+        player.sendMessage(ChatColor.GREEN + "您已成功同意 EULA！");
     }
 }
