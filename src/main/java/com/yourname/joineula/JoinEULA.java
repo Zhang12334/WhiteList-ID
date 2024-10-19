@@ -6,10 +6,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -48,6 +49,23 @@ public class JoinEULA extends JavaPlugin implements Listener {
         teleportRange = config.getDouble("teleport-range", 2.0); // 默认范围为2.0
     }
 
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (command.getName().equalsIgnoreCase("JoinEULA") && args.length > 0 && args[0].equalsIgnoreCase("reload")) {
+            if (sender.hasPermission("joineula.reload")) {
+                loadConfig(); // 重新加载配置
+                loadEULAContent(); // 重新加载 EULA 内容
+                loadAgreedPlayers(); // 重新加载已同意的玩家
+                sender.sendMessage(ChatColor.GREEN + "EULA 插件配置已重新加载。");
+                return true;
+            } else {
+                sender.sendMessage(ChatColor.RED + "您没有权限执行此命令。");
+                return true;
+            }
+        }
+        return false;
+    }
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
@@ -64,7 +82,6 @@ public class JoinEULA extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         //已同意的玩家列表获取不到此玩家名
         if (!agreedPlayers.contains(player.getName())) {
-            teleportToSpawn(player); // 传送到主世界出生点
             Location to = event.getTo();
             Location spawnLocation = player.getWorld().getSpawnLocation(); // 获取出生点位置
             if (to != null && to.distance(spawnLocation) > teleportRange) {

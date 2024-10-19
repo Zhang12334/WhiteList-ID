@@ -4,5 +4,9 @@ main: com.yourname.joineula.JoinEULA
 api-version: 1.20
 commands:
   JoinEULA:
-    description: Reload the EULA content
+    description: 重载配置文件
     usage: /<command> reload
+permissions:
+  joineula.reload:
+    description: 允许 OP 重载配置文件
+    default: op
