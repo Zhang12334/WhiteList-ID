@@ -208,20 +208,10 @@ public class JoinEULA extends JavaPlugin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         loadAgreedPlayers();
         Player player = event.getPlayer();
-        String serviceType = getConfig().getString("service-type", "verify");
-
         if (!agreedPlayers.contains(player.getName())) {
-            if ("request".equalsIgnoreCase(serviceType)) {
-                // 如果是 request 类型, 延迟1秒后踢出玩家
-                Bukkit.getScheduler().runTaskLater(this, () -> {
-                    player.kickPlayer(ChatColor.RED + "您未同意 EULA ，无法进入服务器！"); // 踢出玩家
-                }, 20L);
-                return;
-            } else {
-                teleportToSpawn(player); // 传送到主世界出生点
-                player.sendMessage(ChatColor.YELLOW + "请阅读并签署 EULA 协议！");
-                giveUnsignedBook(player); // 给玩家未签名的书
-            }
+            teleportToSpawn(player); // 传送到主世界出生点
+            player.sendMessage(ChatColor.YELLOW + "请阅读并签署 EULA 协议！");
+            giveUnsignedBook(player); // 给玩家未签名的书
         }
     }
 
@@ -229,14 +219,23 @@ public class JoinEULA extends JavaPlugin implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         loadAgreedPlayers();
         Player player = event.getPlayer();
+        // 获取服务类型
+        String serviceType = getConfig().getString("service-type", "verify");
         if (!agreedPlayers.contains(player.getName())) {
-            Location to = event.getTo();
-            Location spawnLocation = player.getWorld().getSpawnLocation(); // 获取出生点位置
-            teleportRange = getConfig().getDouble("teleport-range", 2.0); // 默认范围为2.0
-            if (to != null && to.distance(spawnLocation) > teleportRange) {
-                teleportToSpawn(player); // 传送到主世界出生点
-                player.sendMessage(ChatColor.YELLOW + "请阅读并签署 EULA 协议！");
-                giveUnsignedBook(player); // 给玩家未签名的书
+            if ("request".equalsIgnoreCase(serviceType)) {
+                // 如果是 request 类型, 直接踢出玩家
+                player.kickPlayer(ChatColor.RED + "您未同意 EULA ，无法进入服务器！"); // 踢出玩家
+                return;
+            } else {
+                // verify验证类型，正常走流程
+                Location to = event.getTo();
+                Location spawnLocation = player.getWorld().getSpawnLocation(); // 获取出生点位置
+                teleportRange = getConfig().getDouble("teleport-range", 2.0); // 默认范围为2.0
+                if (to != null && to.distance(spawnLocation) > teleportRange) {
+                    teleportToSpawn(player); // 传送到主世界出生点
+                    player.sendMessage(ChatColor.YELLOW + "请阅读并签署 EULA 协议！");
+                    giveUnsignedBook(player); // 给玩家未签名的书
+                }
             }
         }
     }
