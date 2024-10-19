@@ -30,6 +30,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class JoinEULA extends JavaPlugin implements Listener {
@@ -39,6 +40,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
     private Gson gson; // Gson 实例
     private double teleportRange; // 玩家移动范围
     private Connection connection; // 数据库连接
+    private List<String> allowedCommands; // 允许的指令列表
 
     @Override
     public void onEnable() {
@@ -48,6 +50,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
         setupDatabase(); // 设置数据库连接
         loadEULAContent();
         loadAgreedPlayers(); // 加载同意 EULA 的玩家
+        loadAllowedCommands(); // 加载允许的指令列表
     }
 
     private void createDefaultConfig() {
@@ -63,26 +66,56 @@ public class JoinEULA extends JavaPlugin implements Listener {
                 writer.write("version: 1.0\n");
                 writer.write("# 存储类型，可选项：json / mysql\n");
                 writer.write("storage-type: json\n");
+                writer.write("# 服务类型，可选项：verify / request\n");
+                writer.write("service-type: verify\n");
+                writer.write("# 允许的指令列表，在玩家同意 EULA 前可以执行这些指令\n");
+                writer.write("allowed-commands:\n");
+                writer.write("  - spawn\n"); // 示例指令
+                writer.write("  - help\n"); // 示例指令
                 writer.write("# TP玩家的范围，未同意EULA移动超过以出生点为中心此数为半径的范围后会被tp回出生点\n");
                 writer.write("teleport-range: 2.0\n");
                 writer.write("# MySQL 配置\n");
                 writer.write("mysql:\n");
-                writer.write("# 地址\n");                
+                writer.write("# 地址\n");
                 writer.write("  host: localhost\n");
-                writer.write("# 端口\n");                
+                writer.write("# 端口\n");
                 writer.write("  port: 3306\n");
-                writer.write("# 数据库名\n");                
+                writer.write("# 数据库名\n");
                 writer.write("  database: yourdatabase\n");
-                writer.write("# 用户名\n");                
+                writer.write("# 用户名\n");
                 writer.write("  username: yourusername\n");
-                writer.write("# 密码\n");                
+                writer.write("# 密码\n");
                 writer.write("  password: yourpassword\n");
                 writer.close();
                 getLogger().info("已创建默认的 config.yml 文件");
             } catch (IOException e) {
                 getLogger().severe("创建 config.yml 文件时出错: " + e.getMessage());
             }
+        } else {
+            // 检查版本，如果是老版本则添加默认值
+            FileConfiguration config = getConfig();
+            if (!config.contains("version")) {
+                config.set("version", "1.0");
+            }
+            if (!config.contains("storage-type")) {
+                config.set("storage-type", "json");
+            }
+            if (!config.contains("service-type")) {
+                config.set("service-type", "verify");
+            }
+            if (!config.contains("teleport-range")) {
+                config.set("teleport-range", 2.0);
+            }
+            if (!config.contains("allowed-commands")) {
+                config.set("allowed-commands", List.of("spawn", "help")); // 默认允许指令
+            }
+            saveConfig();
         }
+    }
+
+    private void loadAllowedCommands() {
+        FileConfiguration config = getConfig();
+        allowedCommands = config.getStringList("allowed-commands");
     }
 
     private void setupDatabase() {
@@ -194,111 +227,33 @@ public class JoinEULA extends JavaPlugin implements Listener {
 
     private void teleportToSpawn(Player player) {
         Location spawnLocation = player.getWorld().getSpawnLocation();
-        player.teleport(spawnLocation); // 传送到主世界出生点
+        player.teleport(spawnLocation); // 传送玩家
     }
 
     private void giveUnsignedBook(Player player) {
-        boolean hasBook = false;
-        for (ItemStack item : player.getInventory()) {
-            if (item != null && item.getType() == Material.WRITTEN_BOOK) {
-                hasBook = true;
-                break;
-            }
-        }
-
-        if (!hasBook) {
-            ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-            BookMeta meta = (BookMeta) book.getItemMeta();
-            if (meta != null) {
-                meta.setTitle(ChatColor.GOLD + "Server EULA");
-                meta.setAuthor("Server Admin");
-                meta.addPage(eulaContent); // 使用 EULA 内容
-                book.setItemMeta(meta);
-                player.getInventory().addItem(book); // 将书放入玩家的物品栏
-            }
-        }
-        player.sendMessage(ChatColor.GREEN + "请下蹲并丢出本书 (Shift+Q) 来同意 EULA");
-    }
-
-    @EventHandler
-    public void onPlayerDropItem(PlayerDropItemEvent event) {
-        Player player = event.getPlayer();
-        ItemStack droppedItem = event.getItemDrop().getItemStack();
-
-        if (droppedItem.getType() == Material.WRITTEN_BOOK) {
-            if (!player.isSneaking()) {
-                event.getItemDrop().remove(); // 删除掉落的书
-                giveUnsignedBook(player); // 给玩家新的未签名的书
-            } else {
-                event.getItemDrop().remove(); // 删除掉落的书
-                playerAgrees(player); // 记录同意
-            }
-        }
-    }
-
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        ItemStack[] inventory = player.getInventory().getContents();
-
-        for (int i = 0; i < inventory.length; i++) {
-            ItemStack item = inventory[i];
-            if (item != null && item.getType() == Material.WRITTEN_BOOK) {
-                inventory[i] = null; // 书移除走
-            }
-        }
-        player.getInventory().setContents(inventory); // 更新物品栏
-    }
-
-    @EventHandler
-    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
-        Player player = event.getPlayer();
-        String command = event.getMessage().toLowerCase(); // 获取命令并转为小写
-
-        // 检查玩家是否已同意 EULA
-        if (!agreedPlayers.contains(player.getName())) {
-            // 如果命令不是 /reg 或 /login，禁止执行
-            if (!command.startsWith("/reg") && !command.startsWith("/login")) {
-                player.sendMessage(ChatColor.RED + "您必须先同意 EULA 才能执行此命令。");
-                event.setCancelled(true); // 取消命令执行
-            }
-        }
+        ItemStack book = new ItemStack(Material.BOOK);
+        BookMeta bookMeta = (BookMeta) book.getItemMeta();
+        bookMeta.setTitle("EULA");
+        bookMeta.setAuthor("Server");
+        bookMeta.addPage(eulaContent.split("\n")); // 将EULA内容分为多页
+        book.setItemMeta(bookMeta);
+        player.getInventory().addItem(book); // 将书加入玩家的背包
     }
 
     private void loadEULAContent() {
-        Path path = Paths.get(getDataFolder().toString(), "text.txt");
-        if (!Files.exists(path)) {
-            try {
-                Files.createDirectories(path.getParent());
-                try (BufferedWriter writer = Files.newBufferedWriter(path)) {
-                    writer.write("欢迎来到本服务器！\n\n请阅读以下协议:\n\n1. 不得有作弊行为\n2. 尊重其他玩家\n3. 不得发布任何不当言论\n\n是否同意？");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        // 从文件加载 EULA 内容
         try {
-            eulaContent = new String(Files.readAllBytes(path));
+            Path eulaPath = Paths.get(getDataFolder().toString(), "eula.txt");
+            eulaContent = Files.readString(eulaPath);
         } catch (IOException e) {
-            e.printStackTrace();
+            getLogger().severe("加载 EULA 内容时出错: " + e.getMessage());
+            eulaContent = "未找到EULA内容，请确保 eula.txt 文件存在。";
         }
     }
 
     private void loadAgreedPlayers() {
-        FileConfiguration config = getConfig();
-        String storageType = config.getString("storage-type", "json");
-
-        if ("mysql".equalsIgnoreCase(storageType)) {
-            loadAgreedPlayersFromDatabase();
-        } else {
-            loadAgreedPlayersFromJson();
-        }
-    }
-
-    private void loadAgreedPlayersFromDatabase() {
-        // 从数据库加载已同意的玩家
-        agreedPlayers = new HashSet<>();
         if (connection != null) {
+            agreedPlayers = new HashSet<>();
             try {
                 Statement statement = connection.createStatement();
                 var resultSet = statement.executeQuery("SELECT player_name FROM eula_agreements");
@@ -306,63 +261,65 @@ public class JoinEULA extends JavaPlugin implements Listener {
                     agreedPlayers.add(resultSet.getString("player_name"));
                 }
             } catch (SQLException e) {
-                getLogger().severe("加载同意玩家时出错: " + e.getMessage());
+                getLogger().severe("加载同意的玩家时出错: " + e.getMessage());
             }
-        }
-    }
-
-    private void loadAgreedPlayersFromJson() {
-        File file = new File(getDataFolder(), "agreedPlayers.json");
-        if (!file.exists()) {
-            agreedPlayers = new HashSet<>(); // 初始化同意玩家列表
-            saveAgreedPlayers(); // 保存初始化文件
         } else {
-            try (FileReader reader = new FileReader(file)) {
-                agreedPlayers = gson.fromJson(reader, new TypeToken<Set<String>>() {}.getType());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void saveAgreedPlayers() {
-        FileConfiguration config = getConfig();
-        String storageType = config.getString("storage-type", "json");
-
-        if ("mysql".equalsIgnoreCase(storageType)) {
-            saveAgreedPlayersToDatabase();
-        } else {
-            saveAgreedPlayersToJson();
-        }
-    }
-
-    private void saveAgreedPlayersToDatabase() {
-        if (connection != null) {
-            try {
-                Statement statement = connection.createStatement();
-                for (String playerName : agreedPlayers) {
-                    String sql = "INSERT INTO eula_agreements (player_name) VALUES ('" + playerName + "')" +
-                                 " ON DUPLICATE KEY UPDATE player_name = player_name"; // 防止重复插入
-                    statement.executeUpdate(sql);
+            File file = new File(getDataFolder(), "agreedPlayers.json");
+            if (file.exists()) {
+                try (Reader reader = new FileReader(file)) {
+                    agreedPlayers = gson.fromJson(reader, new TypeToken<Set<String>>() {}.getType());
+                } catch (IOException e) {
+                    getLogger().severe("加载已同意玩家文件时出错: " + e.getMessage());
                 }
-            } catch (SQLException e) {
-                getLogger().severe("保存同意玩家时出错: " + e.getMessage());
+            } else {
+                agreedPlayers = new HashSet<>();
             }
         }
     }
 
-    private void saveAgreedPlayersToJson() {
-        File file = new File(getDataFolder(), "agreedPlayers.json");
-        try (FileWriter writer = new FileWriter(file)) {
-            gson.toJson(agreedPlayers, writer);
-        } catch (IOException e) {
-            e.printStackTrace();
+    private void saveAgreedPlayers() {
+        if (connection == null) {
+            File file = new File(getDataFolder(), "agreedPlayers.json");
+            try (Writer writer = new FileWriter(file)) {
+                gson.toJson(agreedPlayers, writer);
+            } catch (IOException e) {
+                getLogger().severe("保存已同意玩家文件时出错: " + e.getMessage());
+            }
         }
     }
 
-    public void playerAgrees(Player player) {
-        agreedPlayers.add(player.getName());
-        saveAgreedPlayers();
-        player.sendMessage(ChatColor.GREEN + "您已同意 EULA！");
+    @EventHandler
+    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) { 
+        Player player = event.getPlayer();
+        String command = event.getMessage(); // 保持原有大小写
+
+        // 检查玩家是否已同意 EULA
+        if (!agreedPlayers.contains(player.getName())) {
+            // 检查是否是允许的指令
+            for (String allowedCommand : allowedCommands) {
+                if (command.toLowerCase().startsWith("/" + allowedCommand.toLowerCase())) {
+                    return; // 如果是允许的指令，直接返回
+                }
+            }
+            // 如果不在允许的指令中，则取消指令执行
+            event.setCancelled(true);
+            player.sendMessage(ChatColor.RED + "您必须同意 EULA 才能执行该指令。");
+        }
+    }
+
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        // 可以在此处保存玩家状态或其他操作
+    }
+
+    @EventHandler
+    public void onPlayerDropItem(PlayerDropItemEvent event) {
+        Player player = event.getPlayer();
+        if (!agreedPlayers.contains(player.getName())) {
+            event.setCancelled(true);
+            player.sendMessage(ChatColor.RED + "您必须同意 EULA 才能丢弃物品。");
+        }
     }
 }
