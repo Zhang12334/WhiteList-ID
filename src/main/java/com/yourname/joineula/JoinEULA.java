@@ -211,7 +211,9 @@ public class JoinEULA extends JavaPlugin implements Listener {
         String serviceType = getConfig().getString("service-type", "verify");
         // 检查 service-type
         if ("request".equalsIgnoreCase(serviceType)) {
+            getLogger().info("1");
             if (!agreedPlayers.contains(player.getName())) {
+                getLogger().info("2");
                 player.kickPlayer(ChatColor.RED + "您未同意EULA，无法进入服务器！");
                 return; // 直接踢出玩家
             }
