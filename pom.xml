@@ -30,6 +30,12 @@
             <version>${spigot.version}</version>
             <scope>provided</scope>
         </dependency>
+        <!-- 添加 MySQL 依赖 -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version> <!-- 请根据需要选择合适的版本 -->
+        </dependency>
     </dependencies>
 
     <build>

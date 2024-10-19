@@ -1,12 +1,15 @@
 name: JoinEULA
-version: 1.0
+version: beta
 main: com.yourname.joineula.JoinEULA
 api-version: 1.20
 commands:
   JoinEULA:
-    description: 重载配置文件
-    usage: /<command> reload
+    description: 处理 EULA 相关的命令
+    usage: /<command> <reload|remove>
 permissions:
   joineula.reload:
-    description: 允许 OP 重载配置文件
+    description: 允许重新加载 EULA
+    default: op
+  joineula.remove:
+    description: 允许删除玩家的校验信息
     default: op
