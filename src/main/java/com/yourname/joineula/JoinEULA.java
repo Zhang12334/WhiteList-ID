@@ -218,7 +218,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
                 return; // 直接踢出玩家
             }
         }
-
+        getLogger().info("none" + serviceType);
         // 检查是否已同意 EULA
         if (!agreedPlayers.contains(player.getName())) {
             teleportToSpawn(player); // 传送到主世界出生点
