@@ -18,6 +18,8 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -31,13 +33,28 @@ public class JoinEULA extends JavaPlugin implements Listener {
     private String eulaContent; // EULA 内容
     private Set<String> agreedPlayers; // 同意 EULA 的玩家名字列表
     private Gson gson; // Gson 实例
+    private double teleportRange; // TP 范围 K
 
     @Override
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(this, this);
         gson = new Gson();
+        loadConfig(); // 加载配置
         loadEULAContent();
         loadAgreedPlayers(); // 加载同意 EULA 的玩家
+    }
+
+    private void loadConfig() {
+        File configFile = new File(getDataFolder(), "config.yml");
+        if (!configFile.exists()) {
+            try {
+                saveResource("config.yml", false); // 从资源文件夹复制配置文件
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+        teleportRange = config.getDouble("teleport-range", 2.0); // 默认范围为2.0
     }
 
     @EventHandler
@@ -54,10 +71,17 @@ public class JoinEULA extends JavaPlugin implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         if (!agreedPlayers.contains(player.getName())) {
-            teleportToSpawn(player); // 传送到主世界出生点
-            player.sendMessage(ChatColor.YELLOW + "请阅读并签署 EULA 协议！");
-            giveUnsignedBook(player); // 给玩家未签名的书
+            if (!isInSpawnRange(player)) {
+                teleportToSpawn(player); // 传送到主世界出生点
+                player.sendMessage(ChatColor.YELLOW + "请阅读并签署 EULA 协议！");
+                giveUnsignedBook(player); // 给玩家未签名的书
+            }
         }
+    }
+
+    private boolean isInSpawnRange(Player player) {
+        Location spawnLocation = player.getWorld().getSpawnLocation();
+        return player.getLocation().distance(spawnLocation) <= teleportRange;
     }
 
     private void teleportToSpawn(Player player) {
