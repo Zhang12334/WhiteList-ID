@@ -97,18 +97,25 @@ public class JoinEULA extends JavaPlugin implements Listener {
             FileConfiguration config = getConfig();
             if (!config.contains("version")) {
                 config.set("version", "1.0");
+                writer.write("version: 1.0\n");
             }
             if (!config.contains("storage-type")) {
                 config.set("storage-type", "json");
+                writer.write("storage-type: json\n");
             }
             if (!config.contains("service-type")) {
                 config.set("service-type", "verify");
+                writer.write("service-type: verify\n");
             }
             if (!config.contains("teleport-range")) {
                 config.set("teleport-range", 2.0);
+                writer.write("teleport-range: 2.0\n");
             }
             if (!config.contains("allowed-commands")) {
                 config.set("allowed-commands", List.of("spawn", "help")); // 默认允许指令
+                writer.write("allowed-commands:\n");
+                writer.write("  - reg\n");
+                writer.write("  - login\n");
             }
             saveConfig();
         }
@@ -203,28 +210,17 @@ public class JoinEULA extends JavaPlugin implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        loadAgreedPlayers();
-        Player player = event.getPlayer();
-        if (!agreedPlayers.contains(player.getName())) {
-            teleportToSpawn(player); // 传送到主世界出生点
-            player.sendMessage(ChatColor.YELLOW + "请阅读并签署 EULA 协议！");
-            giveUnsignedBook(player); // 给玩家未签名的书
-        }
-    }
-
     public void onPlayerJoin(PlayerJoinEvent event) {
         loadAgreedPlayers();
         Player player = event.getPlayer();
         // 检查 service-type
+        String serviceType = config.getString("service-type", "verify");
         if ("request".equalsIgnoreCase(serviceType)) {
             if (!agreedPlayers.contains(player.getName())) {
                 player.kickPlayer(ChatColor.RED + "您未同意EULA，无法进入服务器！");
                 return; // 直接踢出玩家
             }
         }
-
         // 检查是否已同意 EULA
         if (!agreedPlayers.contains(player.getName())) {
             teleportToSpawn(player); // 传送到主世界出生点
@@ -232,10 +228,6 @@ public class JoinEULA extends JavaPlugin implements Listener {
             giveUnsignedBook(player); // 给玩家未签名的书
         }
     }
-
-
-
-
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
