@@ -84,6 +84,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
         if (!agreedPlayers.contains(player.getName())) {
             Location to = event.getTo();
             Location spawnLocation = player.getWorld().getSpawnLocation(); // 获取出生点位置
+            loadConfig();
             if (to != null && to.distance(spawnLocation) > teleportRange) {
                 teleportToSpawn(player); // 传送到主世界出生点
                 player.sendMessage(ChatColor.YELLOW + "请阅读并签署 EULA 协议！");
