@@ -27,8 +27,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,38 +44,39 @@ public class JoinEULA extends JavaPlugin implements Listener {
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(this, this);
         gson = new Gson();
-        saveDefaultConfig(); // 确保配置文件存在
-        loadConfig(); // 加载配置
+        loadConfigDefaults(); // 确保配置项的默认值
+        setupDatabase(); // 设置数据库连接
         loadEULAContent();
         loadAgreedPlayers(); // 加载同意 EULA 的玩家
-        setupDatabase(); // 设置数据库连接
     }
 
-    private void loadConfig() {
-        // 检查配置文件的版本
+    private void loadConfigDefaults() {
         FileConfiguration config = getConfig();
-        double configVersion = config.getDouble("version", 1.0);
-
-        // 如果版本低于当前版本，更新配置
-        if (configVersion < 1.0) {
-            config.set("storage-type", "json"); // 设置默认存储类型
-            config.set("version", 1.0); // 更新配置版本
-            saveConfig(); // 保存更新后的配置
+        if (!config.contains("version")) {
+            config.set("version", "1.0");
         }
-
-        // 读取存储类型
-        String storageType = config.getString("storage-type", "json");
+        if (!config.contains("storage-type")) {
+            config.set("storage-type", "json");
+        }
+        if (!config.contains("teleport-range")) {
+            config.set("teleport-range", 2.0);
+        }
+        saveConfig();
     }
 
     private void setupDatabase() {
         FileConfiguration config = getConfig();
         String storageType = config.getString("storage-type", "json");
-        
+
         if ("mysql".equalsIgnoreCase(storageType)) {
-            String url = "jdbc:mysql://localhost:3306/yourdatabase"; // 数据库地址
-            String user = "yourusername"; // 数据库用户名
-            String password = "yourpassword"; // 数据库密码
-            
+            String host = config.getString("mysql.host", "localhost");
+            int port = config.getInt("mysql.port", 3306);
+            String database = config.getString("mysql.database", "yourdatabase");
+            String user = config.getString("mysql.username", "yourusername");
+            String password = config.getString("mysql.password", "yourpassword");
+
+            String url = "jdbc:mysql://" + host + ":" + port + "/" + database;
+
             try {
                 connection = DriverManager.getConnection(url, user, password);
                 getLogger().info("MySQL 数据库连接成功。");
@@ -87,45 +88,62 @@ public class JoinEULA extends JavaPlugin implements Listener {
     }
 
     private void createTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS agreed_players ("
-                + "player_name VARCHAR(255) PRIMARY KEY"
-                + ")";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.executeUpdate();
-            getLogger().info("已检查并创建必要的数据库表。");
-        } catch (SQLException e) {
-            getLogger().severe("创建数据库表失败: " + e.getMessage());
+        if (connection != null) {
+            try {
+                Statement statement = connection.createStatement();
+                String sql = "CREATE TABLE IF NOT EXISTS eula_agreements (" +
+                             "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                             "player_name VARCHAR(255) NOT NULL UNIQUE" +
+                             ")";
+                statement.executeUpdate(sql);
+                getLogger().info("EULA 协议表已创建或已存在。");
+            } catch (SQLException e) {
+                getLogger().severe("创建 EULA 表时出错: " + e.getMessage());
+            }
         }
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (command.getName().equalsIgnoreCase("JoinEULA")) {
-            if (args.length > 0) {
-                if (args[0].equalsIgnoreCase("reload")) {
-                    if (sender.hasPermission("joineula.reload")) {
-                        loadEULAContent(); // 重新加载 EULA 内容
-                        loadAgreedPlayers(); // 重新加载已同意的玩家
-                        sender.sendMessage(ChatColor.GREEN + "EULA 插件配置已重新加载。");
-                        return true;
-                    } else {
-                        sender.sendMessage(ChatColor.RED + "您没有权限执行此命令。");
-                        return true;
-                    }
-                } else if (args[0].equalsIgnoreCase("remove") && args.length == 2) {
-                    if (sender.hasPermission("joineula.remove")) {
-                        String playerName = args[1];
-                        removePlayerAgreement(playerName);
-                        sender.sendMessage(ChatColor.GREEN + "已成功删除 " + playerName + " 的 EULA 同意记录。");
-                        return true;
-                    } else {
-                        sender.sendMessage(ChatColor.RED + "您没有权限执行此命令。");
-                        return true;
-                    }
+        if (command.getName().equalsIgnoreCase("JoinEULA") && args.length > 0) {
+            if (args[0].equalsIgnoreCase("reload")) {
+                if (sender.hasPermission("joineula.reload")) {
+                    loadEULAContent(); // 重新加载 EULA 内容
+                    loadAgreedPlayers(); // 重新加载已同意的玩家
+                    sender.sendMessage(ChatColor.GREEN + "EULA 插件配置已重新加载。");
+                    return true;
+                } else {
+                    sender.sendMessage(ChatColor.RED + "您没有权限执行此命令。");
+                    return true;
+                }
+            } else if (args[0].equalsIgnoreCase("remove") && args.length > 1) {
+                if (sender.hasPermission("joineula.remove")) {
+                    String playerName = args[1];
+                    removePlayerAgreement(playerName);
+                    sender.sendMessage(ChatColor.GREEN + "已删除 " + playerName + " 的 EULA 同意记录。");
+                    return true;
+                } else {
+                    sender.sendMessage(ChatColor.RED + "您没有权限执行此命令。");
+                    return true;
                 }
             }
         }
         return false;
+    }
+
+    private void removePlayerAgreement(String playerName) {
+        if (connection != null) {
+            try {
+                Statement statement = connection.createStatement();
+                String sql = "DELETE FROM eula_agreements WHERE player_name = '" + playerName + "'";
+                statement.executeUpdate(sql);
+            } catch (SQLException e) {
+                getLogger().severe("删除玩家协议时出错: " + e.getMessage());
+            }
+        } else {
+            agreedPlayers.remove(playerName);
+            saveAgreedPlayers();
+        }
     }
 
     @EventHandler
@@ -144,8 +162,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
         if (!agreedPlayers.contains(player.getName())) {
             Location to = event.getTo();
             Location spawnLocation = player.getWorld().getSpawnLocation(); // 获取出生点位置
-            FileConfiguration config = getConfig(); // 实时获取配置
-            teleportRange = config.getDouble("teleport-range", 2.0); // 默认范围为2.0
+            teleportRange = getConfig().getDouble("teleport-range", 2.0); // 默认范围为2.0
             if (to != null && to.distance(spawnLocation) > teleportRange) {
                 teleportToSpawn(player); // 传送到主世界出生点
                 player.sendMessage(ChatColor.YELLOW + "请阅读并签署 EULA 协议！");
@@ -251,30 +268,38 @@ public class JoinEULA extends JavaPlugin implements Listener {
         String storageType = config.getString("storage-type", "json");
 
         if ("mysql".equalsIgnoreCase(storageType)) {
-            // 从 MySQL 加载已同意的玩家
-            String sql = "SELECT player_name FROM agreed_players";
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                var resultSet = statement.executeQuery();
-                agreedPlayers = new HashSet<>(); // 初始化同意玩家列表
+            loadAgreedPlayersFromDatabase();
+        } else {
+            loadAgreedPlayersFromJson();
+        }
+    }
+
+    private void loadAgreedPlayersFromDatabase() {
+        // 从数据库加载已同意的玩家
+        agreedPlayers = new HashSet<>();
+        if (connection != null) {
+            try {
+                Statement statement = connection.createStatement();
+                var resultSet = statement.executeQuery("SELECT player_name FROM eula_agreements");
                 while (resultSet.next()) {
                     agreedPlayers.add(resultSet.getString("player_name"));
                 }
             } catch (SQLException e) {
-                getLogger().severe("加载已同意的玩家失败: " + e.getMessage());
-                agreedPlayers = new HashSet<>();
+                getLogger().severe("加载同意玩家时出错: " + e.getMessage());
             }
+        }
+    }
+
+    private void loadAgreedPlayersFromJson() {
+        File file = new File(getDataFolder(), "agreedPlayers.json");
+        if (!file.exists()) {
+            agreedPlayers = new HashSet<>(); // 初始化同意玩家列表
+            saveAgreedPlayers(); // 保存初始化文件
         } else {
-            // 从 JSON 文件加载
-            File file = new File(getDataFolder(), "agreedPlayers.json");
-            if (!file.exists()) {
-                agreedPlayers = new HashSet<>(); // 初始化同意玩家列表
-                saveAgreedPlayers(); // 保存初始化文件
-            } else {
-                try (FileReader reader = new FileReader(file)) {
-                    agreedPlayers = gson.fromJson(reader, new TypeToken<Set<String>>() {}.getType());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            try (FileReader reader = new FileReader(file)) {
+                agreedPlayers = gson.fromJson(reader, new TypeToken<Set<String>>() {}.getType());
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -284,26 +309,33 @@ public class JoinEULA extends JavaPlugin implements Listener {
         String storageType = config.getString("storage-type", "json");
 
         if ("mysql".equalsIgnoreCase(storageType)) {
-            // 将同意的玩家保存到 MySQL 数据库
-            String sql = "INSERT INTO agreed_players (player_name) VALUES (?) ON DUPLICATE KEY UPDATE player_name = player_name";
+            saveAgreedPlayersToDatabase();
+        } else {
+            saveAgreedPlayersToJson();
+        }
+    }
+
+    private void saveAgreedPlayersToDatabase() {
+        if (connection != null) {
             try {
+                Statement statement = connection.createStatement();
                 for (String playerName : agreedPlayers) {
-                    try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                        statement.setString(1, playerName);
-                        statement.executeUpdate();
-                    }
+                    String sql = "INSERT INTO eula_agreements (player_name) VALUES ('" + playerName + "')" +
+                                 " ON DUPLICATE KEY UPDATE player_name = player_name"; // 防止重复插入
+                    statement.executeUpdate(sql);
                 }
             } catch (SQLException e) {
-                getLogger().severe("保存已同意的玩家到数据库失败: " + e.getMessage());
+                getLogger().severe("保存同意玩家时出错: " + e.getMessage());
             }
-        } else {
-            // 保存到 JSON 文件
-            File file = new File(getDataFolder(), "agreedPlayers.json");
-            try (FileWriter writer = new FileWriter(file)) {
-                gson.toJson(agreedPlayers, writer);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        }
+    }
+
+    private void saveAgreedPlayersToJson() {
+        File file = new File(getDataFolder(), "agreedPlayers.json");
+        try (FileWriter writer = new FileWriter(file)) {
+            gson.toJson(agreedPlayers, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -311,25 +343,5 @@ public class JoinEULA extends JavaPlugin implements Listener {
         agreedPlayers.add(player.getName());
         saveAgreedPlayers();
         player.sendMessage(ChatColor.GREEN + "您已同意 EULA！");
-    }
-
-    public void removePlayerAgreement(String playerName) {
-        agreedPlayers.remove(playerName);
-        FileConfiguration config = getConfig();
-        String storageType = config.getString("storage-type", "json");
-
-        if ("mysql".equalsIgnoreCase(storageType)) {
-            // 从 MySQL 数据库删除玩家记录
-            String sql = "DELETE FROM agreed_players WHERE player_name = ?";
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setString(1, playerName);
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                getLogger().severe("从数据库删除玩家失败: " + e.getMessage());
-            }
-        } else {
-            // 在 JSON 文件中保存更改（在下次保存时，已同意的玩家将被更新）
-            saveAgreedPlayers();
-        }
     }
 }
