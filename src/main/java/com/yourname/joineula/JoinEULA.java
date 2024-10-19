@@ -65,7 +65,6 @@ public class JoinEULA extends JavaPlugin implements Listener {
 
         // 读取存储类型
         String storageType = config.getString("storage-type", "json");
-        // 这里可以用 storageType 来决定使用的存储方式
     }
 
     private void setupDatabase() {
@@ -80,9 +79,22 @@ public class JoinEULA extends JavaPlugin implements Listener {
             try {
                 connection = DriverManager.getConnection(url, user, password);
                 getLogger().info("MySQL 数据库连接成功。");
+                createTable(); // 创建表
             } catch (SQLException e) {
                 getLogger().severe("无法连接到 MySQL 数据库: " + e.getMessage());
             }
+        }
+    }
+
+    private void createTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS agreed_players ("
+                + "player_name VARCHAR(255) PRIMARY KEY"
+                + ")";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.executeUpdate();
+            getLogger().info("已检查并创建必要的数据库表。");
+        } catch (SQLException e) {
+            getLogger().severe("创建数据库表失败: " + e.getMessage());
         }
     }
 
@@ -273,7 +285,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
 
         if ("mysql".equalsIgnoreCase(storageType)) {
             // 将同意的玩家保存到 MySQL 数据库
-            String sql = "INSERT INTO agreed_players (player_name) VALUES (?)";
+            String sql = "INSERT INTO agreed_players (player_name) VALUES (?) ON DUPLICATE KEY UPDATE player_name = player_name";
             try {
                 for (String playerName : agreedPlayers) {
                     try (PreparedStatement statement = connection.prepareStatement(sql)) {
