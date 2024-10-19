@@ -5,7 +5,7 @@
 
     <groupId>com.yourname</groupId>
     <artifactId>JoinEULA</artifactId>
-    <version>beta</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>JoinEULA</name>

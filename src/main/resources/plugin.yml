@@ -1,5 +1,5 @@
 name: JoinEULA
-version: beta
+version: 1.0
 main: com.yourname.joineula.JoinEULA
 api-version: 1.20
 commands:
