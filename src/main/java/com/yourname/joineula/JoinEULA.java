@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent; // 新增导入
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -36,24 +37,16 @@ public class JoinEULA extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        loadConfig(); // 加载配置
         Bukkit.getPluginManager().registerEvents(this, this);
         gson = new Gson();
         loadEULAContent();
         loadAgreedPlayers(); // 加载同意 EULA 的玩家
     }
 
-    private void loadConfig() {
-        saveDefaultConfig(); // 保存默认配置文件
-        FileConfiguration config = getConfig(); // 获取配置
-        teleportRange = config.getDouble("teleport-range", 2.0); // 默认范围为2.0
-    }
-
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (command.getName().equalsIgnoreCase("JoinEULA") && args.length > 0 && args[0].equalsIgnoreCase("reload")) {
             if (sender.hasPermission("joineula.reload")) {
-                loadConfig(); // 重新加载配置
                 loadEULAContent(); // 重新加载 EULA 内容
                 loadAgreedPlayers(); // 重新加载已同意的玩家
                 sender.sendMessage(ChatColor.GREEN + "EULA 插件配置已重新加载。");
@@ -78,13 +71,12 @@ public class JoinEULA extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-        //获取玩家
         Player player = event.getPlayer();
-        //已同意的玩家列表获取不到此玩家名
         if (!agreedPlayers.contains(player.getName())) {
             Location to = event.getTo();
             Location spawnLocation = player.getWorld().getSpawnLocation(); // 获取出生点位置
-            loadConfig();
+            FileConfiguration config = getConfig(); // 实时获取配置
+            teleportRange = config.getDouble("teleport-range", 2.0); // 默认范围为2.0
             if (to != null && to.distance(spawnLocation) > teleportRange) {
                 teleportToSpawn(player); // 传送到主世界出生点
                 player.sendMessage(ChatColor.YELLOW + "请阅读并签署 EULA 协议！");
@@ -106,7 +98,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
                 break;
             }
         }
-        
+
         if (!hasBook) {
             ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
             BookMeta meta = (BookMeta) book.getItemMeta();
@@ -125,7 +117,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
         ItemStack droppedItem = event.getItemDrop().getItemStack();
-        
+
         if (droppedItem.getType() == Material.WRITTEN_BOOK) {
             if (!player.isSneaking()) {
                 event.getItemDrop().remove(); // 删除掉落的书
@@ -141,7 +133,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         ItemStack[] inventory = player.getInventory().getContents();
-        
+
         for (int i = 0; i < inventory.length; i++) {
             ItemStack item = inventory[i];
             if (item != null && item.getType() == Material.WRITTEN_BOOK) {
@@ -149,6 +141,21 @@ public class JoinEULA extends JavaPlugin implements Listener {
             }
         }
         player.getInventory().setContents(inventory); // 更新物品栏
+    }
+
+    @EventHandler
+    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
+        Player player = event.getPlayer();
+        String command = event.getMessage().toLowerCase(); // 获取命令并转为小写
+
+        // 检查玩家是否已同意 EULA
+        if (!agreedPlayers.contains(player.getName())) {
+            // 如果命令不是 /reg 或 /login，禁止执行
+            if (!command.startsWith("/reg") && !command.startsWith("/login")) {
+                player.sendMessage(ChatColor.RED + "您必须先同意 EULA 才能执行此命令。");
+                event.setCancelled(true); // 取消命令执行
+            }
+        }
     }
 
     private void loadEULAContent() {
