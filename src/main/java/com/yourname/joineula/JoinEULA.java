@@ -206,7 +206,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         loadAgreedPlayers();
         Player player = event.getPlayer();
-        String serviceType = config.getString("service-type", "verify");
+        String serviceType = getConfig().getString("service-type", "verify");
         // 检查 service-type
         if ("request".equalsIgnoreCase(serviceType)) {
             if (!agreedPlayers.contains(player.getName())) {
