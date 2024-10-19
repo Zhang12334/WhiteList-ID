@@ -44,24 +44,45 @@ public class JoinEULA extends JavaPlugin implements Listener {
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(this, this);
         gson = new Gson();
-        loadConfigDefaults(); // 确保配置项的默认值
+        createDefaultConfig(); // 创建默认配置
         setupDatabase(); // 设置数据库连接
         loadEULAContent();
         loadAgreedPlayers(); // 加载同意 EULA 的玩家
     }
 
-    private void loadConfigDefaults() {
-        FileConfiguration config = getConfig();
-        if (!config.contains("version")) {
-            config.set("version", "1.0");
+    private void createDefaultConfig() {
+        // 如果 config.yml 不存在，创建一个默认的 config.yml
+        File configFile = new File(getDataFolder(), "config.yml");
+        if (!configFile.exists()) {
+            // 创建目录
+            getDataFolder().mkdirs();
+            try {
+                // 创建并写入默认配置
+                FileWriter writer = new FileWriter(configFile);
+                writer.write("# 配置文件版本，请勿更改\n");
+                writer.write("version: 1.0\n");
+                writer.write("# 存储类型，可选项：json / mysql\n");
+                writer.write("storage-type: json\n");
+                writer.write("# TP玩家的范围，未同意EULA移动超过以出生点为中心此数为半径的范围后会被tp回出生点\n");
+                writer.write("teleport-range: 2.0\n");
+                writer.write("# MySQL 配置\n");
+                writer.write("mysql:\n");
+                writer.write("# 地址\n");                
+                writer.write("  host: localhost\n");
+                writer.write("# 端口\n");                
+                writer.write("  port: 3306\n");
+                writer.write("# 数据库名\n");                
+                writer.write("  database: yourdatabase\n");
+                writer.write("# 用户名\n");                
+                writer.write("  username: yourusername\n");
+                writer.write("# 密码\n");                
+                writer.write("  password: yourpassword\n");
+                writer.close();
+                getLogger().info("已创建默认的 config.yml 文件");
+            } catch (IOException e) {
+                getLogger().severe("创建 config.yml 文件时出错: " + e.getMessage());
+            }
         }
-        if (!config.contains("storage-type")) {
-            config.set("storage-type", "json");
-        }
-        if (!config.contains("teleport-range")) {
-            config.set("teleport-range", 2.0);
-        }
-        saveConfig();
     }
 
     private void setupDatabase() {
