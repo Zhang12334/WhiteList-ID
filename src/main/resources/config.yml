@@ -1,7 +1,14 @@
 # 插件配置文件
 version: 1.0 # 当前配置文件版本
 storage-type: json # 存储类型，支持 'mysql' 或 'json'，默认是 'json'
-
+# 服务类型，可选项：verify / request
+service-type: verify
+# 允许的指令列表，在玩家同意 EULA 前可以执行这些指令
+allowed-commands:
+  - reg
+  - login
+# 玩家传送范围设置
+teleport-range: 2.0 # 默认的玩家传送范围（半径）
 # MySQL 数据库配置
 mysql:
   host: localhost # 数据库地址
@@ -9,6 +16,3 @@ mysql:
   database: yourdatabase # 数据库名称
   username: yourusername # 数据库用户名
   password: yourpassword # 数据库密码
-
-# 玩家传送范围设置
-teleport-range: 2.0 # 默认的玩家传送范围（半径）

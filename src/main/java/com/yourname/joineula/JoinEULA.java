@@ -70,8 +70,8 @@ public class JoinEULA extends JavaPlugin implements Listener {
                 writer.write("service-type: verify\n");
                 writer.write("# 允许的指令列表，在玩家同意 EULA 前可以执行这些指令\n");
                 writer.write("allowed-commands:\n");
-                writer.write("  - spawn\n"); // 示例指令
-                writer.write("  - help\n"); // 示例指令
+                writer.write("  - reg\n"); // 示例指令
+                writer.write("  - login\n"); // 示例指令
                 writer.write("# TP玩家的范围，未同意EULA移动超过以出生点为中心此数为半径的范围后会被tp回出生点\n");
                 writer.write("teleport-range: 2.0\n");
                 writer.write("# MySQL 配置\n");
