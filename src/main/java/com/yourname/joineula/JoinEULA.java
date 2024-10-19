@@ -214,6 +214,29 @@ public class JoinEULA extends JavaPlugin implements Listener {
         }
     }
 
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        loadAgreedPlayers();
+        Player player = event.getPlayer();
+        // 检查 service-type
+        if ("request".equalsIgnoreCase(serviceType)) {
+            if (!agreedPlayers.contains(player.getName())) {
+                player.kickPlayer(ChatColor.RED + "您未同意EULA，无法进入服务器！");
+                return; // 直接踢出玩家
+            }
+        }
+
+        // 检查是否已同意 EULA
+        if (!agreedPlayers.contains(player.getName())) {
+            teleportToSpawn(player); // 传送到主世界出生点
+            player.sendMessage(ChatColor.YELLOW + "请阅读并签署 EULA 协议！");
+            giveUnsignedBook(player); // 给玩家未签名的书
+        }
+    }
+
+
+
+
+
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         loadAgreedPlayers();
