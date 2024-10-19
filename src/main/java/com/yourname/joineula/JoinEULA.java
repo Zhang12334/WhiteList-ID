@@ -150,7 +150,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
                              "player_name VARCHAR(255) NOT NULL UNIQUE" +
                              ")";
                 statement.executeUpdate(sql);
-                getLogger().info("EULA 协议表已创建或已存在。");
+                getLogger().info("EULA 表已存在");
             } catch (SQLException e) {
                 getLogger().severe("创建 EULA 表时出错: " + e.getMessage());
             }
@@ -164,7 +164,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
                 if (sender.hasPermission("joineula.reload")) {
                     loadEULAContent(); // 重新加载 EULA 内容
                     loadAgreedPlayers(); // 重新加载已同意的玩家
-                    sender.sendMessage(ChatColor.GREEN + "EULA 插件配置已重新加载。");
+                    sender.sendMessage(ChatColor.GREEN + "EULA 插件配置已重新加载");
                     return true;
                 } else {
                     sender.sendMessage(ChatColor.RED + "您没有权限执行此命令。");
@@ -174,7 +174,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
                 if (sender.hasPermission("joineula.remove")) {
                     String playerName = args[1];
                     removePlayerAgreement(playerName);
-                    sender.sendMessage(ChatColor.GREEN + "已删除 " + playerName + " 的 EULA 同意记录。");
+                    sender.sendMessage(ChatColor.GREEN + "已删除 " + playerName + " 的 EULA 同意记录");
                     return true;
                 } else {
                     sender.sendMessage(ChatColor.RED + "您没有权限执行此命令。");
@@ -231,14 +231,28 @@ public class JoinEULA extends JavaPlugin implements Listener {
     }
 
     private void giveUnsignedBook(Player player) {
-        ItemStack book = new ItemStack(Material.BOOK);
-        BookMeta bookMeta = (BookMeta) book.getItemMeta();
-        bookMeta.setTitle("EULA");
-        bookMeta.setAuthor("Server");
-        bookMeta.addPage(eulaContent.split("\n")); // 将EULA内容分为多页
-        book.setItemMeta(bookMeta);
-        player.getInventory().addItem(book); // 将书加入玩家的背包
+        boolean hasBook = false;
+        for (ItemStack item : player.getInventory()) {
+            if (item != null && item.getType() == Material.WRITTEN_BOOK) {
+                hasBook = true;
+                break;
+            }
+        }
+        
+        if (!hasBook) {
+            ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+            BookMeta meta = (BookMeta) book.getItemMeta();
+            if (meta != null) {
+                meta.setTitle(ChatColor.GOLD + "Server EULA");
+                meta.setAuthor("Server Admin");
+                meta.addPage(eulaContent); // 使用 EULA 内容
+                book.setItemMeta(meta);
+                player.getInventory().addItem(book); // 将书放入玩家的物品栏
+            }
+        }
+        player.sendMessage(ChatColor.GREEN + "请下蹲并丢出本书 (Shift+Q) 来同意 EULA");
     }
+
 
     private void loadEULAContent() {
         // 从文件加载 EULA 内容
@@ -247,7 +261,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
             eulaContent = Files.readString(eulaPath);
         } catch (IOException e) {
             getLogger().severe("加载 EULA 内容时出错: " + e.getMessage());
-            eulaContent = "未找到EULA内容，请确保 eula.txt 文件存在。";
+            eulaContent = "未找到EULA内容，请确保 eula.txt 文件存在";
         }
     }
 
