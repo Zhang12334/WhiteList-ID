@@ -8,7 +8,7 @@
     <version>beta</version>
     <packaging>jar</packaging>
 
-    <name>Joineula</name>
+    <name>JoinEULA</name>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
