@@ -135,7 +135,6 @@ public class JoinEULA extends JavaPlugin implements Listener {
         if (!Files.exists(path)) {
             try {
                 Files.createDirectories(path.getParent());
-                Files.createFile(path);
                 try (BufferedWriter writer = Files.newBufferedWriter(path)) {
                     writer.write("欢迎来到本服务器！\n\n请阅读以下协议:\n\n1. 不得有作弊行为\n2. 尊重其他玩家\n3. 不得发布任何不当言论\n\n是否同意？");
                 }
@@ -153,13 +152,8 @@ public class JoinEULA extends JavaPlugin implements Listener {
     private void loadAgreedPlayers() {
         File file = new File(getDataFolder(), "agreedPlayers.json");
         if (!file.exists()) {
-            try {
-                file.createNewFile();
-                agreedPlayers = new HashSet<>();
-                saveAgreedPlayers();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            agreedPlayers = new HashSet<>(); // 初始化同意玩家列表
+            saveAgreedPlayers(); // 保存初始化文件
         } else {
             try (FileReader reader = new FileReader(file)) {
                 agreedPlayers = gson.fromJson(reader, new TypeToken<Set<String>>() {}.getType());
