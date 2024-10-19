@@ -52,6 +52,8 @@ public class JoinEULA extends JavaPlugin implements Listener {
         loadEULAContent();
         loadAgreedPlayers(); // 加载同意 EULA 的玩家
         loadAllowedCommands(); // 加载允许的指令列表
+        String serviceType = getConfig().getString("service-type", "verify");
+        getLogger().info("当前工作模式：" + serviceType);
     }
 
     private void createDefaultConfig() {
