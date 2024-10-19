@@ -209,21 +209,19 @@ public class JoinEULA extends JavaPlugin implements Listener {
         loadAgreedPlayers();
         Player player = event.getPlayer();
         String serviceType = getConfig().getString("service-type", "verify");
-        if ("request".equalsIgnoreCase(serviceType)) {
-            // 如果是 request 类型，检查玩家是否在数据库中
-            if (!agreedPlayers.contains(player.getName())) {
-                // 延迟100毫秒后踢出玩家
+
+        if (!agreedPlayers.contains(player.getName())) {
+            if ("request".equalsIgnoreCase(serviceType)) {
+                // 如果是 request 类型, 延迟1秒后踢出玩家
                 Bukkit.getScheduler().runTaskLater(this, () -> {
                     player.kickPlayer(ChatColor.RED + "您未同意 EULA ，无法进入服务器！"); // 踢出玩家
-                }, 2L);
+                }, 20L);
                 return;
+            } else {
+                teleportToSpawn(player); // 传送到主世界出生点
+                player.sendMessage(ChatColor.YELLOW + "请阅读并签署 EULA 协议！");
+                giveUnsignedBook(player); // 给玩家未签名的书
             }
-        }
-        // 检查是否已同意 EULA
-        if (!agreedPlayers.contains(player.getName())) {
-            teleportToSpawn(player); // 传送到主世界出生点
-            player.sendMessage(ChatColor.YELLOW + "请阅读并签署 EULA 协议！");
-            giveUnsignedBook(player); // 给玩家未签名的书
         }
     }
 
