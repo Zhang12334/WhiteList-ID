@@ -205,6 +205,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
+        loadAgreedPlayers();
         Player player = event.getPlayer();
         if (!agreedPlayers.contains(player.getName())) {
             teleportToSpawn(player); // 传送到主世界出生点
@@ -215,6 +216,7 @@ public class JoinEULA extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
+        loadAgreedPlayers();
         Player player = event.getPlayer();
         if (!agreedPlayers.contains(player.getName())) {
             Location to = event.getTo();
