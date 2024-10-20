@@ -55,6 +55,9 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     private String savedMysqlMessage;
     private String nowLanguageMessage;
     private String translatorMessage;
+    private String reloadMessage;
+    private String reloadLanguage;
+    private String reloadWhitelist;        
 
     @Override
     public void onEnable() {
@@ -152,6 +155,9 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             savedMysqlMessage = (String) messagesObject.get("saved_mysql");
             nowLanguageMessage = (String) messagesObject.get("now_language");
             translatorMessage = (String) messagesObject.get("translator");
+            reloadMessage = (String) messagesObject.get("reload");
+            reloadLanguage = (String) messagesObject.get("reload_language");
+            reloadWhitelist = (String) messagesObject.get("reload_whitelist");                        
             // 当前使用语言
             getLogger().info(nowLanguageMessage);
             //翻译贡献者
@@ -181,6 +187,9 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                 getLogger().info("saved_mysql: " + savedMysqlMessage);
                 getLogger().info("now_language: " + nowLanguageMessage);
                 getLogger().info("translator: " + translatorMessage);
+                getLogger().info("reload: " + reloadMessage);
+                getLogger().info("reload_language: " + reloadLanguage);
+                getLogger().info("reload_whitelist: " + reloadWhitelist);                                
                 getLogger().info("———————Debug———————");
             }
         } catch (IOException | ParseException e) {
@@ -215,6 +224,10 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
+            return handleReloadCommand(sender);
+        }
+
         if (args.length != 2) {
             sender.sendMessage(ChatColor.RED + String.format(useExampleMessage + " /wid <add|remove> <playername>"));
             return true;
@@ -233,13 +246,45 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         }
     }
 
+    private boolean handleReloadCommand(CommandSender sender) {
+        if (!sender.hasPermission("wid.reload")) {
+            sender.sendMessage(ChatColor.RED + noPermissionMessage);
+            return false;
+        }
+
+        // 重载配置文件
+        reloadConfig();
+        sender.sendMessage(ChatColor.GREEN + reloadMessage);
+
+        // 重载debugmode配置值
+        debugmode = getConfig().getString("debugmode", "disable");
+
+        // 重载语言文件
+        String language = getConfig().getString("language", "zh_cn");
+        loadLanguageFile(language);
+        sender.sendMessage(ChatColor.GREEN + reloadLanguage);
+
+        // 重新加载WhiteList
+        storageType = getConfig().getString("storage", "json");
+        if (storageType.equalsIgnoreCase("json")) {
+            loadFromJSON();
+        } else if (storageType.equalsIgnoreCase("mysql")) {
+            loadFromMySQL();
+        }
+        sender.sendMessage(ChatColor.GREEN + reloadWhitelist);
+        return true;
+    }
+
+
+
+
     private boolean handleAddCommand(CommandSender sender, String playerName) {
         if (!sender.hasPermission("wid.add")) {
             sender.sendMessage(ChatColor.RED + noPermissionMessage);
             return false;
         }
 
-        if (whiteList.contains(playerName)) {
+        if (whiteList.contains(playerName)) {// 已经存在
             sender.sendMessage(ChatColor.YELLOW + playerMessage + " " + playerName + playerAlreadyExistMessage);
         } else {
             whiteList.add(playerName);
@@ -303,7 +348,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
         try (FileWriter writer = new FileWriter(file)) {
             JSONArray jsonArray = new JSONArray();
-            jsonArray.addAll(new ArrayList<>(whiteList)); // 转换为 ArrayList 以消除警告
+            jsonArray.addAll(new ArrayList<>(whiteList));
             writer.write(jsonArray.toJSONString());
             getLogger().info(savedJsonMessage);
 
