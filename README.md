@@ -8,6 +8,10 @@ A Minecraft Spigot whitelist plugin that identifies players by ID
 
 Supports MySQL/JSON storage
 
+搭配群组服食用效果极佳!
+
+Works exceptionally well when used with a server network!
+
 ## 命令 / Commands
 
 - 添加白名单：/wid add <playername>  
