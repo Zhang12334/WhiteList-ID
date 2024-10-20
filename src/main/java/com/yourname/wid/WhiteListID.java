@@ -236,7 +236,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         }
 
         if (whiteList.contains(playerName)) {
-            sender.sendMessage(ChatColor.YELLOW + playerMessage + playerName + playerNotInWhitelistMessage);
+            sender.sendMessage(ChatColor.YELLOW + playerMessage + playerName + playerAlreadyExistMessage);
         } else {
             whiteList.add(playerName);
             sender.sendMessage(ChatColor.GREEN + playerMessage + playerName + playerAddedMessage);
