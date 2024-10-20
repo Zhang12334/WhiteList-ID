@@ -263,7 +263,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         loadLanguageFile(language);
         getLogger().info(ChatColor.GREEN + reloadLanguage);
         // 清除缓存
-        whiteList.clear()
+        whiteList.clear();
         // 重新加载WhiteList
         storageType = getConfig().getString("storage", "json");
         if (storageType.equalsIgnoreCase("json")) {
