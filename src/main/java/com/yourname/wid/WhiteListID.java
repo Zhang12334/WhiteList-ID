@@ -34,7 +34,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
     private Set<String> whiteList;  // 使用玩家ID名称存储
     private String storageType;
-    private boolean debugmode;
+    private String debugmode;
 
     // 一堆存储消息的变量
     private String startupMessage;
@@ -157,7 +157,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             //翻译贡献者
             getLogger().info(translatorMessage);
             // 调试模式
-            if(debugmode != false){
+            if(debugmode == true){
                 // debug！
                 getLogger().info(nowLanguageMessage);
                 getLogger().info("startup: " + startupMessage);
