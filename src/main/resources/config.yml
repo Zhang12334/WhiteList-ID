@@ -1,7 +1,7 @@
 # 插件配置文件
 version: 1.0 # 当前配置文件版本
 storage: json  # json或mysql，必选项
-
+language: "zh_cn"  # 默认语言
 mysql: # 可选项，如选择mysql则必选
   host: localhost
   port: 3306

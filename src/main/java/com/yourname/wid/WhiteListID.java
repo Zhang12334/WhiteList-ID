@@ -35,6 +35,10 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         this.getCommand("wid").setExecutor(this);
         Bukkit.getPluginManager().registerEvents(this, this); // 注册事件监听
 
+        String language = getConfig().getString("language", "zh_cn");
+        loadLanguageFile(language);
+
+
         // 读取存储类型
         storageType = getConfig().getString("storage", "json");
         
@@ -44,8 +48,23 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             loadFromMySQL();
         }
 
-        getLogger().info("WhiteList-ID 插件已启用");
-        getLogger().info("使用存储类型: " + storageType);
+        getLogger().info("messages.startup");
+        getLogger().info("messages.storagetype" + storageType);
+    }
+
+
+    private void loadLanguageFile(String language) {
+        Yaml yaml = new Yaml();
+        try (InputStream inputStream = getResource("lang/" + language + ".yml")) {
+            if (inputStream != null) {
+                messages = yaml.load(inputStream);
+            } else {
+                getLogger().warning("语言文件未找到，使用默认语言 zh_cn.yml");
+                loadLanguageFile("zh_cn");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -56,7 +75,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             saveToMySQL();
         }
 
-        getLogger().info("WhiteList-ID 插件已禁用");
+        getLogger().info("messages.disable");
     }
     
     @EventHandler
@@ -67,7 +86,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         // 检查玩家是否在白名单中
         if (!whiteList.contains(playerName)) {
             Bukkit.getScheduler().runTask(this, () -> {
-                player.kickPlayer("你不在本服白名单中！");
+                player.kickPlayer("messages.not_whitelisted");
             });
         }
     }
@@ -76,7 +95,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length != 2) {
-            sender.sendMessage(ChatColor.RED + "用法: /wid <add|remove> <playername>");
+            sender.sendMessage(ChatColor.RED + "message.use_example" + "/wid <add|remove> <playername>");
             return true;
         }
 
@@ -88,22 +107,22 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         } else if (action.equalsIgnoreCase("remove")) {
             return handleRemoveCommand(sender, playerName);
         } else {
-            sender.sendMessage(ChatColor.RED + "未知操作: " + action);
+            sender.sendMessage(ChatColor.RED + "message.unknown_option" + action);
             return false;
         }
     }
 
     private boolean handleAddCommand(CommandSender sender, String playerName) {
         if (!sender.hasPermission("wid.add")) {
-            sender.sendMessage(ChatColor.RED + "你没有权限使用此命令");
+            sender.sendMessage(ChatColor.RED + "messages.no_permission");
             return false;
         }
 
         if (whiteList.contains(playerName)) {
-            sender.sendMessage(ChatColor.YELLOW + "玩家 " + playerName + " 已在白名单中！");
+            sender.sendMessage(ChatColor.YELLOW + "messages.player" + playerName + "messages.player_already_exist");
         } else {
             whiteList.add(playerName);
-            sender.sendMessage(ChatColor.GREEN + "玩家 " + playerName + " 已添加到白名单列表！");
+            sender.sendMessage(ChatColor.GREEN + "messages.player" + playerName + "messages.player_added");
             saveWhiteList(); // 添加后保存
         }
 
@@ -112,16 +131,16 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
     private boolean handleRemoveCommand(CommandSender sender, String playerName) {
         if (!sender.hasPermission("wid.remove")) {
-            sender.sendMessage(ChatColor.RED + "你没有权限使用此命令！");
+            sender.sendMessage(ChatColor.RED + "messages.no_permission");
             return false;
         }
 
         if (whiteList.contains(playerName)) {
             whiteList.remove(playerName);  // 从白名单中移除
-            sender.sendMessage(ChatColor.GREEN + "玩家 " + playerName + " 已从白名单列表中移除！");
+            sender.sendMessage(ChatColor.GREEN + "messages.player" + playerName + "messages.player_removed_from_whitelist");
             saveWhiteList(); // 移除后保存
         } else {
-            sender.sendMessage(ChatColor.YELLOW + "玩家 " + playerName + " 不在白名单中！");
+            sender.sendMessage(ChatColor.YELLOW + "messages.player" + playerName + "messages.player_not_in_whitelist");
         }
 
         return true;
@@ -150,7 +169,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             for (Object obj : jsonArray) {
                 whiteList.add((String) obj);
             }
-            getLogger().info("成功从 Json 加载白名单");
+            getLogger().info("messages.loaded_json");
 
         } catch (IOException | ParseException e) {
             e.printStackTrace();
@@ -165,7 +184,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             JSONArray jsonArray = new JSONArray();
             jsonArray.addAll(whiteList);
             writer.write(jsonArray.toJSONString());
-            getLogger().info("白名单已保存至 Json");
+            getLogger().info("messages.saved_json");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -188,7 +207,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             while (rs.next()) {
                 whiteList.add(rs.getString("player_name"));
             }
-            getLogger().info("成功从 MySQL 加载白名单");
+            getLogger().info("messages.loaded_mysql");
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -212,7 +231,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                 String sql = "INSERT INTO whitelist (player_name) VALUES ('" + playerName + "')";
                 stmt.executeUpdate(sql);
             }
-            getLogger().info("白名单已保存至 MySQL");
+            getLogger().info("messages.saved_mysql");
 
         } catch (SQLException e) {
             e.printStackTrace();
