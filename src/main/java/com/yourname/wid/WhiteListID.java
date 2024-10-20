@@ -69,7 +69,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             langFolder.mkdirs(); // 创建文件夹
         }
 
-        debugmode = getConfig().getString("debugmode", "disabled");
+        debugmode = getConfig().getString("debugmode", "disable");
 
         // 检查语言文件
         String language = getConfig().getString("language", "zh_cn");
@@ -158,8 +158,8 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             getLogger().info(translatorMessage);
             // 调试模式
             //一个判断搞半天，写C++写习惯了直接两个等于号扔上来了，我是傻逼
-            if(debugmode.equals("enabled")){
-                // ↑tmd该死的判断，大难绷之if(debugmode == "enabled")
+            if(debugmode.equals("enable")){
+                // ↑tmd该死的判断，大难绷之if(debugmode == "enable")
                 // debug！
                 getLogger().info("———————Debug———————");
                 getLogger().info(nowLanguageMessage);

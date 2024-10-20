@@ -9,9 +9,9 @@ storage: json
 language: "zh_cn"
 # 默认语言
 # plugin language, en / zh_cn
-debugmode: disabled 
+debugmode: disable
 # 调试模式，非必要请勿开启，开启为enabled
-# enabled or disabled, disabled as default
+# enable or disable, disable as default
 mysql:
 # 可选项，如选择mysql则必选
 # database settings
