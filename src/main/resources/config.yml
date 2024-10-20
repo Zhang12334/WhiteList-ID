@@ -2,7 +2,7 @@
 version: 1.0 # 当前配置文件版本
 storage: json  # json或mysql，必选项
 language: "zh_cn"  # 默认语言
-debugmode: 0 # 调试模式，非必要请勿开启
+debugmode: false # 调试模式，非必要请勿开启
 mysql: # 可选项，如选择mysql则必选
   host: localhost
   port: 3306
