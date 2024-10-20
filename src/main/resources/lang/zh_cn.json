@@ -1,7 +1,7 @@
 {
   "messages": {
     "startup": "WhiteList-ID 已成功加载",
-    "storagetype": "使用存储类型 ",
+    "storagetype": "使用存储类型",
     "disable": "WhiteList-ID 已卸载",
     "not_whitelisted": "你不在本服白名单中！",
     "use_example": "格式错误，例：",
