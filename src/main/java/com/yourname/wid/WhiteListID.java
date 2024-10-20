@@ -68,6 +68,8 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             langFolder.mkdirs(); // 创建文件夹
         }
 
+        String debugmode = getConfig().getString("debugmode", "0");
+
         // 检查语言文件
         String language = getConfig().getString("language", "zh_cn");
         File languageFile = new File(langFolder, language + ".json");
@@ -151,27 +153,28 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             nowLanguageMessage = (String) messagesObject.get("now_language");
             translatorMessage = (String) messagesObject.get("translator");
 
-            // 打印所有消息以进行调试
-            getLogger().info("语言文件消息内容：");
-            getLogger().info("startup: " + startupMessage);
-            getLogger().info("storagetype: " + storageTypeMessage);
-            getLogger().info("disable: " + disableMessage);
-            getLogger().info("not_whitelisted: " + notWhitelistedMessage);
-            getLogger().info("use_example: " + useExampleMessage);
-            getLogger().info("unknown_option: " + unknownOptionMessage);
-            getLogger().info("no_permission: " + noPermissionMessage);
-            getLogger().info("player: " + playerMessage);
-            getLogger().info("player_already_exist: " + playerAlreadyExistMessage);
-            getLogger().info("player_added: " + playerAddedMessage);
-            getLogger().info("player_removed_from_whitelist: " + playerRemovedFromWhitelistMessage);
-            getLogger().info("player_not_in_whitelist: " + playerNotInWhitelistMessage);
-            getLogger().info("loaded_json: " + loadedJsonMessage);
-            getLogger().info("saved_json: " + savedJsonMessage);
-            getLogger().info("loaded_mysql: " + loadedMysqlMessage);
-            getLogger().info("saved_mysql: " + savedMysqlMessage);
-            getLogger().info("now_language: " + nowLanguageMessage);
-            getLogger().info("translator: " + translatorMessage);
-
+            if(debugmode != 0){
+                // debug！
+                getLogger().info("语言文件消息内容：");
+                getLogger().info("startup: " + startupMessage);
+                getLogger().info("storagetype: " + storageTypeMessage);
+                getLogger().info("disable: " + disableMessage);
+                getLogger().info("not_whitelisted: " + notWhitelistedMessage);
+                getLogger().info("use_example: " + useExampleMessage);
+                getLogger().info("unknown_option: " + unknownOptionMessage);
+                getLogger().info("no_permission: " + noPermissionMessage);
+                getLogger().info("player: " + playerMessage);
+                getLogger().info("player_already_exist: " + playerAlreadyExistMessage);
+                getLogger().info("player_added: " + playerAddedMessage);
+                getLogger().info("player_removed_from_whitelist: " + playerRemovedFromWhitelistMessage);
+                getLogger().info("player_not_in_whitelist: " + playerNotInWhitelistMessage);
+                getLogger().info("loaded_json: " + loadedJsonMessage);
+                getLogger().info("saved_json: " + savedJsonMessage);
+                getLogger().info("loaded_mysql: " + loadedMysqlMessage);
+                getLogger().info("saved_mysql: " + savedMysqlMessage);
+                getLogger().info("now_language: " + nowLanguageMessage);
+                getLogger().info("translator: " + translatorMessage);
+            }
         } catch (IOException | ParseException e) {
             getLogger().warning("未找到语言文件，使用默认语言 zh_cn.json");
             loadLanguageFile("zh_cn");
