@@ -1,7 +1,7 @@
 name: WhiteList-ID
 version: 1.0
 main: com.yourname.wid.WhiteListID
-api-version: 1.13
+api-version: 1.16
 commands:
   wid:
     description: WhiteList-ID
