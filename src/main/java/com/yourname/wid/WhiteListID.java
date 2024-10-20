@@ -105,7 +105,6 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                 while ((length = isr.read(buffer)) > 0) {
                     writer.write(buffer, 0, length);
                 }
-                getLogger().info(language + " 语言文件已复制到 lang 文件夹");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -153,10 +152,14 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             savedMysqlMessage = (String) messagesObject.get("saved_mysql");
             nowLanguageMessage = (String) messagesObject.get("now_language");
             translatorMessage = (String) messagesObject.get("translator");
-
+            // 当前使用语言
+            getLogger().info("now_language: " + nowLanguageMessage);
+            //翻译贡献者
+            getLogger().info("translator: " + translatorMessage);
+            // 调试模式
             if(debugmode == true){
                 // debug！
-                getLogger().info("语言文件消息内容：");
+                getLogger().info(nowLanguageMessage);
                 getLogger().info("startup: " + startupMessage);
                 getLogger().info("storagetype: " + storageTypeMessage);
                 getLogger().info("disable: " + disableMessage);

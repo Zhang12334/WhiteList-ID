@@ -1,7 +1,7 @@
 {
   "messages": {
     "startup": "WhiteList-ID has been successfully loaded ",
-    "storagetype": "Using storage type ",
+    "storagetype": "Using storage type",
     "disable": "WhiteList-ID has been unloaded ",
     "not_whitelisted": "You are not on the server's whitelist! ",
     "use_example": "Incorrect format, e.g.: ",
