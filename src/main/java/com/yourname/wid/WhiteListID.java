@@ -112,7 +112,21 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         try (InputStream inputStream = new FileInputStream(new File(getDataFolder(), "lang/" + language + ".json"))) {
             JSONParser parser = new JSONParser();
             JSONObject jsonObject = (JSONObject) parser.parse(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-            messages = (Map<String, String>) (Map<?, ?>) jsonObject.get("messages");
+            
+            // 读取所有消息并存储在 messages 变量中
+            messages = new HashMap<>();
+            JSONObject messagesObject = (JSONObject) jsonObject.get("messages");
+            
+            for (Object key : messagesObject.keySet()) {
+                messages.put((String) key, (String) messagesObject.get(key));
+            }
+            
+            // 打印所有消息以进行调试
+            getLogger().info("语言文件消息内容：");
+            for (Map.Entry<String, String> entry : messages.entrySet()) {
+                getLogger().info(entry.getKey() + ": " + entry.getValue());
+            }
+
         } catch (IOException | ParseException e) {
             getLogger().warning("未找到语言文件，使用默认语言 zh_cn.json");
             loadLanguageFile("zh_cn");
