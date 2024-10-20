@@ -69,8 +69,8 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             loadFromMySQL();
         }
 
-        getLogger().info(getMessage("messages.startup"));
-        getLogger().info(getMessage("messages.storagetype") + " " + storageType); // 添加空格以便格式良好
+        getLogger().info(getMessage("startup"));
+        getLogger().info(getMessage("storagetype") + " " + storageType); // 添加空格以便格式良好
     }
 
     private void copyLanguageFile(File languageFile, String language) {
@@ -118,12 +118,12 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             JSONObject messagesObject = (JSONObject) jsonObject.get("messages");
             
             for (Object key : messagesObject.keySet()) {
-                messages.put((String) key, (String) messagesObject.get(key));
+                put((String) key, (String) messagesObject.get(key));
             }
             
             // 打印所有消息以进行调试
             getLogger().info("语言文件消息内容：");
-            for (Map.Entry<String, String> entry : messages.entrySet()) {
+            for (Map.Entry<String, String> entry : entrySet()) {
                 getLogger().info(entry.getKey() + ": " + entry.getValue());
             }
 
@@ -141,7 +141,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             saveToMySQL();
         }
 
-        getLogger().info(getMessage("messages.disable"));
+        getLogger().info(getMessage("disable"));
     }
 
     @EventHandler
@@ -152,7 +152,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         // 检查玩家是否在白名单中
         if (!whiteList.contains(playerName)) {
             Bukkit.getScheduler().runTask(this, () -> {
-                player.kickPlayer(getMessage("messages.not_whitelisted"));
+                player.kickPlayer(getMessage("not_whitelisted"));
             });
         }
     }
@@ -160,7 +160,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length != 2) {
-            sender.sendMessage(ChatColor.RED + getMessage("messages.use_example", "/wid <add|remove> <playername>"));
+            sender.sendMessage(ChatColor.RED + getMessage("use_example", "/wid <add|remove> <playername>"));
             return true;
         }
 
@@ -172,22 +172,22 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         } else if (action.equalsIgnoreCase("remove")) {
             return handleRemoveCommand(sender, playerName);
         } else {
-            sender.sendMessage(ChatColor.RED + getMessage("messages.unknown_option", action));
+            sender.sendMessage(ChatColor.RED + getMessage("unknown_option", action));
             return false;
         }
     }
 
     private boolean handleAddCommand(CommandSender sender, String playerName) {
         if (!sender.hasPermission("wid.add")) {
-            sender.sendMessage(ChatColor.RED + getMessage("messages.no_permission"));
+            sender.sendMessage(ChatColor.RED + getMessage("no_permission"));
             return false;
         }
 
         if (whiteList.contains(playerName)) {
-            sender.sendMessage(ChatColor.YELLOW + getMessage("messages.player", playerName) + getMessage("messages.player_already_exist"));
+            sender.sendMessage(ChatColor.YELLOW + getMessage("player", playerName) + getMessage("player_already_exist"));
         } else {
             whiteList.add(playerName);
-            sender.sendMessage(ChatColor.GREEN + getMessage("messages.player", playerName) + getMessage("messages.player_added"));
+            sender.sendMessage(ChatColor.GREEN + getMessage("player", playerName) + getMessage("player_added"));
             saveWhiteList(); // 添加后保存
         }
 
@@ -196,16 +196,16 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
     private boolean handleRemoveCommand(CommandSender sender, String playerName) {
         if (!sender.hasPermission("wid.remove")) {
-            sender.sendMessage(ChatColor.RED + getMessage("messages.no_permission"));
+            sender.sendMessage(ChatColor.RED + getMessage("no_permission"));
             return false;
         }
 
         if (whiteList.contains(playerName)) {
             whiteList.remove(playerName);  // 从白名单中移除
-            sender.sendMessage(ChatColor.GREEN + getMessage("messages.player", playerName) + getMessage("messages.player_removed_from_whitelist"));
+            sender.sendMessage(ChatColor.GREEN + getMessage("player", playerName) + getMessage("player_removed_from_whitelist"));
             saveWhiteList(); // 移除后保存
         } else {
-            sender.sendMessage(ChatColor.YELLOW + getMessage("messages.player", playerName) + getMessage("messages.player_not_in_whitelist"));
+            sender.sendMessage(ChatColor.YELLOW + getMessage("player", playerName) + getMessage("player_not_in_whitelist"));
         }
 
         return true;
@@ -304,7 +304,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     }
 
     public String getMessage(String... args) {
-        String message = messages.getOrDefault(key, key); // 获取对应的消息
+        String message = getOrDefault(key, key); // 获取对应的消息
         for (int i = 0; i < args.length; i++) {
             message = message.replace("%" + i + "%", args[i]); // 替换参数
         }
