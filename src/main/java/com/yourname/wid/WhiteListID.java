@@ -44,7 +44,8 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             loadFromMySQL();
         }
 
-        getLogger().info("WhiteList-ID 插件已启用，使用存储类型: " + storageType);
+        getLogger().info("WhiteList-ID 插件已启用");
+        getLogger().info("使用存储类型: " + storageType);
     }
 
     @Override
@@ -65,15 +66,18 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
         // 检查玩家是否在白名单中
         if (!whiteList.contains(playerName)) {
-            player.kickPlayer("你不在本服白名单中！");
+            Bukkit.getScheduler().runTask(this, () -> {
+                player.kickPlayer("你不在本服白名单中！");
+            });
         }
     }
+
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length != 2) {
-            sender.sendMessage(ChatColor.RED + "用法: /wid <add|remove> <player>");
-            return false;
+            sender.sendMessage(ChatColor.RED + "用法: /wid <add|remove> <playername>");
+            return true;
         }
 
         String action = args[0];
@@ -96,10 +100,10 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         }
 
         if (whiteList.contains(playerName)) {
-            sender.sendMessage(ChatColor.YELLOW + "玩家 " + playerName + " 已在白名单中");
+            sender.sendMessage(ChatColor.YELLOW + "玩家 " + playerName + " 已在白名单中！");
         } else {
             whiteList.add(playerName);
-            sender.sendMessage(ChatColor.GREEN + "玩家 " + playerName + " 已添加到白名单");
+            sender.sendMessage(ChatColor.GREEN + "玩家 " + playerName + " 已添加到白名单！");
             saveWhiteList(); // 添加后保存
         }
 
@@ -108,16 +112,16 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
     private boolean handleRemoveCommand(CommandSender sender, String playerName) {
         if (!sender.hasPermission("wid.remove")) {
-            sender.sendMessage(ChatColor.RED + "你没有权限使用此命令");
+            sender.sendMessage(ChatColor.RED + "你没有权限使用此命令！");
             return false;
         }
 
         if (whiteList.contains(playerName)) {
             whiteList.remove(playerName);  // 从白名单中移除
-            sender.sendMessage(ChatColor.GREEN + "玩家 " + playerName + " 已从白名单中移除");
+            sender.sendMessage(ChatColor.GREEN + "玩家 " + playerName + " 已从白名单中移除！");
             saveWhiteList(); // 移除后保存
         } else {
-            sender.sendMessage(ChatColor.YELLOW + "玩家 " + playerName + " 不在白名单中");
+            sender.sendMessage(ChatColor.YELLOW + "玩家 " + playerName + " 不在白名单中！");
         }
 
         return true;
