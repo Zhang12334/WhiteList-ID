@@ -5,11 +5,14 @@ api-version: 1.20
 commands:
   wid:
     description: WhiteList-ID
-    usage: /<command> <add|remove>
+    usage: /wid <add|remove> <playername> or /wid reload
 permissions:
   wid.add:
     description: Add player to whitelist
     default: op
   wid.remove:
     description: Remove player from whitelist
+    default: op
+  wid.reload:
+    description: Reload the configuration file
     default: op
