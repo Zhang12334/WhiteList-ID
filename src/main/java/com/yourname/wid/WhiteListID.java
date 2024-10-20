@@ -17,6 +17,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader; // 添加的导入语句
 import java.sql.*;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -53,10 +54,10 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         if (!languageFile.exists()) {
             InputStream langInput = getResource("lang/" + language + ".yml");
             if (langInput != null) {
-                try (FileWriter writer = new FileWriter(languageFile)) {
+                try (FileWriter writer = new FileWriter(languageFile);
+                     InputStreamReader isr = new InputStreamReader(langInput)) { // 添加 InputStreamReader
                     char[] buffer = new char[1024];
                     int length;
-                    InputStreamReader isr = new InputStreamReader(langInput);
                     while ((length = isr.read(buffer)) > 0) {
                         writer.write(buffer, 0, length);
                     }
@@ -68,10 +69,10 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                 // 如果指定的语言文件在 JAR 中也不存在，则复制默认的 zh_cn.yml
                 langInput = getResource("lang/zh_cn.yml");
                 if (langInput != null) {
-                    try (FileWriter writer = new FileWriter(languageFile)) {
+                    try (FileWriter writer = new FileWriter(languageFile);
+                         InputStreamReader isr = new InputStreamReader(langInput)) { // 添加 InputStreamReader
                         char[] buffer = new char[1024];
                         int length;
-                        InputStreamReader isr = new InputStreamReader(langInput);
                         while ((length = isr.read(buffer)) > 0) {
                             writer.write(buffer, 0, length);
                         }
