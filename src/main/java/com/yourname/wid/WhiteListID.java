@@ -34,20 +34,26 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
     private Set<String> whiteList;  // 使用玩家ID名称存储
     private String storageType;
-    private Map<String, String> messages;  // 存储语言消息
 
-    // 直接存储消息的变量
+    // 一堆存储消息的变量
     private String startupMessage;
     private String storageTypeMessage;
+    private String disableMessage;
+    private String notWhitelistedMessage;
+    private String useExampleMessage;
+    private String unknownOptionMessage;
+    private String noPermissionMessage;
+    private String playerMessage;
+    private String playerAlreadyExistMessage;
+    private String playerAddedMessage;
+    private String playerRemovedFromWhitelistMessage;
+    private String playerNotInWhitelistMessage;
     private String loadedJsonMessage;
     private String savedJsonMessage;
     private String loadedMysqlMessage;
     private String savedMysqlMessage;
-    private String notWhitelistedMessage;
-    private String noPermissionMessage;
-    private String playerAddedMessage;
-    private String playerRemovedFromWhitelistMessage;
-    private String playerNotInWhitelistMessage;
+    private String nowLanguageMessage;
+    private String translatorMessage;
 
     @Override
     public void onEnable() {
@@ -83,7 +89,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         }
 
         getLogger().info(startupMessage);
-        getLogger().info(storageTypeMessage + " " + storageType); // 添加空格以便格式良好
+        getLogger().info(storageTypeMessage + " " + storageType); // 添加空格，瞅着好看
     }
 
     private void copyLanguageFile(File languageFile, String language) {
@@ -101,7 +107,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                 e.printStackTrace();
             }
         } else {
-            // 如果指定的语言文件在 JAR 中也不存在，则复制默认的 zh_cn.json
+            // 如果指定的语言文件在 JAR 中也不存在，则复制默认 zh_cn.json
             langInput = getResource("lang/zh_cn.json");
             if (langInput != null) {
                 try (FileWriter writer = new FileWriter(languageFile);
@@ -115,8 +121,6 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            } else {
-                getLogger().warning("未找到语言文件 zh_cn.json，无法复制！");
             }
         }
     }
@@ -130,29 +134,43 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             JSONObject messagesObject = (JSONObject) jsonObject.get("messages");
             startupMessage = (String) messagesObject.get("startup");
             storageTypeMessage = (String) messagesObject.get("storagetype");
+            disableMessage = (String) messagesObject.get("disable");
+            notWhitelistedMessage = (String) messagesObject.get("not_whitelisted");
+            useExampleMessage = (String) messagesObject.get("use_example");
+            unknownOptionMessage = (String) messagesObject.get("unknown_option");
+            noPermissionMessage = (String) messagesObject.get("no_permission");
+            playerMessage = (String) messagesObject.get("player");
+            playerAlreadyExistMessage = (String) messagesObject.get("player_already_exist");
+            playerAddedMessage = (String) messagesObject.get("player_added");
+            playerRemovedFromWhitelistMessage = (String) messagesObject.get("player_removed_from_whitelist");
+            playerNotInWhitelistMessage = (String) messagesObject.get("player_not_in_whitelist");
             loadedJsonMessage = (String) messagesObject.get("loaded_json");
             savedJsonMessage = (String) messagesObject.get("saved_json");
             loadedMysqlMessage = (String) messagesObject.get("loaded_mysql");
             savedMysqlMessage = (String) messagesObject.get("saved_mysql");
-            notWhitelistedMessage = (String) messagesObject.get("not_whitelisted");
-            noPermissionMessage = (String) messagesObject.get("no_permission");
-            playerAddedMessage = (String) messagesObject.get("player_added");
-            playerRemovedFromWhitelistMessage = (String) messagesObject.get("player_removed_from_whitelist");
-            playerNotInWhitelistMessage = (String) messagesObject.get("player_not_in_whitelist");
+            nowLanguageMessage = (String) messagesObject.get("now_language");
+            translatorMessage = (String) messagesObject.get("translator");
 
             // 打印所有消息以进行调试
             getLogger().info("语言文件消息内容：");
             getLogger().info("startup: " + startupMessage);
             getLogger().info("storagetype: " + storageTypeMessage);
+            getLogger().info("disable: " + disableMessage);
+            getLogger().info("not_whitelisted: " + notWhitelistedMessage);
+            getLogger().info("use_example: " + useExampleMessage);
+            getLogger().info("unknown_option: " + unknownOptionMessage);
+            getLogger().info("no_permission: " + noPermissionMessage);
+            getLogger().info("player: " + playerMessage);
+            getLogger().info("player_already_exist: " + playerAlreadyExistMessage);
+            getLogger().info("player_added: " + playerAddedMessage);
+            getLogger().info("player_removed_from_whitelist: " + playerRemovedFromWhitelistMessage);
+            getLogger().info("player_not_in_whitelist: " + playerNotInWhitelistMessage);
             getLogger().info("loaded_json: " + loadedJsonMessage);
             getLogger().info("saved_json: " + savedJsonMessage);
             getLogger().info("loaded_mysql: " + loadedMysqlMessage);
             getLogger().info("saved_mysql: " + savedMysqlMessage);
-            getLogger().info("not_whitelisted: " + notWhitelistedMessage);
-            getLogger().info("no_permission: " + noPermissionMessage);
-            getLogger().info("player_added: " + playerAddedMessage);
-            getLogger().info("player_removed_from_whitelist: " + playerRemovedFromWhitelistMessage);
-            getLogger().info("player_not_in_whitelist: " + playerNotInWhitelistMessage);
+            getLogger().info("now_language: " + nowLanguageMessage);
+            getLogger().info("translator: " + translatorMessage);
 
         } catch (IOException | ParseException e) {
             getLogger().warning("未找到语言文件，使用默认语言 zh_cn.json");
@@ -168,7 +186,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             saveToMySQL();
         }
 
-        getLogger().info("插件已禁用");
+        getLogger().info(disableMessage);
     }
 
     @EventHandler
@@ -187,7 +205,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length != 2) {
-            sender.sendMessage(ChatColor.RED + String.format("用法示例: /wid <add|remove> <playername>"));
+            sender.sendMessage(ChatColor.RED + String.format(useExampleMessage + " /wid <add|remove> <playername>"));
             return true;
         }
 
@@ -199,7 +217,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         } else if (action.equalsIgnoreCase("remove")) {
             return handleRemoveCommand(sender, playerName);
         } else {
-            sender.sendMessage(ChatColor.RED + String.format("未知选项: %s", action));
+            sender.sendMessage(ChatColor.RED + String.format(unknownOptionMessage + " %s", action));
             return false;
         }
     }
@@ -211,10 +229,10 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         }
 
         if (whiteList.contains(playerName)) {
-            sender.sendMessage(ChatColor.YELLOW + playerName + " 已存在于白名单中");
+            sender.sendMessage(ChatColor.YELLOW + playerMessage + playerName + playerNotInWhitelistMessage);
         } else {
             whiteList.add(playerName);
-            sender.sendMessage(ChatColor.GREEN + playerName + " 已被添加到白名单中");
+            sender.sendMessage(ChatColor.GREEN + playerMessage + playerName + playerAddedMessage);
             saveWhiteList(); // 添加后保存
         }
 
@@ -229,10 +247,10 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
         if (whiteList.contains(playerName)) {
             whiteList.remove(playerName);  // 从白名单中移除
-            sender.sendMessage(ChatColor.GREEN + playerName + " 已从白名单中移除");
+            sender.sendMessage(ChatColor.GREEN + playerMessage + playerName + playerRemovedFromWhitelistMessage);
             saveWhiteList(); // 移除后保存
         } else {
-            sender.sendMessage(ChatColor.YELLOW + playerName + " 不在白名单中");
+            sender.sendMessage(ChatColor.YELLOW + playerMessage + playerName + playerNotInWhitelistMessage);
         }
 
         return true;

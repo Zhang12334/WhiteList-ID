@@ -15,6 +15,8 @@
     "loaded_json": "成功从 Json 加载白名单",
     "saved_json": "白名单已保存至 Json",
     "loaded_mysql": "成功从 MySQL 加载白名单",
-    "saved_mysql": "白名单已保存至 MySQL"
+    "saved_mysql": "白名单已保存至 MySQL",
+    "now_language": "当前使用：简体中文 (zh_cn.json)",
+    "translator": "翻译贡献者: Zhang1233"
   }
 }
