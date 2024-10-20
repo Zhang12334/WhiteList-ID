@@ -28,5 +28,5 @@ jobs:
       - name: Upload JAR file
         uses: actions/upload-artifact@v3
         with:
-          name: joineula-build${{ github.run_number }} # 使用构建编号
+          name: ID-WhiteList-build${{ github.run_number }} # 使用构建编号
           path: target/*.jar
