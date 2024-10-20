@@ -69,7 +69,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             langFolder.mkdirs(); // 创建文件夹
         }
 
-        String debugmode = getConfig().getString("debugmode", "0");
+        String debugmode = getConfig().getString("debugmode", "false");
 
         // 检查语言文件
         String language = getConfig().getString("language", "zh_cn");
@@ -154,7 +154,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             nowLanguageMessage = (String) messagesObject.get("now_language");
             translatorMessage = (String) messagesObject.get("translator");
 
-            if(debugmode != 0){
+            if(debugmode == true){
                 // debug！
                 getLogger().info("语言文件消息内容：");
                 getLogger().info("startup: " + startupMessage);
