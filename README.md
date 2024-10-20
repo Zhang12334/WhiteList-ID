@@ -16,13 +16,13 @@ Works exceptionally well when used with a server network!
 
 您可以自行编译开发中的源代码并使用，但这不会获得开发者的任何支持！
 
-您可以在爱发电平台上赞助我以获取插件的最新稳定版，链接：https://afdian.com/a/NachoNeko_
+您可以在爱发电平台上赞助我以获取插件的最新稳定版，链接：https://afdian.com/a/NachoNeko_/
 
 This plugin is an open-source project, but support is only provided to users who obtain the stable version plugin through sponsorship!
 
 You are free to compile the develop source code 和 use it, but this will not entitle you to any support from the developer.
 
-You can sponsor me on the Afdian platform to get a latest stable version: https://afdian.com/a/NachoNeko_
+You can sponsor me on the Afdian platform to get a latest stable version: https://afdian.com/a/NachoNeko_/
 
 ## 赞助价格表 / Pricing Table
 
