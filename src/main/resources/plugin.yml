@@ -7,9 +7,9 @@ commands:
     description: WhiteList-ID
     usage: /<command> <add|remove>
 permissions:
-  joineula.add:
+  wid.add:
     description: Add player to whitelist
     default: op
-  joineula.remove:
+  wid.remove:
     description: Remove player from whitelist
     default: op

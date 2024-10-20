@@ -10,6 +10,6 @@
 
 执行命令需要 OP 权限，或拥有权限节点：
 
-添加白名单权限节点：joineula.add
+添加白名单权限节点：wid.add
 
-移除白名单权限节点：joineula.remove
+移除白名单权限节点：wid.remove
