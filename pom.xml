@@ -5,7 +5,7 @@
 
     <groupId>com.yourname</groupId>
     <artifactId>WhiteList-ID</artifactId>
-    <version>1.0</version>
+    <version>beta</version>
     <packaging>jar</packaging>
 
     <name>WhiteList-ID</name>
