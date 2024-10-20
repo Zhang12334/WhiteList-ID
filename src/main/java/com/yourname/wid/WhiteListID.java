@@ -157,7 +157,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             //翻译贡献者
             getLogger().info("translator: " + translatorMessage);
             // 调试模式
-            if(debugmode == true){
+            if(debugmode != false){
                 // debug！
                 getLogger().info(nowLanguageMessage);
                 getLogger().info("startup: " + startupMessage);
