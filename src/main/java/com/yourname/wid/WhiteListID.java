@@ -161,6 +161,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             if(debugmode.equals("enabled")){
                 // ↑tmd该死的判断，大难绷之if(debugmode == "enabled")
                 // debug！
+                getLogger().info("———————Debug———————");
                 getLogger().info(nowLanguageMessage);
                 getLogger().info("startup: " + startupMessage);
                 getLogger().info("storagetype: " + storageTypeMessage);
@@ -180,6 +181,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                 getLogger().info("saved_mysql: " + savedMysqlMessage);
                 getLogger().info("now_language: " + nowLanguageMessage);
                 getLogger().info("translator: " + translatorMessage);
+                getLogger().info("———————Debug———————");
             }
         } catch (IOException | ParseException e) {
             getLogger().warning("未找到语言文件，使用默认语言 zh_cn.json");
