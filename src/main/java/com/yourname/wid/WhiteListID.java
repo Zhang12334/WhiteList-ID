@@ -254,7 +254,6 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
         // 重载配置文件
         reloadConfig();
-        sender.sendMessage(ChatColor.GREEN + reloadMessage);
 
         // 重载debugmode配置值
         debugmode = getConfig().getString("debugmode", "disable");
@@ -262,7 +261,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         // 重载语言文件
         String language = getConfig().getString("language", "zh_cn");
         loadLanguageFile(language);
-        sender.sendMessage(ChatColor.GREEN + reloadLanguage);
+        getLogger().info(ChatColor.GREEN + reloadLanguage);
 
         // 重新加载WhiteList
         storageType = getConfig().getString("storage", "json");
@@ -271,7 +270,8 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         } else if (storageType.equalsIgnoreCase("mysql")) {
             loadFromMySQL();
         }
-        sender.sendMessage(ChatColor.GREEN + reloadWhitelist);
+        getLogger().info(ChatColor.GREEN + reloadWhitelist);
+        sender.sendMessage(ChatColor.GREEN + reloadMessage);
         return true;
     }
 
