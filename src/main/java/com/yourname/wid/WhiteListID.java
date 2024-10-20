@@ -8,7 +8,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader; 
+import java.nio.charset.StandardCharsets; // 确保导入这个类
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -27,8 +29,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.yaml.snakeyaml.Yaml;
-
 
 public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener {
 
@@ -77,7 +77,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         InputStream langInput = getResource("lang/" + language + ".json");
         if (langInput != null) {
             try (FileWriter writer = new FileWriter(languageFile);
-                 InputStreamReader isr = new InputStreamReader(langInput)) { // 添加 InputStreamReader
+                 InputStreamReader isr = new InputStreamReader(langInput, StandardCharsets.UTF_8)) { // 使用 StandardCharsets
                 char[] buffer = new char[1024];
                 int length;
                 while ((length = isr.read(buffer)) > 0) {
@@ -92,7 +92,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             langInput = getResource("lang/zh_cn.json");
             if (langInput != null) {
                 try (FileWriter writer = new FileWriter(languageFile);
-                     InputStreamReader isr = new InputStreamReader(langInput)) { // 添加 InputStreamReader
+                     InputStreamReader isr = new InputStreamReader(langInput, StandardCharsets.UTF_8)) { // 使用 StandardCharsets
                     char[] buffer = new char[1024];
                     int length;
                     while ((length = isr.read(buffer)) > 0) {
@@ -112,7 +112,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         try (InputStream inputStream = new FileInputStream(new File(getDataFolder(), "lang/" + language + ".json"))) {
             JSONParser parser = new JSONParser();
             JSONObject jsonObject = (JSONObject) parser.parse(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-            messages = (Map<String, String>) jsonObject.get("messages");
+            messages = (Map<String, String>) (Map<?, ?>) jsonObject.get("messages");
         } catch (IOException | ParseException e) {
             getLogger().warning("未找到语言文件，使用默认语言 zh_cn.json");
             loadLanguageFile("zh_cn");
@@ -233,7 +233,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
         try (FileWriter writer = new FileWriter(file)) {
             JSONArray jsonArray = new JSONArray();
-            jsonArray.addAll((Collection<?>) whiteList); // 更新这一行以消除警告
+            jsonArray.addAll(new ArrayList<>(whiteList)); // 转换为 ArrayList 以消除警告
             writer.write(jsonArray.toJSONString());
             getLogger().info(getMessage("messages.saved_json"));
 
