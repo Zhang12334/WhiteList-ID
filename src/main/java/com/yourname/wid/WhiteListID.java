@@ -103,7 +103,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             sender.sendMessage(ChatColor.YELLOW + "玩家 " + playerName + " 已在白名单中！");
         } else {
             whiteList.add(playerName);
-            sender.sendMessage(ChatColor.GREEN + "玩家 " + playerName + " 已添加到白名单！");
+            sender.sendMessage(ChatColor.GREEN + "玩家 " + playerName + " 已添加到白名单列表！");
             saveWhiteList(); // 添加后保存
         }
 
@@ -118,7 +118,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
         if (whiteList.contains(playerName)) {
             whiteList.remove(playerName);  // 从白名单中移除
-            sender.sendMessage(ChatColor.GREEN + "玩家 " + playerName + " 已从白名单中移除！");
+            sender.sendMessage(ChatColor.GREEN + "玩家 " + playerName + " 已从白名单列表中移除！");
             saveWhiteList(); // 移除后保存
         } else {
             sender.sendMessage(ChatColor.YELLOW + "玩家 " + playerName + " 不在白名单中！");
@@ -150,7 +150,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             for (Object obj : jsonArray) {
                 whiteList.add((String) obj);
             }
-            getLogger().info("成功从 JSON 加载白名单");
+            getLogger().info("成功从 Json 加载白名单");
 
         } catch (IOException | ParseException e) {
             e.printStackTrace();
@@ -165,7 +165,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             JSONArray jsonArray = new JSONArray();
             jsonArray.addAll(whiteList);
             writer.write(jsonArray.toJSONString());
-            getLogger().info("白名单已保存至 JSON");
+            getLogger().info("白名单已保存至 Json");
 
         } catch (IOException e) {
             e.printStackTrace();
