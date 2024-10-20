@@ -1,0 +1,20 @@
+{
+  "messages": {
+    "startup": "WhiteList-ID has been successfully loaded",
+    "storagetype": "Using storage type ",
+    "disable": "WhiteList-ID has been unloaded",
+    "not_whitelisted": "You are not on the whitelist for this server!",
+    "use_example": "Format error, example: ",
+    "unknown_option": "Unknown operation: ",
+    "no_permission": "You do not have permission to use this command",
+    "player": "Player ",
+    "player_already_exist": " is already on the whitelist!",
+    "player_added": " has been added to the whitelist!",
+    "player_removed_from_whitelist": " has been removed from the whitelist!",
+    "player_not_in_whitelist": " is not on the whitelist!",
+    "loaded_json": "Successfully loaded whitelist from Json",
+    "saved_json": "Whitelist has been saved to Json",
+    "loaded_mysql": "Successfully loaded whitelist from MySQL",
+    "saved_mysql": "Whitelist has been saved to MySQL"
+  }
+}

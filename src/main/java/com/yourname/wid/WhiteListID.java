@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.bukkit.Bukkit;
@@ -50,7 +51,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
         // 检查语言文件
         String language = getConfig().getString("language", "zh_cn");
-        File languageFile = new File(langFolder, language + ".yml");
+        File languageFile = new File(langFolder, language + ".json");
 
         // 如果指定的语言文件不存在，则尝试从 JAR 中复制
         if (!languageFile.exists()) {
@@ -73,7 +74,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     }
 
     private void copyLanguageFile(File languageFile, String language) {
-        InputStream langInput = getResource("lang/" + language + ".yml");
+        InputStream langInput = getResource("lang/" + language + ".json");
         if (langInput != null) {
             try (FileWriter writer = new FileWriter(languageFile);
                  InputStreamReader isr = new InputStreamReader(langInput)) { // 添加 InputStreamReader
@@ -87,8 +88,8 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                 e.printStackTrace();
             }
         } else {
-            // 如果指定的语言文件在 JAR 中也不存在，则复制默认的 zh_cn.yml
-            langInput = getResource("lang/zh_cn.yml");
+            // 如果指定的语言文件在 JAR 中也不存在，则复制默认的 zh_cn.json
+            langInput = getResource("lang/zh_cn.json");
             if (langInput != null) {
                 try (FileWriter writer = new FileWriter(languageFile);
                      InputStreamReader isr = new InputStreamReader(langInput)) { // 添加 InputStreamReader
@@ -97,22 +98,23 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                     while ((length = isr.read(buffer)) > 0) {
                         writer.write(buffer, 0, length);
                     }
-                    getLogger().info("默认语言文件 zh_cn.yml 已复制到 lang 文件夹");
+                    getLogger().info("默认语言文件 zh_cn.json 已复制到 lang 文件夹");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else {
-                getLogger().warning("未找到语言文件 zh_cn.yml，无法复制！");
+                getLogger().warning("未找到语言文件 zh_cn.json，无法复制！");
             }
         }
     }
 
     private void loadLanguageFile(String language) {
-        Yaml yaml = new Yaml();
-        try (InputStream inputStream = new FileInputStream(new File(getDataFolder(), "lang/" + language + ".yml"))) {
-            messages = yaml.load(inputStream);
-        } catch (IOException e) {
-            getLogger().warning("未找到语言文件，使用默认语言 zh_cn.yml");
+        try (InputStream inputStream = new FileInputStream(new File(getDataFolder(), "lang/" + language + ".json"))) {
+            JSONParser parser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) parser.parse(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+            messages = (Map<String, String>) jsonObject.get("messages");
+        } catch (IOException | ParseException e) {
+            getLogger().warning("未找到语言文件，使用默认语言 zh_cn.json");
             loadLanguageFile("zh_cn");
         }
     }
@@ -144,7 +146,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length != 2) {
-            sender.sendMessage(ChatColor.RED + getMessage("message.use_example", "/wid <add|remove> <playername>"));
+            sender.sendMessage(ChatColor.RED + getMessage("messages.use_example", "/wid <add|remove> <playername>"));
             return true;
         }
 
@@ -156,7 +158,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         } else if (action.equalsIgnoreCase("remove")) {
             return handleRemoveCommand(sender, playerName);
         } else {
-            sender.sendMessage(ChatColor.RED + getMessage("message.unknown_option", action));
+            sender.sendMessage(ChatColor.RED + getMessage("messages.unknown_option", action));
             return false;
         }
     }
