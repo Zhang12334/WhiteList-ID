@@ -234,7 +234,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             for (Object obj : jsonArray) {
                 whiteList.add((String) obj);
             }
-            getLogger().info(getMessage("messages.loaded_json"));
+            getLogger().info(getMessage("loaded_json"));
 
         } catch (IOException | ParseException e) {
             e.printStackTrace();
@@ -249,7 +249,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             JSONArray jsonArray = new JSONArray();
             jsonArray.addAll(new ArrayList<>(whiteList)); // 转换为 ArrayList 以消除警告
             writer.write(jsonArray.toJSONString());
-            getLogger().info(getMessage("messages.saved_json"));
+            getLogger().info(getMessage("saved_json"));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -272,7 +272,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             while (rs.next()) {
                 whiteList.add(rs.getString("player_name"));
             }
-            getLogger().info(getMessage("messages.loaded_mysql"));
+            getLogger().info(getMessage("loaded_mysql"));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -296,14 +296,14 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                 String sql = "INSERT INTO whitelist (player_name) VALUES ('" + playerName + "')";
                 stmt.executeUpdate(sql);
             }
-            getLogger().info(getMessage("messages.saved_mysql"));
+            getLogger().info(getMessage("saved_mysql"));
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public String getMessage(String key, String... args) {
+    public String getMessage(String... args) {
         String message = messages.getOrDefault(key, key); // 获取对应的消息
         for (int i = 0; i < args.length; i++) {
             message = message.replace("%" + i + "%", args[i]); // 替换参数
