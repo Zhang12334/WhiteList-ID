@@ -11,13 +11,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.yaml.snakeyaml.Yaml;
-
+import java.io.FileInputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader; // 添加的导入语句
+import java.io.InputStreamReader;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -229,7 +229,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
         try (FileWriter writer = new FileWriter(file)) {
             JSONArray jsonArray = new JSONArray();
-            jsonArray.addAll(whiteList);
+            jsonArray.addAll((Collection<?>) whiteList); // 更新这一行以消除警告
             writer.write(jsonArray.toJSONString());
             getLogger().info(getMessage("messages.saved_json"));
 
