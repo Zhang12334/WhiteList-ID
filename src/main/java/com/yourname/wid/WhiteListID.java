@@ -52,36 +52,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
         // 如果指定的语言文件不存在，则尝试从 JAR 中复制
         if (!languageFile.exists()) {
-            InputStream langInput = getResource("lang/" + language + ".yml");
-            if (langInput != null) {
-                try (FileWriter writer = new FileWriter(languageFile);
-                     InputStreamReader isr = new InputStreamReader(langInput)) { // 添加 InputStreamReader
-                    char[] buffer = new char[1024];
-                    int length;
-                    while ((length = isr.read(buffer)) > 0) {
-                        writer.write(buffer, 0, length);
-                    }
-                    getLogger().info(language + " 语言文件已复制到 lang 文件夹");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                // 如果指定的语言文件在 JAR 中也不存在，则复制默认的 zh_cn.yml
-                langInput = getResource("lang/zh_cn.yml");
-                if (langInput != null) {
-                    try (FileWriter writer = new FileWriter(languageFile);
-                         InputStreamReader isr = new InputStreamReader(langInput)) { // 添加 InputStreamReader
-                        char[] buffer = new char[1024];
-                        int length;
-                        while ((length = isr.read(buffer)) > 0) {
-                            writer.write(buffer, 0, length);
-                        }
-                        getLogger().info("默认语言文件 zh_cn.yml 已复制到 lang 文件夹");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+            copyLanguageFile(languageFile, language);
         }
 
         loadLanguageFile(language);
@@ -96,20 +67,51 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         }
 
         getLogger().info(getMessage("messages.startup"));
-        getLogger().info(getMessage("messages.storagetype") + storageType);
+        getLogger().info(getMessage("messages.storagetype") + " " + storageType); // 添加空格以便格式良好
+    }
+
+    private void copyLanguageFile(File languageFile, String language) {
+        InputStream langInput = getResource("lang/" + language + ".yml");
+        if (langInput != null) {
+            try (FileWriter writer = new FileWriter(languageFile);
+                 InputStreamReader isr = new InputStreamReader(langInput)) { // 添加 InputStreamReader
+                char[] buffer = new char[1024];
+                int length;
+                while ((length = isr.read(buffer)) > 0) {
+                    writer.write(buffer, 0, length);
+                }
+                getLogger().info(language + " 语言文件已复制到 lang 文件夹");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // 如果指定的语言文件在 JAR 中也不存在，则复制默认的 zh_cn.yml
+            langInput = getResource("lang/zh_cn.yml");
+            if (langInput != null) {
+                try (FileWriter writer = new FileWriter(languageFile);
+                     InputStreamReader isr = new InputStreamReader(langInput)) { // 添加 InputStreamReader
+                    char[] buffer = new char[1024];
+                    int length;
+                    while ((length = isr.read(buffer)) > 0) {
+                        writer.write(buffer, 0, length);
+                    }
+                    getLogger().info("默认语言文件 zh_cn.yml 已复制到 lang 文件夹");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                getLogger().warning("未找到语言文件 zh_cn.yml，无法复制！");
+            }
+        }
     }
 
     private void loadLanguageFile(String language) {
         Yaml yaml = new Yaml();
-        try (InputStream inputStream = getResource("lang/" + language + ".yml")) {
-            if (inputStream != null) {
-                messages = yaml.load(inputStream);
-            } else {
-                getLogger().warning("未找到语言文件，使用默认语言 zh_cn.yml");
-                loadLanguageFile("zh_cn");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        try (InputStream inputStream = new FileInputStream(new File(getDataFolder(), "lang/" + language + ".yml"))) {
+            messages = yaml.load(inputStream);
+        } catch (IOException e) {
+            getLogger().warning("未找到语言文件，使用默认语言 zh_cn.yml");
+            loadLanguageFile("zh_cn");
         }
     }
 
