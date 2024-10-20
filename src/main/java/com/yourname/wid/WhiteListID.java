@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -40,7 +39,50 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         this.getCommand("wid").setExecutor(this);
         Bukkit.getPluginManager().registerEvents(this, this); // 注册事件监听
 
+        // 创建 lang 文件夹
+        File langFolder = new File(getDataFolder(), "lang");
+        if (!langFolder.exists()) {
+            langFolder.mkdirs(); // 创建文件夹
+        }
+
+        // 检查语言文件
         String language = getConfig().getString("language", "zh_cn");
+        File languageFile = new File(langFolder, language + ".yml");
+
+        // 如果指定的语言文件不存在，则尝试从 JAR 中复制
+        if (!languageFile.exists()) {
+            InputStream langInput = getResource("lang/" + language + ".yml");
+            if (langInput != null) {
+                try (FileWriter writer = new FileWriter(languageFile)) {
+                    char[] buffer = new char[1024];
+                    int length;
+                    InputStreamReader isr = new InputStreamReader(langInput);
+                    while ((length = isr.read(buffer)) > 0) {
+                        writer.write(buffer, 0, length);
+                    }
+                    getLogger().info(language + " 语言文件已复制到 lang 文件夹");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                // 如果指定的语言文件在 JAR 中也不存在，则复制默认的 zh_cn.yml
+                langInput = getResource("lang/zh_cn.yml");
+                if (langInput != null) {
+                    try (FileWriter writer = new FileWriter(languageFile)) {
+                        char[] buffer = new char[1024];
+                        int length;
+                        InputStreamReader isr = new InputStreamReader(langInput);
+                        while ((length = isr.read(buffer)) > 0) {
+                            writer.write(buffer, 0, length);
+                        }
+                        getLogger().info("默认语言文件 zh_cn.yml 已复制到 lang 文件夹");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
         loadLanguageFile(language);
 
         // 读取存储类型
@@ -80,7 +122,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
         getLogger().info(getMessage("messages.disable"));
     }
-    
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
