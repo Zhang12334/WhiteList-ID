@@ -10,13 +10,17 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -27,6 +31,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
     private Set<String> whiteList;  // 使用玩家ID名称存储
     private String storageType;
+    private Map<String, String> messages;  // 存储语言消息
 
     @Override
     public void onEnable() {
@@ -38,7 +43,6 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         String language = getConfig().getString("language", "zh_cn");
         loadLanguageFile(language);
 
-
         // 读取存储类型
         storageType = getConfig().getString("storage", "json");
         
@@ -48,10 +52,9 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             loadFromMySQL();
         }
 
-        getLogger().info("messages.startup");
-        getLogger().info("messages.storagetype" + storageType);
+        getLogger().info(getMessage("messages.startup"));
+        getLogger().info(getMessage("messages.storagetype") + storageType);
     }
-
 
     private void loadLanguageFile(String language) {
         Yaml yaml = new Yaml();
@@ -59,7 +62,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             if (inputStream != null) {
                 messages = yaml.load(inputStream);
             } else {
-                getLogger().warning("语言文件未找到，使用默认语言 zh_cn.yml");
+                getLogger().warning("未找到语言文件，使用默认语言 zh_cn.yml");
                 loadLanguageFile("zh_cn");
             }
         } catch (Exception e) {
@@ -75,7 +78,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             saveToMySQL();
         }
 
-        getLogger().info("messages.disable");
+        getLogger().info(getMessage("messages.disable"));
     }
     
     @EventHandler
@@ -86,16 +89,15 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         // 检查玩家是否在白名单中
         if (!whiteList.contains(playerName)) {
             Bukkit.getScheduler().runTask(this, () -> {
-                player.kickPlayer("messages.not_whitelisted");
+                player.kickPlayer(getMessage("messages.not_whitelisted"));
             });
         }
     }
 
-
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length != 2) {
-            sender.sendMessage(ChatColor.RED + "message.use_example" + "/wid <add|remove> <playername>");
+            sender.sendMessage(ChatColor.RED + getMessage("message.use_example", "/wid <add|remove> <playername>"));
             return true;
         }
 
@@ -107,22 +109,22 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         } else if (action.equalsIgnoreCase("remove")) {
             return handleRemoveCommand(sender, playerName);
         } else {
-            sender.sendMessage(ChatColor.RED + "message.unknown_option" + action);
+            sender.sendMessage(ChatColor.RED + getMessage("message.unknown_option", action));
             return false;
         }
     }
 
     private boolean handleAddCommand(CommandSender sender, String playerName) {
         if (!sender.hasPermission("wid.add")) {
-            sender.sendMessage(ChatColor.RED + "messages.no_permission");
+            sender.sendMessage(ChatColor.RED + getMessage("messages.no_permission"));
             return false;
         }
 
         if (whiteList.contains(playerName)) {
-            sender.sendMessage(ChatColor.YELLOW + "messages.player" + playerName + "messages.player_already_exist");
+            sender.sendMessage(ChatColor.YELLOW + getMessage("messages.player", playerName) + getMessage("messages.player_already_exist"));
         } else {
             whiteList.add(playerName);
-            sender.sendMessage(ChatColor.GREEN + "messages.player" + playerName + "messages.player_added");
+            sender.sendMessage(ChatColor.GREEN + getMessage("messages.player", playerName) + getMessage("messages.player_added"));
             saveWhiteList(); // 添加后保存
         }
 
@@ -131,16 +133,16 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
     private boolean handleRemoveCommand(CommandSender sender, String playerName) {
         if (!sender.hasPermission("wid.remove")) {
-            sender.sendMessage(ChatColor.RED + "messages.no_permission");
+            sender.sendMessage(ChatColor.RED + getMessage("messages.no_permission"));
             return false;
         }
 
         if (whiteList.contains(playerName)) {
             whiteList.remove(playerName);  // 从白名单中移除
-            sender.sendMessage(ChatColor.GREEN + "messages.player" + playerName + "messages.player_removed_from_whitelist");
+            sender.sendMessage(ChatColor.GREEN + getMessage("messages.player", playerName) + getMessage("messages.player_removed_from_whitelist"));
             saveWhiteList(); // 移除后保存
         } else {
-            sender.sendMessage(ChatColor.YELLOW + "messages.player" + playerName + "messages.player_not_in_whitelist");
+            sender.sendMessage(ChatColor.YELLOW + getMessage("messages.player", playerName) + getMessage("messages.player_not_in_whitelist"));
         }
 
         return true;
@@ -169,7 +171,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             for (Object obj : jsonArray) {
                 whiteList.add((String) obj);
             }
-            getLogger().info("messages.loaded_json");
+            getLogger().info(getMessage("messages.loaded_json"));
 
         } catch (IOException | ParseException e) {
             e.printStackTrace();
@@ -184,7 +186,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             JSONArray jsonArray = new JSONArray();
             jsonArray.addAll(whiteList);
             writer.write(jsonArray.toJSONString());
-            getLogger().info("messages.saved_json");
+            getLogger().info(getMessage("messages.saved_json"));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -207,7 +209,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             while (rs.next()) {
                 whiteList.add(rs.getString("player_name"));
             }
-            getLogger().info("messages.loaded_mysql");
+            getLogger().info(getMessage("messages.loaded_mysql"));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -231,10 +233,18 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                 String sql = "INSERT INTO whitelist (player_name) VALUES ('" + playerName + "')";
                 stmt.executeUpdate(sql);
             }
-            getLogger().info("messages.saved_mysql");
+            getLogger().info(getMessage("messages.saved_mysql"));
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getMessage(String key, String... args) {
+        String message = messages.getOrDefault(key, key); // 获取对应的消息
+        for (int i = 0; i < args.length; i++) {
+            message = message.replace("%" + i + "%", args[i]); // 替换参数
+        }
+        return message;
     }
 }
