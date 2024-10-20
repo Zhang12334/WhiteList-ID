@@ -11,6 +11,29 @@ Supports MySQL/JSON storage
 搭配群组服食用效果极佳!
 
 Works exceptionally well when used with a server network!
+## 下载 / Download
+本插件为开源项目，但仅对通过赞助获取稳定版插件的用户提供支持！
+
+您可以自行编译开发中的源代码并使用，但这不会获得开发者的任何支持！
+
+您可以在爱发电平台上赞助我以获取插件的最新稳定版，链接：https://afdian.com/a/NachoNeko_
+
+This plugin is an open-source project, but support is only provided to users who obtain the stable version plugin through sponsorship!
+
+You are free to compile the develop source code 和 use it, but this will not entitle you to any support from the developer.
+
+You can sponsor me on the Afdian platform to get a latest stable version: https://afdian.com/a/NachoNeko_
+
+## 赞助价格表 / Pricing Table
+
+- ¥5 元：获取插件最新稳定版  
+  ¥5 CNY: Get the latest stable version of the plugin
+
+- ¥25 元：获取插件最新版 + 技术支持 + 后续更新  
+  ¥25 CNY: Get the latest version, technical support, 和 future updates
+
+- ¥200 元：一次定制功能的机会 + 获取插件最新版 + 技术支持 + 后续更新  
+  ¥200 CNY: One-time custom feature opportunity + Access to the latest plugin version + Technical support + Future updates
 
 ## 命令 / Commands
 
