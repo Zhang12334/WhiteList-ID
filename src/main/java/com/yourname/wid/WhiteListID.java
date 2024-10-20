@@ -236,10 +236,10 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         }
 
         if (whiteList.contains(playerName)) {
-            sender.sendMessage(ChatColor.YELLOW + playerMessage + playerName + playerAlreadyExistMessage);
+            sender.sendMessage(ChatColor.YELLOW + playerMessage + " " + playerName + playerAlreadyExistMessage);
         } else {
             whiteList.add(playerName);
-            sender.sendMessage(ChatColor.GREEN + playerMessage + playerName + playerAddedMessage);
+            sender.sendMessage(ChatColor.GREEN + playerMessage + " " + playerName + playerAddedMessage);
             saveWhiteList(); // 添加后保存
         }
 
@@ -254,10 +254,10 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
         if (whiteList.contains(playerName)) {
             whiteList.remove(playerName);  // 从白名单中移除
-            sender.sendMessage(ChatColor.GREEN + playerMessage + playerName + playerRemovedFromWhitelistMessage);
+            sender.sendMessage(ChatColor.GREEN + playerMessage + " " + playerName + playerRemovedFromWhitelistMessage);
             saveWhiteList(); // 移除后保存
         } else {
-            sender.sendMessage(ChatColor.YELLOW + playerMessage + playerName + playerNotInWhitelistMessage);
+            sender.sendMessage(ChatColor.YELLOW + playerMessage + " " + playerName + playerNotInWhitelistMessage);
         }
 
         return true;
