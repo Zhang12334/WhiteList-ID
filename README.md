@@ -1,9 +1,11 @@
 # WhiteList-ID
 
 一个使用 ID 进行辨别的 Minecraft Spigot 白名单插件
+
 A Minecraft Spigot whitelist plugin that identifies players by ID
 
-支持 MySQL/Json 存储  
+支持 MySQL/Json 存储
+
 Supports MySQL/JSON storage
 
 ## 命令 / Commands
