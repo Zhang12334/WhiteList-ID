@@ -1,15 +1,15 @@
-name: JoinEULA
+name: WhiteList-ID
 version: 1.0
-main: com.yourname.joineula.JoinEULA
+main: com.yourname.wid.WhiteListID
 api-version: 1.20
 commands:
-  JoinEULA:
-    description: 处理 EULA 相关的命令
-    usage: /<command> <reload|remove>
+  wid:
+    description: 白名单管理
+    usage: /<command> <add|remove>
 permissions:
-  joineula.reload:
-    description: 允许重新加载 EULA
+  joineula.add:
+    description: 添加白名单
     default: op
   joineula.remove:
-    description: 允许删除玩家的校验信息
+    description: 删除白名单
     default: op

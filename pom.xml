@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.yourname</groupId>
-    <artifactId>JoinEULA</artifactId>
+    <artifactId>WhiteList-ID</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>JoinEULA</name>
+    <name>WhiteList-ID</name>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -34,7 +34,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.33</version> <!-- 请根据需要选择合适的版本 -->
+            <version>8.0.33</version>
         </dependency>
     </dependencies>
 
@@ -57,7 +57,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.yourname.joineula.JoinEULA</mainClass>
+                            <mainClass>com.yourname.wid.WhiteListID</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
