@@ -101,8 +101,8 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     private void copyLanguageFile(File languageFile, String language) {
         InputStream langInput = getResource("lang/" + language + ".json");
         if (langInput != null) {
-            try (FileWriter writer = new FileWriter(languageFile);
-                 InputStreamReader isr = new InputStreamReader(langInput, StandardCharsets.UTF_8)) { // 使用 StandardCharsets
+            try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(languageFile), StandardCharsets.UTF_16BE);
+                InputStreamReader isr = new InputStreamReader(langInput, StandardCharsets.UTF_16BE)) { // 使用 UTF-8 读取
                 char[] buffer = new char[1024];
                 int length;
                 while ((length = isr.read(buffer)) > 0) {
@@ -115,8 +115,8 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             // 如果指定的语言文件在 JAR 中也不存在，则复制默认 zh_cn.json
             langInput = getResource("lang/zh_cn.json");
             if (langInput != null) {
-                try (FileWriter writer = new FileWriter(languageFile);
-                     InputStreamReader isr = new InputStreamReader(langInput, StandardCharsets.UTF_8)) { // 使用 StandardCharsets
+                try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(languageFile), StandardCharsets.UTF_16BE);
+                    InputStreamReader isr = new InputStreamReader(langInput, StandardCharsets.UTF_16BE)) { // 使用 UTF-8 读取
                     char[] buffer = new char[1024];
                     int length;
                     while ((length = isr.read(buffer)) > 0) {
@@ -130,10 +130,11 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         }
     }
 
+
     private void loadLanguageFile(String language) {
         try (InputStream inputStream = new FileInputStream(new File(getDataFolder(), "lang/" + language + ".json"))) {
             JSONParser parser = new JSONParser();
-            JSONObject jsonObject = (JSONObject) parser.parse(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+            JSONObject jsonObject = (JSONObject) parser.parse(new InputStreamReader(inputStream, StandardCharsets.UTF_16BE));
             
             // 直接存储消息内容
             JSONObject messagesObject = (JSONObject) jsonObject.get("messages");
