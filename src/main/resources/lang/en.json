@@ -16,7 +16,7 @@
     "saved_json": "Whitelist has been saved to JSON",
     "loaded_mysql": "Successfully loaded whitelist from MySQL",
     "saved_mysql": "Whitelist has been saved to MySQL",
-    "now_language": "Currently using: Simplified Chinese (zh_cn.json) ",
+    "now_language": "Currently using: English (en.json) ",
     "translator": "Translation contributor: Zhang1233",
     "reload": "Configuration file has been reloaded",
     "reload_language": "Language file has been reloaded",
