@@ -116,6 +116,11 @@ This plugin contains some English content translated with the assistance of Chat
 
 ## 许可 / License
 
-请查看LICENSE.md
+初始内容请查看LICENSE.md
+
+对于本项目的追加内容：
+
+ - 允许在商业服务器中使用本插件
+ - 禁止使用本插件的衍生版本盈利
 
 Please refer to LICENSE.md (Simplified Chinese only).
