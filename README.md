@@ -12,17 +12,17 @@ Supports MySQL/JSON storage
 
 Works exceptionally well when used with a server network!
 ## 下载 / Download
-本插件为开源项目，但仅对通过赞助获取稳定版插件的用户提供支持！
+本插件为开源项目并免费提供下载使用！
 
-您可以自行编译开发中的源代码并使用，但这不会获得开发者的任何支持！
+您可以自行编译开发中的源代码或下载 Release 版本使用，出现问题可以提出 Issue！
 
-您可以在爱发电平台上赞助我以获取插件的最新稳定版，链接：https://afdian.com/a/NachoNeko_/
+同时您也可以在爱发电平台上赞助我，并通过加入QQ交流群以获得及时、迅速的技术支持与安装指导！赞助链接：https://afdian.com/a/NachoNeko_/
 
-This plugin is an open-source project, but support is only provided to users who obtain the stable version plugin through sponsorship!
+This plugin is an open-source project and is available for free download and use!
 
-You are free to compile the develop source code and use it, but this will not entitle you to any support from the developer.
+You can compile the source code being developed yourself or download the Release version. If you encounter any issues, feel free to raise an Issue!
 
-You can sponsor me on the Afdian platform to get a latest stable version: https://afdian.com/a/NachoNeko_/
+You can also support me on the Afdian platform and join the QQ group for timely and efficient technical support and installation guidance. Link (Simplified Chinese only): https://afdian.com/a/NachoNeko_/
 
 ## 赞助价格表 / Pricing Table
 
@@ -116,3 +116,9 @@ Feel free to contact the developer to submit translations in other languages, an
 本插件部分英文内容由 ChatGPT 辅助翻译
 
 This plugin contains some English content translated with the assistance of ChatGPT.
+
+## 许可 / License
+
+本插件使用 GNU GPL 许可证
+
+This plugin is licensed under the GNU GPL license.
