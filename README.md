@@ -94,8 +94,9 @@ Welcome to assist developers in improving the compatibility testing list, and yo
 
 | 语言 / Language   | 支持状态 / Support Status |
 |--------------------|---------------------------|
-| 中文（简体）/ Simplified Chinese | ✅ 支持 / Supported        |
-| 中文（繁体）/ Traditional Chinese | ❌ 不支持 / Not Supported |
+| 简体中文 / Simplified Chinese | ✅ 支持 / Supported        |
+| 喵喵中文 / Simplified Chinese | ✅ 支持 / Supported        |
+| 繁体中文 / Traditional Chinese | ❌ 不支持 / Not Supported |
 | 英文 / English      | ✅ 支持 / Supported        |
 | 法语 / French       | ❌ 不支持 / Not Supported |
 | 德语 / German       | ❌ 不支持 / Not Supported |
