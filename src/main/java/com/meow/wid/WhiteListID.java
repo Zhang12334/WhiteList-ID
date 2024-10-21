@@ -29,6 +29,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+
 
 public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener {
 
