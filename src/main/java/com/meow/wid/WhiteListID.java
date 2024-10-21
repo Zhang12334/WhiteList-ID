@@ -1,4 +1,4 @@
-package com.yourname.wid;
+package com.meow.wid;
 
 import java.util.Collection;
 import java.io.FileInputStream;
