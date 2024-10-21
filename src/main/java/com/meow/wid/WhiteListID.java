@@ -260,8 +260,15 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
         // 重载语言文件
         String language = getConfig().getString("language", "zh_cn");
+        File languageFile = new File(getDataFolder() + "/lang/", language + ".json");
+
+        if (!languageFile.exists()) {
+            copyLanguageFile(languageFile, language);
+        }
+
         loadLanguageFile(language);
         getLogger().info(ChatColor.GREEN + reloadLanguage);
+        
         // 清除缓存
         whiteList.clear();
         // 重新加载WhiteList
@@ -275,6 +282,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         sender.sendMessage(ChatColor.GREEN + reloadMessage);
         return true;
     }
+
 
 
 
