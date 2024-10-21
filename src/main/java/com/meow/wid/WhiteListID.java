@@ -127,7 +127,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     private void loadLanguageFile(String language) {
         try (InputStream inputStream = new FileInputStream(new File(getDataFolder(), "lang/" + language + ".json"))) {
             JSONParser parser = new JSONParser();
-            JSONObject jsonObject = (JSONObject) parser.parse(new InputStreamReader(inputStream));
+            JSONObject jsonObject = (JSONObject) parser.parse(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
             
             // 直接存储消息内容
             JSONObject messagesObject = (JSONObject) jsonObject.get("messages");
