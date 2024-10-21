@@ -20,7 +20,7 @@ Works exceptionally well when used with a server network!
 
 This plugin is an open-source project, but support is only provided to users who obtain the stable version plugin through sponsorship!
 
-You are free to compile the develop source code 和 use it, but this will not entitle you to any support from the developer.
+You are free to compile the develop source code and use it, but this will not entitle you to any support from the developer.
 
 You can sponsor me on the Afdian platform to get a latest stable version: https://afdian.com/a/NachoNeko_/
 
@@ -30,7 +30,7 @@ You can sponsor me on the Afdian platform to get a latest stable version: https:
   ¥5 CNY: Get the latest stable version of the plugin
 
 - ¥25 元：获取插件最新版 + 技术支持 + 后续更新  
-  ¥25 CNY: Get the latest version, technical support, 和 future updates
+  ¥25 CNY: Get the latest version, technical support, and future updates
 
 - ¥200 元：一次定制功能的机会 + 获取插件最新版 + 技术支持 + 后续更新  
   ¥200 CNY: One-time custom feature opportunity + Access to the latest plugin version + Technical support + Future updates
