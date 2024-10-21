@@ -26,14 +26,11 @@ You can also support me on the Afdian platform and join the QQ group for timely 
 
 ## 赞助价格表 / Pricing Table
 
-- ¥5 元：获取插件最新稳定版  
-  ¥5 CNY: Get the latest stable version of the plugin
+- ¥25 元：获取插件技术支持 
+  ¥25 CNY: Get technical support for the plugin.
 
-- ¥25 元：获取插件最新版 + 技术支持 + 后续更新  
-  ¥25 CNY: Get the latest version, technical support, and future updates
-
-- ¥200 元：一次定制功能的机会 + 获取插件最新版 + 技术支持 + 后续更新  
-  ¥200 CNY: One-time custom feature opportunity + Access to the latest plugin version + Technical support + Future updates
+- ¥200 元：获取插件技术支持 + 一次定制功能的机会
+  ¥200 CNY: Get technical support + one opportunity for a custom feature.
 
 ## 命令 / Commands
 
