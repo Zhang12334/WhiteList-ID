@@ -29,6 +29,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import java.nio.charset.Charset;
+
+Charset gbkCharset = Charset.forName("GBK");
 
 public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener {
 
@@ -102,7 +105,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         InputStream langInput = getResource("lang/" + language + ".json");
         if (langInput != null) {
             try (FileWriter writer = new FileWriter(languageFile, StandardCharsets.GBK);
-                 InputStreamReader isr = new InputStreamReader(langInput, "GBK")) {
+                 InputStreamReader isr = new InputStreamReader(langInput, gbkCharset)) {
                 char[] buffer = new char[1024];
                 int length;
                 while ((length = isr.read(buffer)) > 0) {
@@ -116,7 +119,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             langInput = getResource("lang/zh_cn.json");
             if (langInput != null) {
                 try (FileWriter writer = new FileWriter(languageFile, StandardCharsets.GBK);
-                     InputStreamReader isr = new InputStreamReader(langInput, "GBK")) {
+                     InputStreamReader isr = new InputStreamReader(langInput, gbkCharset)) {
                     char[] buffer = new char[1024];
                     int length;
                     while ((length = isr.read(buffer)) > 0) {
@@ -133,7 +136,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     private void loadLanguageFile(String language) {
         try (InputStream inputStream = new FileInputStream(new File(getDataFolder(), "lang/" + language + ".json"))) {
             JSONParser parser = new JSONParser();
-            JSONObject jsonObject = (JSONObject) parser.parse(new InputStreamReader(inputStream, "GBK"));
+            JSONObject jsonObject = (JSONObject) parser.parse(new InputStreamReader(inputStream, gbkCharset));
             
             // 直接存储消息内容
             JSONObject messagesObject = (JSONObject) jsonObject.get("messages");
