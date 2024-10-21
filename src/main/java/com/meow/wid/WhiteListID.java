@@ -218,7 +218,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         if (!whiteList.contains(playerName)) {
             Bukkit.getScheduler().runTaskLater(this, () -> {
                 player.kickPlayer(notWhitelistedMessage);
-            }, 6L);
+            }, 5L);
         }
     }
 
