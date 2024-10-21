@@ -254,7 +254,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
         // 重载配置文件
         reloadConfig();
-        File languageFile = new File(langFolder, language + ".json");
+        languageFile = new File(langFolder, language + ".json");
         // 如果指定的语言文件不存在，则尝试从 JAR 中复制
         if (!languageFile.exists()) {
             copyLanguageFile(languageFile, language);
