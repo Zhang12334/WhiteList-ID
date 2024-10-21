@@ -102,7 +102,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     private void copyLanguageFile(File languageFile, String language) {
         InputStream langInput = getResource("lang/" + language + ".json");
         if (langInput != null) {
-            try (FileWriter writer = new FileWriter(languageFile, StandardCharsets.GBK);
+            try (FileWriter writer = new FileWriter(languageFile, Charset.forName("GBK"));
                  InputStreamReader isr = new InputStreamReader(langInput, gbkCharset)) {
                 char[] buffer = new char[1024];
                 int length;
@@ -116,7 +116,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             // 如果指定的语言文件在 JAR 中也不存在，则复制默认 zh_cn.json
             langInput = getResource("lang/zh_cn.json");
             if (langInput != null) {
-                try (FileWriter writer = new FileWriter(languageFile, StandardCharsets.GBK);
+                try (FileWriter writer = new FileWriter(languageFile, Charset.forName("GBK"));
                      InputStreamReader isr = new InputStreamReader(langInput, gbkCharset)) {
                     char[] buffer = new char[1024];
                     int length;
