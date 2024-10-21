@@ -254,16 +254,18 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
         // 重载配置文件
         reloadConfig();
-        languageFile = new File(langFolder, language + ".json");
-        // 如果指定的语言文件不存在，则尝试从 JAR 中复制
-        if (!languageFile.exists()) {
-            copyLanguageFile(languageFile, language);
-        }
+
         // 重载debugmode配置值
         debugmode = getConfig().getString("debugmode", "disable");
 
         // 重载语言文件
         String language = getConfig().getString("language", "zh_cn");
+        File languageFile = new File(langFolder, language + ".json");
+
+        // 如果指定的语言文件不存在，则尝试从 JAR 中复制
+        if (!languageFile.exists()) {
+            copyLanguageFile(languageFile, language);
+        }
         loadLanguageFile(language);
         getLogger().info(ChatColor.GREEN + reloadLanguage);
         // 清除缓存
