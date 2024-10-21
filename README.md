@@ -92,16 +92,16 @@ Welcome to assist developers in improving the compatibility testing list, and yo
 
 ## 支持语言列表 / Supported Languages
 
-| 语言 / Language   | 支持状态 / Support Status |
-|--------------------|---------------------------|
-| 简体中文 / Simplified Chinese | ✅ 支持 / Supported        |
-| 喵喵中文 / Simplified Chinese | ✅ 支持 / Supported        |
-| 繁体中文 / Traditional Chinese | ❌ 不支持 / Not Supported |
-| 英文 / English      | ✅ 支持 / Supported        |
-| 法语 / French       | ❌ 不支持 / Not Supported |
-| 德语 / German       | ❌ 不支持 / Not Supported |
-| 意大利语 / Italian  | ❌ 不支持 / Not Supported |
-| 日语 / Japanese     | ❌ 不支持 / Not Supported |
+| 语言 / Language   | 文件名称 / File name |支持状态 / Support Status |
+|--------------------|---------------------------|---------------------------|
+| 简体中文 / Simplified Chinese | zh_cn | ✅ 支持 / Supported        |
+| 喵喵中文 / Simplified Chinese | zh_meow | ✅ 支持 / Supported        |
+| 繁体中文 / Traditional Chinese | zh_tc | ❌ 不支持 / Not Supported |
+| 英文 / English      | en | ✅ 支持 / Supported        |
+| 法语 / French       | fr | ❌ 不支持 / Not Supported |
+| 德语 / German       | de | ❌ 不支持 / Not Supported |
+| 意大利语 / Italian  | it | ❌ 不支持 / Not Supported |
+| 日语 / Japanese     | ja_jp | ❌ 不支持 / Not Supported |
 
 欢迎联系开发者提交其他语言的翻译，您的名字将会被列入感谢列表！
 
