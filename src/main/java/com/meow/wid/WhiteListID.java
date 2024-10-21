@@ -29,10 +29,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import java.nio.charset.Charset;
 
 public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener {
-    Charset gbkCharset = Charset.forName("GBK");
+
     private Set<String> whiteList;  // 使用玩家ID名称存储
     private String storageType;
     private String debugmode;
@@ -102,27 +101,18 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     private void copyLanguageFile(File languageFile, String language) {
         InputStream langInput = getResource("lang/" + language + ".json");
         if (langInput != null) {
-            try (FileWriter writer = new FileWriter(languageFile, Charset.forName("GBK"));
-                 InputStreamReader isr = new InputStreamReader(langInput, gbkCharset)) {
-                char[] buffer = new char[1024];
-                int length;
-                while ((length = isr.read(buffer)) > 0) {
-                    writer.write(buffer, 0, length);
-                }
+            try {
+                Files.copy(langInput, languageFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                getLogger().info("语言文件 " + language + ".json 已复制到 lang 文件夹");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            // 如果指定的语言文件在 JAR 中也不存在，则复制默认 zh_cn.json
+            // 复制默认的 zh_cn.json
             langInput = getResource("lang/zh_cn.json");
             if (langInput != null) {
-                try (FileWriter writer = new FileWriter(languageFile, Charset.forName("GBK"));
-                     InputStreamReader isr = new InputStreamReader(langInput, gbkCharset)) {
-                    char[] buffer = new char[1024];
-                    int length;
-                    while ((length = isr.read(buffer)) > 0) {
-                        writer.write(buffer, 0, length);
-                    }
+                try {
+                    Files.copy(langInput, languageFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                     getLogger().info("默认语言文件 zh_cn.json 已复制到 lang 文件夹");
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -134,7 +124,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     private void loadLanguageFile(String language) {
         try (InputStream inputStream = new FileInputStream(new File(getDataFolder(), "lang/" + language + ".json"))) {
             JSONParser parser = new JSONParser();
-            JSONObject jsonObject = (JSONObject) parser.parse(new InputStreamReader(inputStream, gbkCharset));
+            JSONObject jsonObject = (JSONObject) parser.parse(new InputStreamReader(inputStream));
             
             // 直接存储消息内容
             JSONObject messagesObject = (JSONObject) jsonObject.get("messages");
