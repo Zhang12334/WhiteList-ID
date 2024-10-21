@@ -254,7 +254,9 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
         // 重载配置文件
         reloadConfig();
-
+        if (!languageFile.exists()) {
+            copyLanguageFile(languageFile, language);
+        }
         // 重载debugmode配置值
         debugmode = getConfig().getString("debugmode", "disable");
 
