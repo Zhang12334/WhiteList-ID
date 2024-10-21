@@ -260,12 +260,6 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
         // 重载语言文件
         String language = getConfig().getString("language", "zh_cn");
-        File languageFile1 = new File(langFolder, language + ".json");
-
-        // 如果指定的语言文件不存在，则尝试从 JAR 中复制
-        if (!languageFile1.exists()) {
-            copyLanguageFile(languageFile1, language);
-        }
         loadLanguageFile(language);
         getLogger().info(ChatColor.GREEN + reloadLanguage);
         // 清除缓存
