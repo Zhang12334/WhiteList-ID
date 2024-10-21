@@ -7,13 +7,13 @@ storage: json
 # json或mysql，必选项
 # json or mysql
 language: "zh_cn"
-# 默认语言
-# plugin language, en / zh_cn
+# 默认语言为中文，具体可用列表请查看 readme.md 的语言支持列表！
+# Plugin languages: Please refer to the language support list in readme.md!
 debugmode: disable
-# 调试模式，非必要请勿开启，开启为enabled
-# enable or disable, disable as default
+# 调试模式，非必要请勿开启！默认disable关闭，开启为enable，用于查看语言配置信息是否正确加载
+# Debug mode: Please do not enable unless necessary! Default is disabled; enabling it will allow you to check if the language configuration information is loaded correctly.
 mysql:
-# 可选项，如选择mysql则必选
+# 若存储选项选择mysql则必填下面内容
 # database settings
   host: localhost
   port: 3306
