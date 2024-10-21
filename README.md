@@ -116,6 +116,6 @@ This plugin contains some English content translated with the assistance of Chat
 
 ## 许可 / License
 
-本插件使用 GNU GPL 许可证
+请查看LICENSE.md
 
-This plugin is licensed under the GNU GPL license.
+Please refer to LICENSE.md (Simplified Chinese only).
