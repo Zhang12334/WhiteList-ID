@@ -31,10 +31,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.nio.charset.Charset;
 
-Charset gbkCharset = Charset.forName("GBK");
-
 public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener {
-
+    Charset gbkCharset = Charset.forName("GBK");
     private Set<String> whiteList;  // 使用玩家ID名称存储
     private String storageType;
     private String debugmode;
