@@ -267,7 +267,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         }
 
         loadLanguageFile(language);
-        getLogger().info(ChatColor.GREEN + reloadLanguage);
+        getLogger().info(reloadLanguage);
         
         // 清除缓存
         whiteList.clear();
@@ -278,7 +278,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         } else if (storageType.equalsIgnoreCase("mysql")) {
             loadFromMySQL();
         }
-        getLogger().info(ChatColor.GREEN + reloadWhitelist);
+        getLogger().info(reloadWhitelist);
         sender.sendMessage(ChatColor.GREEN + reloadMessage);
         return true;
     }
