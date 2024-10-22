@@ -50,7 +50,6 @@
             <groupId>net.fabricmc</groupId>
             <artifactId>fabric-api</artifactId>
             <version>${fabric.version}</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -76,7 +75,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.meow.wid.WhiteListID</mainClass> <!-- 默认 Bukkit 主类 -->
+                            <mainClass>com.meow.wid.WhiteListID</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -88,7 +87,7 @@
         <profile>
             <id>fabric</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <build>
                 <plugins>
@@ -99,7 +98,7 @@
                             <archive>
                                 <manifest>
                                     <addClasspath>true</addClasspath>
-                                    <mainClass>com.meow.wid.FWhiteListID</mainClass> <!-- Fabric 主类 -->
+                                    <mainClass>com.meow.wid.FWhiteListID</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>
