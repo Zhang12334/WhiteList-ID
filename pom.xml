@@ -87,6 +87,9 @@
     <profiles>
         <profile>
             <id>fabric</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
