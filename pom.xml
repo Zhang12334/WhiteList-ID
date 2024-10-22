@@ -14,12 +14,18 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <spigot.version>1.16.5-R0.1-SNAPSHOT</spigot.version>
+        <fabric.version>0.14.11</fabric.version>
+        <minecraft.version>1.16.5</minecraft.version>
     </properties>
 
     <repositories>
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/repository/public/</url>
+        </repository>
+        <repository>
+            <id>fabric-repo</id>
+            <url>https://maven.fabricmc.net/</url>
         </repository>
     </repositories>
 
@@ -39,6 +45,12 @@
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
             <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.fabricmc</groupId>
+            <artifactId>fabric-api</artifactId>
+            <version>${fabric.version}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

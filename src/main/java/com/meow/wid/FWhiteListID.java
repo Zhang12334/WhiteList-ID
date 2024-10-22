@@ -17,6 +17,12 @@ import net.minecraft.server.command.CommandSource;
 import net.minecraft.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.fabricmc.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.server.network.ServerPlayerEntity;
+import java.util.List;
+
+
 
 public class FWhiteListID implements ModInitializer {
 

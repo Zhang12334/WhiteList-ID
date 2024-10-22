@@ -1,0 +1,23 @@
+{
+    "schemaVersion": 1,
+    "id": "whitelistid",
+    "version": "1.2",
+    "name": "WhiteList ID",
+    "description": "A whitelist mod that identifies players by ID",
+    "authors": ["Zhang1233"],
+    "contact": {
+      "homepage": "https://github.com/Zhang12334/WhiteList-ID",
+      "issues": "https://github.com/Zhang12334/WhiteList-ID/issues"
+    },
+    "license": "ZHOSL",
+    "environment": "*",
+    "entrypoints": {
+      "main": [
+        "com.meow.wid.WhiteListID"
+      ]
+    },
+    "depends": {
+      "fabricloader": ">=0.10.0"
+    }
+  }
+  
