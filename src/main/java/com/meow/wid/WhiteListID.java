@@ -1,5 +1,5 @@
 package com.meow.wid;
-import org.bstats.bukkit.Metrics;
+import com.meow.wid.Metrics;
 import java.util.Collection;
 import java.io.FileInputStream;
 import java.io.FileWriter;
