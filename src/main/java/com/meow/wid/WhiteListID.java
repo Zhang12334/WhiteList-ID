@@ -1,5 +1,5 @@
 package com.meow.wid;
-
+import org.bstats.bukkit.Metrics;
 import java.util.Collection;
 import java.io.FileInputStream;
 import java.io.FileWriter;
@@ -64,6 +64,9 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
     @Override
     public void onEnable() {
+        // bstats
+        int pluginId = 23704;
+        Metrics metrics = new Metrics(this, pluginId);
         this.saveDefaultConfig();  // 保存默认配置文件
         whiteList = new HashSet<>();
         this.getCommand("wid").setExecutor(this);
@@ -157,9 +160,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             //翻译贡献者
             getLogger().info(translatorMessage);
             // 调试模式
-            //一个判断搞半天，写C++写习惯了直接两个等于号扔上来了，我是傻逼
             if(debugmode.equals("enable")){
-                // ↑tmd该死的判断，大难绷之if(debugmode == "enable")
                 // debug！
                 getLogger().info("———————Debug———————");
                 getLogger().info(nowLanguageMessage);
@@ -188,6 +189,8 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             }
         } catch (IOException | ParseException e) {
             getLogger().warning("未找到语言文件，使用默认语言 zh_cn.json");
+            // 多语言支持避免英语母语用户看不懂报错
+            getLogger().warning("The language file was not found; using the default language zh_cn.json");            
             loadLanguageFile("zh_cn");
         }
     }

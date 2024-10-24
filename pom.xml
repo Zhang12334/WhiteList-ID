@@ -10,6 +10,12 @@
 
     <name>WhiteList-ID</name>
 
+    <parent>
+        <artifactId>bstats</artifactId>
+        <groupId>org.bstats</groupId>
+        <version>1.8</version>
+    </parent>
+
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
