@@ -51,7 +51,7 @@
         <!-- 添加 bstats 依赖 -->
         <dependency>
             <groupId>org.bstats</groupId>
-            <artifactId>bstats-bukkit</artifactId>
+            <artifactId>bstats</artifactId>
             <version>1.8</version>
         </dependency>
     </dependencies>
