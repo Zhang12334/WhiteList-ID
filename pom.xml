@@ -10,12 +10,6 @@
 
     <name>WhiteList-ID</name>
 
-    <parent>
-        <artifactId>bstats</artifactId>
-        <groupId>org.bstats</groupId>
-        <version>1.8</version>
-    </parent>
-
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
@@ -57,7 +51,7 @@
         <!-- 添加 bstats 依赖 -->
         <dependency>
             <groupId>org.bstats</groupId>
-            <artifactId>bstats</artifactId>
+            <artifactId>bstats-bukkit</artifactId>
             <version>1.8</version>
         </dependency>
     </dependencies>
