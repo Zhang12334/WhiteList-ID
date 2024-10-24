@@ -48,6 +48,12 @@
             <artifactId>json-simple</artifactId>
             <version>1.1.1</version>
         </dependency>
+        <!-- 添加 bstats 依赖 -->
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats</artifactId>
+            <version>1.8</version>
+        </dependency>
     </dependencies>
 
     <build>
