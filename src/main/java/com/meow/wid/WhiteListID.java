@@ -385,7 +385,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
 
     // 保存至 MySQL
     private void saveToMySQL() {
-        String url = "jdbc:mysql://" + getConfig().getString("mysql.host") + ":" + getConfig().getInt("mysql.port") + "/" + getConfig().getString("mysql.database");
+        String url = "jdbc:mysql://" + getConfig().getString("mysql.host") + ":" + getConfig().getInt("mysql.port") + "/" + getConfig().getString("mysql.database") + "?autoReconnect=true";
         String user = getConfig().getString("mysql.username");
         String password = getConfig().getString("mysql.password");
 
