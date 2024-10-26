@@ -193,7 +193,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             updateavailableMessage = (String) messagesObject.get("updateavailable");
             updateurlMessage = (String) messagesObject.get("updateurl");
             checkingupdateMessage = (String) messagesObject.get("checkingupdate");
-            checkfailedMessage = (String) messagesObject.get("checkfailed");
+            checkfailedMessage = (String) messagesObject.get("checkupdatefailed");
             nowusinglatestversionMessage = (String) messagesObject.get("nowusinglatestversion");
             storageTypeMessage = (String) messagesObject.get("storagetype");
             disableMessage = (String) messagesObject.get("disable");
