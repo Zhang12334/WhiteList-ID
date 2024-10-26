@@ -3,6 +3,8 @@
     "startup": "WhiteList-ID has been successfully loaded",
     "nowversion": "Using version: ",
     "checkingupdate": "Checking for update",
+    "checkupdatefailed": "Failed to check for update",
+    "nowusinglatestversion": "Using the latest version",
     "updateavailable": "Founded update: ",
     "updateurl": "Download link: ",
     "storagetype": "Using storage type",

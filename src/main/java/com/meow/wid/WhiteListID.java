@@ -110,7 +110,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         String[] githubUrls = {
             "https://ghp.ci/",
             "https://raw.fastgit.org/"
-        }
+        };
         // 获取 github release 最新版本号作为最新版本
         // 仓库地址：https://github.com/Zhang12334/WhiteList-ID
         String latestVersionUrl = "https://api.github.com/repos/Zhang12334/WhiteList-ID/releases/latest";
@@ -123,20 +123,30 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                     String line;
                     while ((line = reader.readLine()) != null) {
                         if (line.contains("tag_name")) {
-                            latestVersion = line.split(":")[1].replaceAll("\"", "").replaceAll()
+                            latestVersion = line.split(":")[1].replaceAll("\"", "").trim();
+                            break; // 找到版本号后退出循环
                         }
                     }
                 }
+                if (latestVersion != null) {
+                    break; // 找到版本号后退出外层循环
+                }
             }
-        }
-        // 存储联网获取到的版本号到变量
-        String latestVersion=tag_name;
-        // 比较版本号
-        if (!currentVersion.equals(latestVersion)) {
-            // 如果有新版本，则提示新版本
-            getLogger().info(updateavailableMessage + latestVersion);
-            // 提示下载地址（latest release地址）
-            getLogger().info(updateurlMessage + "https://github.com/Zhang12334/WhiteList-ID/releases/latest");
+            if (latestVersion == null) {
+                getLogger().warning(checkfailedMessage);
+                return;
+            }
+            // 比较版本号
+            if (!currentVersion.equals(latestVersion)) {
+                // 如果有新版本，则提示新版本
+                getLogger().info(updateavailableMessage + latestVersion);
+                // 提示下载地址（latest release地址）
+                getLogger().info(updateurlMessage + " https://github.com/Zhang12334/WhiteList-ID/releases/latest");
+            } else {
+                getLogger().info(nowusinglatestversionMessage);
+            }
+        } catch (IOException e) {
+            getLogger().warning(checkfailedMessage);
         }
     }
 
@@ -177,6 +187,8 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             updateavailableMessage = (String) messagesObject.get("updateavailable");
             updateurlMessage = (String) messagesObject.get("updateurl");
             checkingupdateMessage = (String) messagesObject.get("checkingupdate");
+            checkfailedMessage = (String) messagesObject.get("checkfailed");
+            nowusinglatestversionMessage = (String) messagesObject.get("nowusinglatestversion");
             storageTypeMessage = (String) messagesObject.get("storagetype");
             disableMessage = (String) messagesObject.get("disable");
             notWhitelistedMessage = (String) messagesObject.get("not_whitelisted");
