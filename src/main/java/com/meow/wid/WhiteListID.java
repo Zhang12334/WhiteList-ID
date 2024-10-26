@@ -33,7 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.io.BufferedReader;
 import java.net.URL;
-
+import java.net.HttpURLConnection;
 public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener {
 
     private Set<String> whiteList;  // 使用玩家ID名称存储
