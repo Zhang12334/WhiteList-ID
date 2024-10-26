@@ -227,6 +227,8 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                 getLogger().info("startup: " + startupMessage);
                 getLogger().info("usingversion: " + usingversionMessage);
                 getLogger().info("checkingupdate: " + checkingupdateMessage);
+                getLogger().info("checkupdatefailed: " + checkfailedMessage);
+                getLogger().info("nowusinglatestversion: " + nowusinglatestversionMessage);
                 getLogger().info("updateavailable: " + updateavailableMessage);
                 getLogger().info("updateurl: " + updateurlMessage);
                 getLogger().info("storagetype: " + storageTypeMessage);
