@@ -130,8 +130,12 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                     String line;
                     while ((line = reader.readLine()) != null) {
                         if (line.contains("tag_name")) {
-                            latestVersion = line.split(":")[1].replaceAll("\"", "").trim();
-                            break; // 找到版本号后退出循环
+                            // 使用正则表达式来分割，确保处理 `:` 前后的空格
+                            String[] parts = line.split("\\s*:\\s*", 2);
+                            if (parts.length > 1) {
+                                latestVersion = parts[1].replaceAll("\"", "").trim();
+                                break; // 找到版本号后退出循环
+                            }
                         }
                     }
                 }
@@ -148,7 +152,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                 // 如果有新版本，则提示新版本
                 getLogger().info(updateavailableMessage + latestVersion);
                 // 提示下载地址（latest release地址）
-                getLogger().info(updateurlMessage + " https://github.com/Zhang12334/WhiteList-ID/releases/latest");
+                getLogger().info(updateurlMessage + "https://github.com/Zhang12334/WhiteList-ID/releases/latest");
             } else {
                 getLogger().info(nowusinglatestversionMessage);
             }
