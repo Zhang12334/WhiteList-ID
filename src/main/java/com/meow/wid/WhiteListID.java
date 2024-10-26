@@ -222,7 +222,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             // 调试模式
             if(debugmode.equals("enable")){
                 // debug！
-                getLogger().info("———————Debug———————");
+                getLogger().info("———————Language Debug mode———————");
                 getLogger().info(nowLanguageMessage);
                 getLogger().info("startup: " + startupMessage);
                 getLogger().info("usingversion: " + usingversionMessage);
