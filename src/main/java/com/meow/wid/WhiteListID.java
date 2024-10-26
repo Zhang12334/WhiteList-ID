@@ -115,7 +115,8 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         // github加速地址，挨个尝试
         String[] githubUrls = {
             "https://ghp.ci/",
-            "https://raw.fastgit.org/"
+            "https://raw.fastgit.org/",
+            ""
         };
         // 获取 github release 最新版本号作为最新版本
         // 仓库地址：https://github.com/Zhang12334/WhiteList-ID
@@ -151,8 +152,6 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             } else {
                 getLogger().info(nowusinglatestversionMessage);
             }
-        } catch (IOException e) {
-            getLogger().warning(checkfailedMessage);
         }
     }
 
