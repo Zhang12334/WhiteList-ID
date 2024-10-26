@@ -31,7 +31,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-
+import java.io.BufferedReader;
+import java.net.URL;
 
 public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener {
 
@@ -61,7 +62,12 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     private String reloadMessage;
     private String reloadLanguage;
     private String reloadWhitelist;        
-
+    private String checkingupdateMessage;
+    private String updateavailableMessage;
+    private String checkfailedMessage;
+    private String updateurlMessage;
+    private String usingversionMessage;
+    private String nowusinglatestversionMessage;
     @Override
     public void onEnable() {
         // bstats
