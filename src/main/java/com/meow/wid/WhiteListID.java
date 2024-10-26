@@ -120,25 +120,23 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         };
         // 获取 github release 最新版本号作为最新版本
         // 仓库地址：https://github.com/Zhang12334/WhiteList-ID
-        String latestVersionUrl = "https://api.github.com/repos/Zhang12334/WhiteList-ID/releases/latest";
+        String latestVersionUrl = "https://github.com/Zhang12334/WhiteList-ID/releases/latest";
         // 获取版本号
         try {
             String latestVersion = null;
             for (String url : githubUrls) {
-                try (InputStream inputStream = new URL(url + latestVersionUrl).openStream()) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        if (line.contains("tag_name")) {
-                            // 使用正则表达式来分割，确保处理 `:` 前后的空格
-                            String[] parts = line.split("\\s*:\\s*", 2);
-                            if (parts.length > 1) {
-                                latestVersion = parts[1].replaceAll("\"", "").trim();
-                                break; // 找到版本号后退出循环
-                            }
-                        }
+                HttpURLConnection connection = (HttpURLConnection) new URL(url + latestVersionUrl).openConnection();
+                connection.setInstanceFollowRedirects(false); // 不自动跟随重定向
+                int responseCode = connection.getResponseCode();
+                if (responseCode == 302) {
+                    String redirectUrl = connection.getHeaderField("Location");
+                    if (redirectUrl != null && redirectUrl.contains("tag/")) {
+                        // 从重定向URL中提取版本号
+                        latestVersion = extractVersionFromUrl(redirectUrl);
+                        break; // 找到版本号后退出循环
                     }
                 }
+                connection.disconnect();
                 if (latestVersion != null) {
                     break; // 找到版本号后退出外层循环
                 }
@@ -156,11 +154,22 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             } else {
                 getLogger().info(nowusinglatestversionMessage);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             getLogger().warning(checkfailedMessage);
         }
     }
-
+    private String extractVersionFromUrl(String url) {
+        // 解析URL中的版本号
+        int tagIndex = url.indexOf("tag/");
+        if (tagIndex != -1) {
+            int endIndex = url.indexOf('/', tagIndex + 4);
+            if (endIndex == -1) {
+                endIndex = url.length();
+            }
+            return url.substring(tagIndex + 4, endIndex);
+        }
+        return null;
+    }
     private void copyLanguageFile(File languageFile, String language) {
         InputStream langInput = getResource("lang/" + language + ".json");
         if (langInput != null) {
