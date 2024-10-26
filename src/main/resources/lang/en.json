@@ -1,6 +1,10 @@
 {
   "messages": {
     "startup": "WhiteList-ID has been successfully loaded",
+    "nowversion": "Using version: ",
+    "checkingupdate": "Checking for update",
+    "updateavailable": "Founded update: ",
+    "updateurl": "Download link: ",
     "storagetype": "Using storage type",
     "disable": "WhiteList-ID has been unloaded",
     "not_whitelisted": "You are not on the server's whitelist!",

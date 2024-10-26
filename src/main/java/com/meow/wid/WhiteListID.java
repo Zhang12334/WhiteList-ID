@@ -67,41 +67,77 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         // bstats
         int pluginId = 23704;
         Metrics metrics = new Metrics(this, pluginId);
-        this.saveDefaultConfig();  // 保存默认配置文件
+        // 保存默认配置文件
+        this.saveDefaultConfig();
         whiteList = new HashSet<>();
         this.getCommand("wid").setExecutor(this);
-        Bukkit.getPluginManager().registerEvents(this, this); // 注册事件监听
-
+        // 注册事件监听
+        Bukkit.getPluginManager().registerEvents(this, this);
         // 创建 lang 文件夹
         File langFolder = new File(getDataFolder(), "lang");
         if (!langFolder.exists()) {
             langFolder.mkdirs(); // 创建文件夹
         }
-
         debugmode = getConfig().getString("debugmode", "disable");
-
         // 检查语言文件
         String language = getConfig().getString("language", "zh_cn");
         File languageFile = new File(langFolder, language + ".json");
-
         // 如果指定的语言文件不存在，则尝试从 JAR 中复制
         if (!languageFile.exists()) {
             copyLanguageFile(languageFile, language);
         }
-
         loadLanguageFile(language);
-
         // 读取存储类型
         storageType = getConfig().getString("storage", "json");
-        
         if (storageType.equalsIgnoreCase("json")) {
             loadFromJSON();
         } else if (storageType.equalsIgnoreCase("mysql")) {
             loadFromMySQL();
         }
-
+        // 输出插件版本号及其他信息
+        String version = getDescription().getVersion();
+        getLogger().info(usingversionMessage + version);
         getLogger().info(startupMessage);
         getLogger().info(storageTypeMessage + " " + storageType); // 添加空格，瞅着好看
+        getLogger().info(checkingupdateMessage);
+        check_update();
+    }
+
+    private void check_update() {
+        // 获取当前版本号
+        String currentVersion = getDescription().getVersion();
+        // github加速地址，挨个尝试
+        String[] githubUrls = {
+            "https://ghp.ci/",
+            "https://raw.fastgit.org/"
+        }
+        // 获取 github release 最新版本号作为最新版本
+        // 仓库地址：https://github.com/Zhang12334/WhiteList-ID
+        String latestVersionUrl = "https://api.github.com/repos/Zhang12334/WhiteList-ID/releases/latest";
+        // 获取版本号
+        try {
+            String latestVersion = null;
+            for (String url : githubUrls) {
+                try (InputStream inputStream = new URL(url + latestVersionUrl).openStream()) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        if (line.contains("tag_name")) {
+                            latestVersion = line.split(":")[1].replaceAll("\"", "").replaceAll()
+                        }
+                    }
+                }
+            }
+        }
+        // 存储联网获取到的版本号到变量
+        String latestVersion=tag_name;
+        // 比较版本号
+        if (!currentVersion.equals(latestVersion)) {
+            // 如果有新版本，则提示新版本
+            getLogger().info(updateavailableMessage + latestVersion);
+            // 提示下载地址（latest release地址）
+            getLogger().info(updateurlMessage + "https://github.com/Zhang12334/WhiteList-ID/releases/latest");
+        }
     }
 
     private void copyLanguageFile(File languageFile, String language) {
@@ -109,7 +145,8 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         if (langInput != null) {
             try {
                 Files.copy(langInput, languageFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                getLogger().info("语言文件 " + language + ".json 已复制到 lang 文件夹");
+                getLogger().info("[Chinese] 语言文件 " + language + ".json 已复制到 lang 文件夹");
+                getLogger().info("[English] Language file " + language + ".json has been copied to the lang folder");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -119,7 +156,8 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             if (langInput != null) {
                 try {
                     Files.copy(langInput, languageFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                    getLogger().info("默认语言文件 zh_cn.json 已复制到 lang 文件夹");
+                    getLogger().info("[Chinese] 默认语言文件 zh_cn.json 已复制到 lang 文件夹");
+                    getLogger().info("[English] Default language file zh_cn.json has been copied to the lang folder");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -132,9 +170,13 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             JSONParser parser = new JSONParser();
             JSONObject jsonObject = (JSONObject) parser.parse(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
             
-            // 直接存储消息内容
+            // 存储消息内容
             JSONObject messagesObject = (JSONObject) jsonObject.get("messages");
             startupMessage = (String) messagesObject.get("startup");
+            usingversionMessage = (String) messagesObject.get("nowversion");
+            updateavailableMessage = (String) messagesObject.get("updateavailable");
+            updateurlMessage = (String) messagesObject.get("updateurl");
+            checkingupdateMessage = (String) messagesObject.get("checkingupdate");
             storageTypeMessage = (String) messagesObject.get("storagetype");
             disableMessage = (String) messagesObject.get("disable");
             notWhitelistedMessage = (String) messagesObject.get("not_whitelisted");
@@ -165,6 +207,10 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                 getLogger().info("———————Debug———————");
                 getLogger().info(nowLanguageMessage);
                 getLogger().info("startup: " + startupMessage);
+                getLogger().info("usingversion: " + usingversionMessage);
+                getLogger().info("checkingupdate: " + checkingupdateMessage);
+                getLogger().info("updateavailable: " + updateavailableMessage);
+                getLogger().info("updateurl: " + updateurlMessage);
                 getLogger().info("storagetype: " + storageTypeMessage);
                 getLogger().info("disable: " + disableMessage);
                 getLogger().info("not_whitelisted: " + notWhitelistedMessage);
@@ -188,9 +234,9 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                 getLogger().info("———————Debug———————");
             }
         } catch (IOException | ParseException e) {
-            getLogger().warning("未找到语言文件，使用默认语言 zh_cn.json");
+            getLogger().warning("[Language File Warn-Chinese] 未找到语言文件，使用默认语言 zh_cn.json");
             // 多语言支持避免英语母语用户看不懂报错
-            getLogger().warning("The language file was not found; using the default language zh_cn.json");            
+            getLogger().warning("[Language File Warn-English] The language file was not found, using the default language zh_cn.json");            
             loadLanguageFile("zh_cn");
         }
     }

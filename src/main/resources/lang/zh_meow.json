@@ -1,6 +1,10 @@
 {
   "messages": {
     "startup": "WhiteList-ID 已加载成功喵!",
+    "nowversion": "当前使用版本：",
+    "checkingupdate": "正在检查更新",
+    "updateavailable": "发现新版本：",
+    "updateurl": "新版本下载地址：",        
     "storagetype": "使用存储类型",
     "disable": "WhiteList-ID 已卸载",
     "not_whitelisted": "您不在本服白名单中喵！",
