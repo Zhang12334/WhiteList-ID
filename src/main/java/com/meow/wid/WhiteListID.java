@@ -146,7 +146,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                 return;
             }
             // 比较版本号
-            if (!currentVersion.equals(latestVersion)) {
+            if (isVersionGreater(latestVersion, currentVersion)) {
                 // 如果有新版本，则提示新版本
                 getLogger().info(updateavailableMessage + latestVersion);
                 // 提示下载地址（latest release地址）
@@ -158,6 +158,24 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             getLogger().warning(checkfailedMessage);
         }
     }
+
+   private boolean isVersionGreater(String version1, String version2) {
+        String[] v1Parts = version1.split("\\.");
+        String[] v2Parts = version2.split("\\.");
+
+        for (int i = 0; i < Math.max(v1Parts.length, v2Parts.length); i++) {
+            int v1Part = i < v1Parts.length ? Integer.parseInt(v1Parts[i]) : 0;
+            int v2Part = i < v2Parts.length ? Integer.parseInt(v2Parts[i]) : 0;
+
+            if (v1Part > v2Part) {
+                return true;
+            } else if (v1Part < v2Part) {
+                return false;
+            }
+        }
+        return false;
+    }
+    
     private String extractVersionFromUrl(String url) {
         // 解析URL中的版本号
         int tagIndex = url.indexOf("tag/");
@@ -170,6 +188,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         }
         return null;
     }
+    
     private void copyLanguageFile(File languageFile, String language) {
         InputStream langInput = getResource("lang/" + language + ".json");
         if (langInput != null) {
