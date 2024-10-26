@@ -152,6 +152,8 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             } else {
                 getLogger().info(nowusinglatestversionMessage);
             }
+        } catch (IOException e) {
+            getLogger().warning(checkfailedMessage);
         }
     }
 
