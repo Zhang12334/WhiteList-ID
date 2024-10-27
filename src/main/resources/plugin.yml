@@ -5,7 +5,7 @@ api-version: 1.16
 commands:
   wid:
     description: WhiteList-ID
-    usage: /wid <add|remove> <playername> or /wid reload
+    usage: /wid <add|remove> <playername> or /wid reload or /wid convert
 permissions:
   wid.add:
     description: Add player to whitelist
@@ -16,3 +16,6 @@ permissions:
   wid.reload:
     description: Reload the configuration file
     default: op
+  wid.convert:
+    description: Convert whitelist from another storage
+    default: op    

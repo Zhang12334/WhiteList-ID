@@ -359,7 +359,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         }
 
         if (args.length != 2) {
-            sender.sendMessage(ChatColor.RED + String.format(useExampleMessage + " /wid <add|remove> <playername>"));
+            sender.sendMessage(ChatColor.RED + String.format(useExampleMessage + " /wid <add|remove> <playername> or /wid reload or /wid convert"));
             return true;
         }
 
