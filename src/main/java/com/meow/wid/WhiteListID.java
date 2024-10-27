@@ -225,8 +225,23 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         } catch (IOException | ParseException e) {
             getLogger().warning("[Language File Warn-Chinese] 未找到语言文件，使用默认语言 zh_cn.json");
             getLogger().warning("[Language File Warn-English] The language file was not found, using the default language zh_cn.json");
-            loadLanguageFileInternal("zh_cn");
+
+            try {
+                loadLanguageFileInternal("zh_cn");
+            } catch (IOException | ParseException ex) {
+                getLogger().severe("[Language File Error-Chinese] 加载默认语言文件 zh_cn.json 失败，插件将被卸载");
+                getLogger().severe("[Language File Error-Chinese] 请勿更改插件本体文件！若未更改请附带错误日志前往 Github 提交 Issue!");
+                getLogger().severe("[Language File Error-English] Failed to load the default language file zh_cn.json, the plugin will be disabled");
+                getLogger().severe("[Language File Error-English] Do not modify the plugin's core files! If you have not made any changes, please attach the error log and submit an issue on Github!");
+                // 卸载插件
+                unloadPlugin();
+            }
         }
+    }
+
+    private void unloadPlugin() {
+        // 禁用插件
+        getServer().getPluginManager().disablePlugin(this);
     }
 
     private void loadLanguageFileInternal(String language) throws IOException, ParseException {
