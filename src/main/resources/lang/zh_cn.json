@@ -5,6 +5,7 @@
     "checkingupdate": "正在检查更新",
     "checkupdatefailed": "检查插件更新失败",
     "nowusinglatestversion": "正在使用最新版本",    
+    "oldversionmaycauseproblem": "使用旧版本可能导致问题，请更新至最新版本！",
     "updateavailable": "发现新版本：",
     "updateurl": "新版本下载地址：",    
     "storagetype": "使用存储类型",

@@ -4,7 +4,8 @@
     "nowversion": "当前使用版本：",
     "checkingupdate": "正在检查更新",
     "checkupdatefailed": "检查插件更新失败",
-    "nowusinglatestversion": "正在使用最新版本",        
+    "nowusinglatestversion": "正在使用最新版本",  
+    "oldversionmaycauseproblem": "有新版本了喵，赶紧更新喵，旧版本可能导致服务器爆炸喵~",      
     "updateavailable": "发现新版本：",
     "updateurl": "新版本下载地址：",        
     "storagetype": "使用存储类型",
@@ -23,9 +24,9 @@
     "loaded_mysql": "成功从 MySQL 加载白名单喵",
     "saved_mysql": "白名单已保存至 MySQL喵",
     "now_language": "当前使用：喵喵中文 (zh_meow.json)",
-    "translator": "翻译贡献者: Zhang1233",
+    "translator": "喵语贡献者: Zhang1233",
     "reload": "配置文件已重载喵",
-    "reload_language": "喵言喵语已加载喵",
+    "reload_language": "喵喵中文已加载喵",
     "reload_whitelist": "白名单已重载喵"
   }
 }

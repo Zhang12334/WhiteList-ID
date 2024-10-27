@@ -68,6 +68,8 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     private String updateurlMessage;
     private String usingversionMessage;
     private String nowusinglatestversionMessage;
+    private String oldversionmaycauseproblemMessage;
+
     @Override
     public void onEnable() {
         // bstats
@@ -148,9 +150,10 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             // 比较版本号
             if (isVersionGreater(latestVersion, currentVersion)) {
                 // 如果有新版本，则提示新版本
-                getLogger().info(updateavailableMessage + latestVersion);
+                getLogger().warning(updateavailableMessage + latestVersion);
                 // 提示下载地址（latest release地址）
-                getLogger().info(updateurlMessage + "https://github.com/Zhang12334/WhiteList-ID/releases/latest");
+                getLogger().warning(updateurlMessage + "https://github.com/Zhang12334/WhiteList-ID/releases/latest");
+                getLogger().warning(oldversionmaycauseproblemMessage);
             } else {
                 getLogger().info(nowusinglatestversionMessage);
             }
@@ -188,7 +191,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         }
         return null;
     }
-    
+
     private void copyLanguageFile(File languageFile, String language) {
         InputStream langInput = getResource("lang/" + language + ".json");
         if (langInput != null) {
@@ -228,6 +231,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             checkingupdateMessage = (String) messagesObject.get("checkingupdate");
             checkfailedMessage = (String) messagesObject.get("checkupdatefailed");
             nowusinglatestversionMessage = (String) messagesObject.get("nowusinglatestversion");
+            oldversionmaycauseproblemMessage = (String) messagesObject.get("oldversionmaycauseproblem");
             storageTypeMessage = (String) messagesObject.get("storagetype");
             disableMessage = (String) messagesObject.get("disable");
             notWhitelistedMessage = (String) messagesObject.get("not_whitelisted");
@@ -262,6 +266,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                 getLogger().info("checkingupdate: " + checkingupdateMessage);
                 getLogger().info("checkupdatefailed: " + checkfailedMessage);
                 getLogger().info("nowusinglatestversion: " + nowusinglatestversionMessage);
+                getLogger().info("oldversionmaycauseproblem: " + oldversionmaycauseproblemMessage);
                 getLogger().info("updateavailable: " + updateavailableMessage);
                 getLogger().info("updateurl: " + updateurlMessage);
                 getLogger().info("storagetype: " + storageTypeMessage);
