@@ -356,7 +356,9 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
             return handleReloadCommand(sender);
-        }
+        } else if (args.length == 1 && args[0].equalsIgnoreCase("convert")) {
+            return convertwhitelist(sender);
+        } 
 
         if (args.length != 2) {
             sender.sendMessage(ChatColor.RED + String.format(useExampleMessage + " /wid <add|remove> <playername> or /wid reload or /wid convert"));
@@ -370,8 +372,6 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             return handleAddCommand(sender, playerName);
         } else if (action.equalsIgnoreCase("remove")) {
             return handleRemoveCommand(sender, playerName);
-        } else if (action.equalsIgnoreCase("convert")) {
-            return convertwhitelist(sender);
         } else {
             sender.sendMessage(ChatColor.RED + String.format(unknownOptionMessage + " %s", action));
             return false;
