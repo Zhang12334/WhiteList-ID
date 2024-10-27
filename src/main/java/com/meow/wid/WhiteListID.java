@@ -207,6 +207,15 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     }
 
     private void loadLanguageFile(String language) {
+        boolean langfileexists = checkEntryInCurrentJar("lang/" + language + ".json");
+        if(!langfileexists){
+            // 找不到语言文件
+            getLogger().warning("[Language File Warn-Chinese] 未找到语言文件，使用默认语言 zh_cn.json");
+            // 多语言支持避免英语母语用户看不懂报错
+            getLogger().warning("[Language File Warn-English] The language file was not found, using the default language zh_cn.json");            
+            loadLanguageFile("zh_cn");// 加载默认语言zh_cn
+            return;// 结束
+        }
         try (InputStream inputStream = getClass().getResourceAsStream("/lang/" + language + ".json")) {
             JSONParser parser = new JSONParser();
             JSONObject jsonObject = (JSONObject) parser.parse(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
@@ -282,11 +291,6 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                 getLogger().info("convert_success: " + convertsuccessMessage);                             
                 getLogger().info("———————Language Debug mode———————");
             }
-        } catch (IOException | ParseException e) {
-            getLogger().warning("[Language File Warn-Chinese] 未找到语言文件，使用默认语言 zh_cn.json");
-            // 多语言支持避免英语母语用户看不懂报错
-            getLogger().warning("[Language File Warn-English] The language file was not found, using the default language zh_cn.json");            
-            loadLanguageFile("zh_cn");
         }
     }
 
