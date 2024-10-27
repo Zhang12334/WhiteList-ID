@@ -86,6 +86,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         if (!langFolder.exists()) {
             langFolder.mkdirs(); // 创建文件夹
         }
+        // 读取debugmode值
         debugmode = getConfig().getString("debugmode", "disable");
         // 检查语言文件
         String language = getConfig().getString("language", "zh_cn");
@@ -97,6 +98,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         loadLanguageFile(language);
         // 读取存储类型
         storageType = getConfig().getString("storage", "json");
+        // 加载存储
         if (storageType.equalsIgnoreCase("json")) {
             loadFromJSON();
         } else if (storageType.equalsIgnoreCase("mysql")) {
@@ -104,10 +106,10 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         }
         // 输出插件版本号及其他信息
         String version = getDescription().getVersion();
-        getLogger().info(usingversionMessage + version);
-        getLogger().info(startupMessage);
+        getLogger().info(usingversionMessage + " " + version); //当前使用版本
+        getLogger().info(startupMessage); // 启动消息
         getLogger().info(storageTypeMessage + " " + storageType); // 添加空格，瞅着好看
-        getLogger().info(checkingupdateMessage);
+        getLogger().info(checkingupdateMessage); // 检查更新消息
         check_update();
     }
 
@@ -130,7 +132,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                 HttpURLConnection connection = (HttpURLConnection) new URL(url + latestVersionUrl).openConnection();
                 connection.setInstanceFollowRedirects(false); // 不自动跟随重定向
                 int responseCode = connection.getResponseCode();
-                if (responseCode == 302) {
+                if (responseCode == 302) { // 如果 302 了
                     String redirectUrl = connection.getHeaderField("Location");
                     if (redirectUrl != null && redirectUrl.contains("tag/")) {
                         // 从重定向URL中提取版本号
@@ -140,7 +142,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                 }
                 connection.disconnect();
                 if (latestVersion != null) {
-                    break; // 找到版本号后退出外层循环
+                    break; // 找到版本号后退出循环
                 }
             }
             if (latestVersion == null) {
@@ -150,9 +152,9 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             // 比较版本号
             if (isVersionGreater(latestVersion, currentVersion)) {
                 // 如果有新版本，则提示新版本
-                getLogger().warning(updateavailableMessage + latestVersion);
+                getLogger().warning(updateavailableMessage + " " + latestVersion);
                 // 提示下载地址（latest release地址）
-                getLogger().warning(updateurlMessage + "https://github.com/Zhang12334/WhiteList-ID/releases/latest");
+                getLogger().warning(updateurlMessage + " https://github.com/Zhang12334/WhiteList-ID/releases/latest");
                 getLogger().warning(oldversionmaycauseproblemMessage);
             } else {
                 getLogger().info(nowusinglatestversionMessage);
@@ -162,14 +164,13 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         }
     }
 
-   private boolean isVersionGreater(String version1, String version2) {
+    // 版本比较
+    private boolean isVersionGreater(String version1, String version2) {
         String[] v1Parts = version1.split("\\.");
         String[] v2Parts = version2.split("\\.");
-
         for (int i = 0; i < Math.max(v1Parts.length, v2Parts.length); i++) {
             int v1Part = i < v1Parts.length ? Integer.parseInt(v1Parts[i]) : 0;
             int v2Part = i < v2Parts.length ? Integer.parseInt(v2Parts[i]) : 0;
-
             if (v1Part > v2Part) {
                 return true;
             } else if (v1Part < v2Part) {
@@ -180,7 +181,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     }
     
     private String extractVersionFromUrl(String url) {
-        // 解析URL中的版本号
+        // 解析 302 URL 中的版本号
         int tagIndex = url.indexOf("tag/");
         if (tagIndex != -1) {
             int endIndex = url.indexOf('/', tagIndex + 4);

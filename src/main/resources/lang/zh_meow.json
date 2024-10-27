@@ -1,7 +1,7 @@
 {
   "messages": {
     "startup": "WhiteList-ID 已加载成功喵!",
-    "nowversion": "当前使用版本：",
+    "nowversion": "当前使用版本",
     "checkingupdate": "正在检查更新",
     "checkupdatefailed": "检查插件更新失败",
     "nowusinglatestversion": "正在使用最新版本",  
