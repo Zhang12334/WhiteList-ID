@@ -447,7 +447,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         } else if (storageType.equalsIgnoreCase("mysql")) {
             loadFromMySQL();
         }
-    })
+    }
 
     // 加载 JSON 存储
     private void loadFromJSON() {
