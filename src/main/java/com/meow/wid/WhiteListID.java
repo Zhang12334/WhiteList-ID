@@ -219,41 +219,24 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         }
     }
 
-    public boolean checkEntryInCurrentJar(String entryPath) {
+    private void loadLanguageFile(String language) {
         try {
-            // 获取当前 JAR 文件的地址
-            URL url = getClass().getProtectionDomain().getCodeSource().getLocation();
-            try (JarFile jarFile = new JarFile(Paths.get(url.toURI()).toString())) {
-                Enumeration<JarEntry> entries = jarFile.entries();
-                while (entries.hasMoreElements()) {
-                    JarEntry entry = entries.nextElement();
-                    if (entry.getName().equals(entryPath)) {
-                        return true;
-                    }
-                }
-            }
-        } catch (IOException | IllegalArgumentException | NullPointerException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
+            loadLanguageFileInternal(language);
+        } catch (IOException | ParseException e) {
+            getLogger().warning("[Language File Warn-Chinese] 未找到语言文件，使用默认语言 zh_cn.json");
+            getLogger().warning("[Language File Warn-English] The language file was not found, using the default language zh_cn.json");
+            loadLanguageFileInternal("zh_cn");
         }
-        return false;
     }
 
-    private void loadLanguageFile(String language) {
-        boolean langfileexists = checkEntryInCurrentJar("lang/" + language + ".json");
-        if(!langfileexists){
-            // 找不到语言文件
-            getLogger().warning("[Language File Warn-Chinese] 未找到语言文件，使用默认语言 zh_cn.json");
-            // 多语言支持避免英语母语用户看不懂报错
-            getLogger().warning("[Language File Warn-English] The language file was not found, using the default language zh_cn.json");            
-            loadLanguageFile("zh_cn");// 加载默认语言zh_cn
-            return;// 结束
-        }
+    private void loadLanguageFileInternal(String language) throws IOException, ParseException {
         try (InputStream inputStream = getClass().getResourceAsStream("/lang/" + language + ".json")) {
+            if (inputStream == null) {
+                throw new IOException("Language file not found: " + language + ".json");
+            }
             JSONParser parser = new JSONParser();
             JSONObject jsonObject = (JSONObject) parser.parse(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-            
+
             // 存储消息内容
             JSONObject messagesObject = (JSONObject) jsonObject.get("messages");
             startupMessage = (String) messagesObject.get("startup");
@@ -283,14 +266,15 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             translatorMessage = (String) messagesObject.get("translator");
             reloadMessage = (String) messagesObject.get("reload");
             reloadLanguage = (String) messagesObject.get("reload_language");
-            reloadWhitelist = (String) messagesObject.get("reload_whitelist");  
-            convertsuccessMessage = (String) messagesObject.get("convert_success");                      
+            reloadWhitelist = (String) messagesObject.get("reload_whitelist");
+            convertsuccessMessage = (String) messagesObject.get("convert_success");
+
             // 当前使用语言
             getLogger().info(nowLanguageMessage);
-            //翻译贡献者
+            // 翻译贡献者
             getLogger().info(translatorMessage);
             // 调试模式
-            if(debugmode.equals("enable")){
+            if ("enable".equals(debugmode)) {
                 // debug！
                 getLogger().info("———————Language Debug mode———————");
                 getLogger().info(nowLanguageMessage);
@@ -321,12 +305,13 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                 getLogger().info("translator: " + translatorMessage);
                 getLogger().info("reload: " + reloadMessage);
                 getLogger().info("reload_language: " + reloadLanguage);
-                getLogger().info("reload_whitelist: " + reloadWhitelist);   
-                getLogger().info("convert_success: " + convertsuccessMessage);                             
+                getLogger().info("reload_whitelist: " + reloadWhitelist);
+                getLogger().info("convert_success: " + convertsuccessMessage);
                 getLogger().info("———————Language Debug mode———————");
             }
         }
     }
+
 
     @Override
     public void onDisable() {
