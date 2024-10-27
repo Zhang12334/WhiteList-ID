@@ -45,6 +45,9 @@ You can also support me on the Afdian platform and join the QQ group for timely 
 - 重载配置：/wid reload  
   Reload configuration: /wid reload
 
+- 转换白名单（从未启用的存储类型向当前使用的存储类型转换）：/wid convert
+  Convert whitelist (from the previously unused storage type to the currently used storage type): /wid reload
+
 执行命令需要 OP 权限，或拥有权限节点：  
 Requires OP permission or the following permission nodes:
 
@@ -57,6 +60,9 @@ Requires OP permission or the following permission nodes:
 - 重载权限节点：wid.reload  
   Permission node for reloading: wid.reload
 
+- 转换白名单权限节点：wid.convert
+  Permission node for convert whitelist: wid.convert
+  
 ## 兼容性测试 / Compatibility Testing
 
 |        | 1.16 | 1.17 | 1.18 | 1.19 | 1.20 | 1.20.1 | 1.21 |
@@ -80,9 +86,10 @@ Welcome to assist developers in improving the compatibility testing list, and yo
 | MySQL 存储 / Support MySQL storage      | ✅                                |
 | JSON 存储 / Support JSON storage        | ✅                                |
 | 白名单实时重载 / Player join event      | ✅                                |
-| 三方语言文件支持 / Support for third-party language files | ✅                                |
+| 三方语言文件支持 / Support for third-party language files | ✅              |
 | 多语言支持 / Multi-language support     | ✅                                |
-| 调试模式（用于显示语言文件内容） / Debug mode (for displaying language file contents) | ✅                                |
+| 调试模式（用于显示语言文件内容） / Debug mode (for displaying language file contents) | ✅ |    
+| 转换白名单（从未启用的存储类型向当前使用的存储类型转换） / Convert whitelist (from the previously unused storage type to the currently used storage type) | ✅ |
 
 
 ## 支持语言列表 / Supported Languages
