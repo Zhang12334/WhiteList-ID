@@ -327,6 +327,17 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         }
     }
 
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        List<String> suggestions = new ArrayList<>();
+        if (args.length == 1) {
+            suggestions.add("add");   
+            suggestions.add("remove");            
+            suggestions.add("reload");
+            suggestions.add("convert");
+        }
+        return suggestions;
+    }
 
     @Override
     public void onDisable() {
