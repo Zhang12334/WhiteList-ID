@@ -206,6 +206,27 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         }
     }
 
+    public boolean checkEntryInCurrentJar(String entryPath) {
+        try {
+            // 获取当前 JAR 文件的地址
+            URL url = getClass().getProtectionDomain().getCodeSource().getLocation();
+            try (JarFile jarFile = new JarFile(Paths.get(url.toURI()).toString())) {
+                Enumeration<JarEntry> entries = jarFile.entries();
+                while (entries.hasMoreElements()) {
+                    JarEntry entry = entries.nextElement();
+                    if (entry.getName().equals(entryPath)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (IOException | IllegalArgumentException | NullPointerException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     private void loadLanguageFile(String language) {
         boolean langfileexists = checkEntryInCurrentJar("lang/" + language + ".json");
         if(!langfileexists){
