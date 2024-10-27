@@ -332,13 +332,11 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             return handleAddCommand(sender, playerName);
         } else if (action.equalsIgnoreCase("remove")) {
             return handleRemoveCommand(sender, playerName);
+        } else if (action.equalsIgnoreCase("convert")) {
+            return convertwhitelist(sender);
         } else {
             sender.sendMessage(ChatColor.RED + String.format(unknownOptionMessage + " %s", action));
             return false;
-        }
-
-        if (action.equalsIgnoreCase("convert")) {
-            return convertwhitelist(sender);
         }
     }
 
@@ -357,7 +355,11 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             loadFromJSON();
             saveToMySQL();
             sender.sendMessage(ChatColor.GREEN + convertsuccessMessage + " Json --> MySQL");
+        } else {
+            sender.sendMessage(ChatColor.RED + "未知的存储类型: " + storageType);
+            return false;
         }
+        return true;
     }
 
     private boolean handleReloadCommand(CommandSender sender) {
