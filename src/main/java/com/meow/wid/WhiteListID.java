@@ -69,6 +69,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     private String usingversionMessage;
     private String nowusinglatestversionMessage;
     private String oldversionmaycauseproblemMessage;
+    private String convertsuccessMessage;
 
     @Override
     public void onEnable() {
@@ -81,29 +82,16 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         this.getCommand("wid").setExecutor(this);
         // 注册事件监听
         Bukkit.getPluginManager().registerEvents(this, this);
-        // 创建 lang 文件夹
-        File langFolder = new File(getDataFolder(), "lang");
-        if (!langFolder.exists()) {
-            langFolder.mkdirs(); // 创建文件夹
-        }
         // 读取debugmode值
         debugmode = getConfig().getString("debugmode", "disable");
         // 检查语言文件
         String language = getConfig().getString("language", "zh_cn");
-        File languageFile = new File(langFolder, language + ".json");
-        // 如果指定的语言文件不存在，则尝试从 JAR 中复制
-        if (!languageFile.exists()) {
-            copyLanguageFile(languageFile, language);
-        }
+        // 读取语言文件
         loadLanguageFile(language);
         // 读取存储类型
         storageType = getConfig().getString("storage", "json");
         // 加载存储
-        if (storageType.equalsIgnoreCase("json")) {
-            loadFromJSON();
-        } else if (storageType.equalsIgnoreCase("mysql")) {
-            loadFromMySQL();
-        }
+        loadWhiteList();
         // 输出插件版本号及其他信息
         String version = getDescription().getVersion();
         getLogger().info(usingversionMessage + " " + version); //当前使用版本
@@ -219,7 +207,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     }
 
     private void loadLanguageFile(String language) {
-        try (InputStream inputStream = new FileInputStream(new File(getDataFolder(), "lang/" + language + ".json"))) {
+        try (InputStream inputStream = getClass().getResourceAsStream("/lang/" + language + ".json")) {
             JSONParser parser = new JSONParser();
             JSONObject jsonObject = (JSONObject) parser.parse(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
             
@@ -252,7 +240,8 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             translatorMessage = (String) messagesObject.get("translator");
             reloadMessage = (String) messagesObject.get("reload");
             reloadLanguage = (String) messagesObject.get("reload_language");
-            reloadWhitelist = (String) messagesObject.get("reload_whitelist");                        
+            reloadWhitelist = (String) messagesObject.get("reload_whitelist");  
+            convertsuccessMessage = (String) messagesObject.get("convert_success");                      
             // 当前使用语言
             getLogger().info(nowLanguageMessage);
             //翻译贡献者
@@ -289,8 +278,9 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                 getLogger().info("translator: " + translatorMessage);
                 getLogger().info("reload: " + reloadMessage);
                 getLogger().info("reload_language: " + reloadLanguage);
-                getLogger().info("reload_whitelist: " + reloadWhitelist);                                
-                getLogger().info("———————Debug———————");
+                getLogger().info("reload_whitelist: " + reloadWhitelist);   
+                getLogger().info("convert_success: " + convertsuccessMessage);                             
+                getLogger().info("———————Language Debug mode———————");
             }
         } catch (IOException | ParseException e) {
             getLogger().warning("[Language File Warn-Chinese] 未找到语言文件，使用默认语言 zh_cn.json");
@@ -346,6 +336,28 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             sender.sendMessage(ChatColor.RED + String.format(unknownOptionMessage + " %s", action));
             return false;
         }
+
+        if (action.equalsIgnoreCase("convert")) {
+            return convertwhitelist(sender);
+        }
+    }
+
+    private boolean convertwhitelist(CommandSender sender) {
+        if(!sender.hasPermission("wid.convert")) {
+            sender.sendMessage(ChatColor.RED + noPermissionMessage);
+            return false;
+        }
+        if (storageType.equalsIgnoreCase("json")) {
+            // 如果当前是 Json ，则从 MySQL 中读取然后存到 Json 中
+            loadFromMySQL();
+            saveToJSON();
+            sender.sendMessage(ChatColor.GREEN + convertsuccessMessage + " MySQL --> Json");
+        } else if (storageType.equalsIgnoreCase("mysql")) {
+            // 反之，Json 读然后存到 MySQL 中
+            loadFromJSON();
+            saveToMySQL();
+            sender.sendMessage(ChatColor.GREEN + convertsuccessMessage + " Json --> MySQL");
+        }
     }
 
     private boolean handleReloadCommand(CommandSender sender) {
@@ -384,10 +396,6 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         sender.sendMessage(ChatColor.GREEN + reloadMessage);
         return true;
     }
-
-
-
-
 
     private boolean handleAddCommand(CommandSender sender, String playerName) {
         if (!sender.hasPermission("wid.add")) {
@@ -431,6 +439,15 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             saveToMySQL();
         }
     }
+
+    private void loadWhiteList() {
+        storageType = getConfig().getString("storage", "json");
+        if (storageType.equalsIgnoreCase("json")) {
+            loadFromJSON();
+        } else if (storageType.equalsIgnoreCase("mysql")) {
+            loadFromMySQL();
+        }
+    })
 
     // 加载 JSON 存储
     private void loadFromJSON() {

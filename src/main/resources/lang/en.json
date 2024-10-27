@@ -27,6 +27,7 @@
     "translator": "Translation contributor: Zhang1233",
     "reload": "Configuration file has been reloaded",
     "reload_language": "Language file has been reloaded",
-    "reload_whitelist": "Whitelist has been reloaded"
+    "reload_whitelist": "Whitelist has been reloaded",
+    "convert_success": "Whitelist converted"
   }
 }

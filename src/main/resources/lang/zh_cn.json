@@ -27,6 +27,7 @@
     "translator": "翻译贡献者: Zhang1233",
     "reload": "配置文件已重载",
     "reload_language": "语言文件已重载",
-    "reload_whitelist": "白名单已重载"
+    "reload_whitelist": "白名单已重载",
+    "convert_success": "已转换白名单"
   }
 }
