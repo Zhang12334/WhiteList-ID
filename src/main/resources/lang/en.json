@@ -7,7 +7,7 @@
     "nowusinglatestversion": "Using the latest version",
     "oldversionmaycauseproblem": "An old version may cause problems, please update to the latest version!",
     "updateavailable": "Discover a new version",
-    "updateurl": "Download link: ",
+    "updateurl": "Download link:",
     "storagetype": "Using storage type",
     "disable": "WhiteList-ID has been unloaded",
     "not_whitelisted": "You are not on the server's whitelist!",
