@@ -111,7 +111,12 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         getLogger().info(startupMessage); // 启动消息
         getLogger().info(storageTypeMessage + " " + storageType); // 添加空格，瞅着好看
         getLogger().info(checkingupdateMessage); // 检查更新消息
-        check_update();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                check_update();
+            }
+        }.runTaskAsynchronously(this);
     }
 
     private void check_update() {
@@ -351,15 +356,13 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     }
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
+    public void onPlayerPreLogin(PlayerPreLoginEvent event) {
         Player player = event.getPlayer();
         String playerName = player.getName();
 
         // 检查玩家是否在白名单中
         if (!whiteList.contains(playerName)) {
-            Bukkit.getScheduler().runTaskLater(this, () -> {
-                player.kickPlayer(notWhitelistedMessage);
-            }, 3L);
+            event.disallow(PlayerPreLoginEvent.PreLoginEventResult.KICK_OTHER, notWhitelistedMessage);
         }
     }
 
