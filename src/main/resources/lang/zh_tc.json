@@ -1,0 +1,33 @@
+{
+  "messages": {
+    "startup": "WhiteList-ID 已成功加載",
+    "nowversion": "當前使用版本",
+    "checkingupdate": "正在檢查更新",
+    "checkupdatefailed": "檢查插件更新失敗",
+    "nowusinglatestversion": "正在使用最新版本",    
+    "oldversionmaycauseproblem": "使用舊版本可能導致問題，請更新至最新版本!",
+    "updateavailable": "發現新版本:",
+    "updateurl": "新版本下載地址:",    
+    "storagetype": "使用存儲類型:",
+    "disable": "WhiteList-ID 已卸載",
+    "not_whitelisted": "您不在本服白名單中，無法進入",
+    "use_example": "格式錯誤，例:",
+    "unknown_option": "未知操作:",
+    "no_permission": "你沒有權限使用此指令",
+    "player": "玩家",
+    "player_already_exist": "已在白名單中!",
+    "player_added": "已添加到白名單列表!",
+    "player_removed_from_whitelist": "已從白名單中移除!",
+    "player_not_in_whitelist": "不在白名單中！",
+    "loaded_json": "成功從 Json 加載白名單",
+    "saved_json": "白名單已保存至 Json",
+    "loaded_mysql": "成功從 MySQL 加載白名單",
+    "saved_mysql": "白名單已保存至 MySQL",
+    "now_language": "當前使用：繁體中文 (zh_tc.json)",
+    "translator": "翻譯貢獻者: Zhang1233",
+    "reload": "配置文件已重載",
+    "reload_language": "語言文件已重載",
+    "reload_whitelist": "白名單已重載",
+    "convert_success": "已轉換白名單"
+  }
+}

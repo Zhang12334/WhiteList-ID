@@ -67,6 +67,7 @@ Requires OP permission or the following permission nodes:
 
 |        | 1.16 | 1.17 | 1.18 | 1.19 | 1.20 | 1.20.1 | 1.21 |
 |--------|------|------|------|------|------|------|------|
+| Banner |      |      |      |  ❓ |  ❓ | ✅    | ❓   |
 | Purpur | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   |
 | Paper  | ✅   | ✅   | ✅   | ✅   | ✅   | ✅  | ✅   |
 | Spigot | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   |
@@ -90,6 +91,7 @@ Welcome to assist developers in improving the compatibility testing list, and yo
 | 多语言支持 / Multi-language support     | ✅                                |
 | 调试模式（用于显示语言文件内容） / Debug mode (for displaying language file contents) | ✅ |    
 | 转换白名单（从未启用的存储类型向当前使用的存储类型转换） / Convert whitelist (from the previously unused storage type to the currently used storage type) | ✅ |
+| 阻拦登录事件 / Block login event       | ✅                                |
 
 
 ## 支持语言列表 / Supported Languages
@@ -98,7 +100,7 @@ Welcome to assist developers in improving the compatibility testing list, and yo
 |--------------------|---------------------------|---------------------------|
 | 简体中文 / Simplified Chinese | zh_cn | ✅ 支持 / Supported        |
 | 喵喵中文 / Simplified Chinese | zh_meow | ✅ 支持 / Supported        |
-| 繁体中文 / Traditional Chinese | zh_tc | ❌ 不支持 / Not Supported |
+| 繁体中文 / Traditional Chinese | zh_tc | ✅ 支持 / Supported |
 | 英文 / English      | en | ✅ 支持 / Supported        |
 | 法语 / French       | fr | ❌ 不支持 / Not Supported |
 | 德语 / German       | de | ❌ 不支持 / Not Supported |
