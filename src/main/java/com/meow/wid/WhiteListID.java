@@ -16,9 +16,25 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.sql.*;
-import java.util.*;
-import org.bukkit.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerPreLoginEvent;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -333,11 +349,13 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     }
 
     @EventHandler
-    public void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
+    public void onPlayerPreLogin(PlayerPreLoginEvent event) {
         String playerName = event.getName();
         // 检查玩家是否在白名单中
         if (!whiteList.contains(playerName)) {
-            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, notWhitelistedMessage);
+            event.disallow(PlayerPreLoginEvent.Result.KICK_WHITELIST, notWhitelistedMessage);
+        } else {
+            event.allow();
         }
     }
 
