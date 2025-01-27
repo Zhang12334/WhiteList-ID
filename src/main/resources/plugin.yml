@@ -1,5 +1,5 @@
 name: WhiteList-ID
-version: 1.7
+version: 1.8
 main: com.meow.wid.WhiteListID
 api-version: 1.16
 commands:
@@ -19,3 +19,6 @@ permissions:
   wid.convert:
     description: Convert whitelist from another storage
     default: op    
+  wid.list:
+    description: List all players in whitelist
+    default: op        
