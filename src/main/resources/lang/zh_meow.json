@@ -28,6 +28,9 @@
     "reload": "配置文件已重载喵",
     "reload_language": "喵喵中文已加载喵",
     "reload_whitelist": "猫娘名单已重载喵",
-    "convert_success": "已转换猫娘名单"
+    "convert_success": "已转换猫娘名单",
+    "whitelist_null": "猫娘名单为空喵",
+    "whitelist_list": "当前位于猫娘名单中的玩家: ",
+    "unknown_storage": "未知的存储类型: "    
   }
 }

@@ -28,6 +28,9 @@
     "reload": "Configuration file has been reloaded",
     "reload_language": "Language file has been reloaded",
     "reload_whitelist": "Whitelist has been reloaded",
-    "convert_success": "Whitelist converted"
+    "convert_success": "Whitelist converted",
+    "whitelist_null": "Whitelist is empty",
+    "whitelist_list": "Players on the whitelist: ",
+    "unknown_storage": "Unknown storage type: "    
   }
 }

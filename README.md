@@ -48,6 +48,9 @@ You can also support me on the Afdian platform and join the QQ group for timely 
 - 转换白名单（从未启用的存储类型向当前使用的存储类型转换）：/wid convert
   Convert whitelist (from the previously unused storage type to the currently used storage type): /wid reload
 
+- 查询白名单列表：/wid list
+  Query whitelist list: /wid list
+
 执行命令需要 OP 权限，或拥有权限节点：  
 Requires OP permission or the following permission nodes:
 
@@ -62,6 +65,9 @@ Requires OP permission or the following permission nodes:
 
 - 转换白名单权限节点：wid.convert
   Permission node for convert whitelist: wid.convert
+
+- 查询白名单列表权限节点：wid.list
+  Permission node for listing: wid.list
   
 ## 兼容性测试 / Compatibility Testing
 

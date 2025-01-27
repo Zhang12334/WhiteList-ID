@@ -28,6 +28,9 @@
     "reload": "配置文件已重载",
     "reload_language": "语言文件已重载",
     "reload_whitelist": "白名单已重载",
-    "convert_success": "已转换白名单"
+    "convert_success": "已转换白名单",
+    "whitelist_null": "白名单为空",
+    "whitelist_list": "当前位于白名单列表中的玩家: ",
+    "unknown_storage": "未知的存储类型: "
   }
 }

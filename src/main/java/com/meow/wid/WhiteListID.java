@@ -79,6 +79,9 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     private String nowusinglatestversionMessage;
     private String oldversionmaycauseproblemMessage;
     private String convertsuccessMessage;
+    private String WhitelistNullMessage;
+    private String WhitelistListMessage;
+    private String UnknownStorageMessage;
 
     @Override
     public void onEnable() {
@@ -284,6 +287,9 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             reloadLanguage = (String) messagesObject.get("reload_language");
             reloadWhitelist = (String) messagesObject.get("reload_whitelist");
             convertsuccessMessage = (String) messagesObject.get("convert_success");
+            WhitelistNullMessage = (String) messagesObject.get("whitelist_null");
+            WhitelistListMessage = (String) messagesObject.get("whitelist_list");
+            UnknownStorageMessage = (String) messagesObject.get("unknown_storage");
 
             // 当前使用语言
             getLogger().info(nowLanguageMessage);
@@ -323,6 +329,9 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
                 getLogger().info("reload_language: " + reloadLanguage);
                 getLogger().info("reload_whitelist: " + reloadWhitelist);
                 getLogger().info("convert_success: " + convertsuccessMessage);
+                getLogger().info("whitelist_null: " + WhitelistNullMessage);
+                getLogger().info("whitelist_list: " + WhitelistListMessage);
+                getLogger().info("unknown_storage: " + UnknownStorageMessage);
                 getLogger().info("———————Language Debug mode———————");
             }
         }
@@ -336,6 +345,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             suggestions.add("remove");            
             suggestions.add("reload");
             suggestions.add("convert");
+            suggestions.add("list");
         }
         return suggestions;
     }
@@ -356,7 +366,12 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         String playerName = event.getName();
         // 检查玩家是否在白名单中
         if (!whiteList.contains(playerName)) {
-            event.disallow(PlayerPreLoginEvent.Result.KICK_WHITELIST, notWhitelistedMessage);
+            loadWhiteList();
+            if (!whiteList.contains(playerName)) {
+                event.disallow(PlayerPreLoginEvent.Result.KICK_WHITELIST, notWhitelistedMessage);
+            } else {
+                event.allow();
+            }
         } else {
             event.allow();
         }
@@ -368,6 +383,8 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             return handleReloadCommand(sender);
         } else if (args.length == 1 && args[0].equalsIgnoreCase("convert")) {
             return convertwhitelist(sender);
+        } else if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
+            return query_list(sender);
         } 
 
         if (args.length != 2) {
@@ -388,6 +405,32 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         }
     }
 
+    private boolean query_list(CommandSender sender) {
+        if (!sender.hasPermission("wid.list")) {
+            sender.sendMessage(ChatColor.RED + noPermissionMessage);
+            return false;
+        }
+
+        loadWhiteList();
+
+        if (whiteList.isEmpty()) {
+            sender.sendMessage(ChatColor.YELLOW + WhitelistNullMessage);
+            return true;
+        }
+
+        // 使用 String.join 来连接玩家名
+        String whiteListString = String.join(", ", whiteList);
+
+        // 发送白名单玩家列表
+        if (sender instanceof Player) {
+            sender.sendMessage(ChatColor.GREEN + WhitelistListMessage + whiteListString);
+        } else {
+            getLogger().info(WhitelistListMessage + whiteListString);
+        }
+
+        return true;
+    }
+
     private boolean convertwhitelist(CommandSender sender) {
         if(!sender.hasPermission("wid.convert")) {
             sender.sendMessage(ChatColor.RED + noPermissionMessage);
@@ -404,7 +447,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             saveToMySQL();
             sender.sendMessage(ChatColor.GREEN + convertsuccessMessage + " Json --> MySQL");
         } else {
-            sender.sendMessage(ChatColor.RED + "未知的存储类型: " + storageType);
+            sender.sendMessage(ChatColor.RED + UnknownStorageMessage + storageType);
             return false;
         }
         return true;
@@ -431,11 +474,7 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
         whiteList.clear();
         // 重新加载WhiteList
         storageType = getConfig().getString("storage", "json");
-        if (storageType.equalsIgnoreCase("json")) {
-            loadFromJSON();
-        } else if (storageType.equalsIgnoreCase("mysql")) {
-            loadFromMySQL();
-        }
+        loadWhiteList();
         getLogger().info(reloadWhitelist);
         sender.sendMessage(ChatColor.GREEN + reloadMessage);
         return true;
@@ -446,6 +485,8 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             sender.sendMessage(ChatColor.RED + noPermissionMessage);
             return false;
         }
+
+        loadWhiteList();
 
         if (whiteList.contains(playerName)) {// 已经存在
             sender.sendMessage(ChatColor.YELLOW + playerMessage + " " + playerName + " " + playerAlreadyExistMessage);
@@ -463,6 +504,8 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
             sender.sendMessage(ChatColor.RED + noPermissionMessage);
             return false;
         }
+
+        loadWhiteList();
 
         if (whiteList.contains(playerName)) {
             whiteList.remove(playerName);  // 从白名单中移除
@@ -485,7 +528,6 @@ public class WhiteListID extends JavaPlugin implements CommandExecutor, Listener
     }
 
     private void loadWhiteList() {
-        storageType = getConfig().getString("storage", "json");
         if (storageType.equalsIgnoreCase("json")) {
             loadFromJSON();
         } else if (storageType.equalsIgnoreCase("mysql")) {
