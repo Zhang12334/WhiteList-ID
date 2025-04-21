@@ -12,6 +12,8 @@ Supports MySQL/JSON storage
 
 Works exceptionally well when used with a server network!
 
+---
+
 ## 下载 / Download
 
 本插件为开源项目并免费提供下载使用！
@@ -26,6 +28,15 @@ You can compile the source code being developed yourself or download the Release
 
 You can also support me on the Afdian platform and join the QQ group for timely and efficient technical support and installation guidance. Link (Simplified Chinese only): https://afdian.com/a/NachoNeko_/
 
+---
+
+## 插件依赖 / Dependencies
+
+- **MeowLibs** (必须)
+- **MeowLibs** (required)
+
+---
+
 ## 赞助价格表 / Pricing Table
 
 - ¥25 元：获取插件技术支持 
@@ -35,6 +46,8 @@ You can also support me on the Afdian platform and join the QQ group for timely 
 - ¥200 元：获取插件技术支持 + 一次定制功能的机会
 
   ¥200 CNY: Get technical support + one opportunity for a custom feature.
+
+---
 
 ## 命令 / Commands
 
@@ -70,6 +83,8 @@ Requires OP permission or the following permission nodes:
 
 - 查询白名单列表权限节点：wid.list
   Permission node for listing: wid.list
+
+---
   
 ## 兼容性测试 / Compatibility Testing
 
@@ -85,6 +100,8 @@ Requires OP permission or the following permission nodes:
 
 Welcome to assist developers in improving the compatibility testing list, and your name will be included in the thanks list!
 
+---
+
 ## 功能列表 / Feature List
 
 | 功能 / Feature                          | 实现状态 / Implementation Status |
@@ -93,6 +110,7 @@ Welcome to assist developers in improving the compatibility testing list, and yo
 | 白名单实时重载 / Player join event      | ✅                                |
 | 转换白名单（从未启用的存储类型向当前使用的存储类型转换） / Convert whitelist (from the previously unused storage type to the currently used storage type) | ✅ |
 
+---
 
 ## 支持语言列表 / Supported Languages
 
@@ -108,6 +126,8 @@ Welcome to assist developers in improving the compatibility testing list, and yo
 
 Feel free to contact the developer to submit translations in other languages, and your name will be included in the thanks list!
 
+---
+
 ## 致谢 / Acknowledgments
 
 | 名称 / Name | 贡献 / Contribution |
@@ -117,6 +137,8 @@ Feel free to contact the developer to submit translations in other languages, an
 本插件部分英文内容由 TongYi-Lingma 辅助翻译
 
 This plugin contains some English content translated with the assistance of TongYi-Lingma LLM.
+
+---
 
 ## 许可 / License
 
