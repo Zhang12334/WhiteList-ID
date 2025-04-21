@@ -116,8 +116,8 @@ Welcome to assist developers in improving the compatibility testing list, and yo
 
 | 语言 / Language   | 语言代码 / Language code |支持状态 / Support Status |
 |--------------------|---------------------------|---------------------------|
-| 简体中文 / Simplified Chinese | zh_cn | ✅ 支持 / Supported        |
-| 繁體中文 / Traditional Chinese | zh_tc | ✅ 支持 / Supported  |
+| 简体中文 / Simplified Chinese | zh_hans | ✅ 支持 / Supported        |
+| 繁體中文 / Traditional Chinese | zh_hant | ✅ 支持 / Supported  |
 | English      | en_us | ✅ 支持 / Supported        |
 | 日本語 / Japanese       | ja_jp | ✅ 支持 / Supported       |
 | 한국어 / Korean       | ko_kr | ❌ 不支持 / Not Supported       |
