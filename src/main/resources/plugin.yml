@@ -1,7 +1,9 @@
 name: WhiteList-ID
-version: 1.8
-main: com.meow.wid.WhiteListID
+version: 1.9.0
+main: com.meow.WhiteListID
 api-version: 1.16
+depend:
+  - MeowLibs
 commands:
   wid:
     description: WhiteList-ID

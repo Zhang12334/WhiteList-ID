@@ -1,17 +1,13 @@
-name: Build and Package
+name: "构建 - 测试"
 
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
+      - '*'  # 在任何推送时均触发
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -26,7 +22,7 @@ jobs:
         run: mvn clean package
 
       - name: Upload JAR file
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: WhiteList-ID-Build${{ github.run_number }} # 使用构建编号
+          name: WhiteList-ID-build${{ github.run_number }} # 使用构建编号
           path: target/*.jar

@@ -1,4 +1,4 @@
-package com.meow.wid;
+package com.meow;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
