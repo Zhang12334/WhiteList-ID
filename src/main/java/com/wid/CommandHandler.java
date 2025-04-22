@@ -1,4 +1,4 @@
-package com.meow;
+package com.wid;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

@@ -1,4 +1,4 @@
-package com.meow;
+package com.wid;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
