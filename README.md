@@ -88,16 +88,12 @@ Requires OP permission or the following permission nodes:
   
 ## 兼容性测试 / Compatibility Testing
 
-|        | 1.12 | 1.16 | 1.17 | 1.18 | 1.19 | 1.20 | 1.20.6 | 1.21 |
-|--------|------|------|------|------|------|------|------|------|
-| Purpur | /    | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   |
-| Paper  | ❓   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   |
-| Spigot | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   |
-| Bukkit | ❓   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   |
-
-欢迎辅助开发者完善兼容性测试列表，您的名字将会被列入感谢列表！
-
-Welcome to assist developers in improving the compatibility testing list, and your name will be included in the thanks list!
+|        | 1.12 | 1.16 | 1.17 | 1.18 | 1.19 | 1.20 | 1.21 |
+|--------|------|------|------|------|------|------|------|
+| Purpur | /    | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   |
+| Paper  | ❓   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   |
+| Spigot | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   |
+| Bukkit | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   |
 
 ---
 
@@ -107,6 +103,7 @@ Welcome to assist developers in improving the compatibility testing list, and yo
 |-----------------------------------------|-----------------------------------|
 | MySQL 存储 / Support MySQL storage      | ✅                                |
 | 白名单实时重载 / Player join event      | ✅                                |
+| Geyser间歇泉BE前缀兼容 / Geyser-Floodgate prefix support | ✅ |
 | 转换白名单（从未启用的存储类型向当前使用的存储类型转换） / Convert whitelist (from the previously unused storage type to the currently used storage type) | ✅ |
 
 ---
@@ -124,18 +121,6 @@ Welcome to assist developers in improving the compatibility testing list, and yo
 欢迎联系开发者提交其他语言的翻译，您的名字将会被列入感谢列表！
 
 Feel free to contact the developer to submit translations in other languages, and your name will be included in the thanks list!
-
----
-
-## 致谢 / Acknowledgments
-
-| 名称 / Name | 贡献 / Contribution |
-|-------------|---------------------|
-| Zhang1233   | 开发 / Development   |
-
-本插件部分英文内容由 TongYi-Lingma 辅助翻译
-
-This plugin contains some English content translated with the assistance of TongYi-Lingma LLM.
 
 ---
 

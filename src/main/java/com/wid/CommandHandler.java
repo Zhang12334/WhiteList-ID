@@ -104,9 +104,8 @@ public class CommandHandler implements CommandExecutor {
         }
 
         plugin.reloadConfig();
-
+        ((WhiteListID) plugin).loadPrefix();
         plugin.getLogger().info(languageManager.getMessage("reloaded"));
-
         whiteList.clear();
         storageManager.loadWhiteList();
         plugin.getLogger().info(languageManager.getMessage("whitelistReloaded"));
