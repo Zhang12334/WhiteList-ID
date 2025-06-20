@@ -1,5 +1,5 @@
 name: WhiteList-ID
-version: 1.9.1
+version: 1.10.0
 main: com.wid.WhiteListID
 api-version: 1.16
 depend:
