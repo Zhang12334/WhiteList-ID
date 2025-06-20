@@ -21,6 +21,8 @@ public class WhiteListID extends JavaPlugin implements Listener {
     private LanguageManager languageManager;
     private StorageManager storageManager;
     private CommandHandler commandHandler;
+    private boolean prefixEnable;
+    private String prefix;
 
     @Override
     public void onEnable() {
@@ -44,6 +46,9 @@ public class WhiteListID extends JavaPlugin implements Listener {
         // 初始化存储管理器
         storageType = getConfig().getString("storage", "json");
         storageManager = new StorageManager(this, storageType, getConfig(), languageManager, whiteList);
+
+        // 加载前缀
+        loadPrefix();
 
         // 初始化命令处理器
         commandHandler = new CommandHandler(this, storageManager, languageManager, whiteList);
@@ -80,6 +85,12 @@ public class WhiteListID extends JavaPlugin implements Listener {
         }.runTaskAsynchronously(this);
     }
 
+    public void loadPrefix() { 
+        // 读取前缀配置
+        prefixEnable = getConfig().getBoolean("prefix_settings.enable", false);
+        prefix = getConfig().getString("prefix_settings.prefix", "be_");
+    }
+
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         List<String> suggestions = new ArrayList<>();
@@ -95,22 +106,38 @@ public class WhiteListID extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        storageManager.saveWhiteList();
+        // 已移除卸载时保存，因为操作均为热更新
         getLogger().info(languageManager.getMessage("shutdown"));
     }
 
+    // 玩家预登录事件
     @EventHandler
     public void onPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
+        // 获取ID
         final String playerName = event.getName();
-        if (!whiteList.contains(playerName)) {
-            storageManager.loadWhiteList();
-            if (!whiteList.contains(playerName)) {
-                event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST, languageManager.getMessage("notWhitelisted"));
-            } else {
-                Bukkit.getScheduler().runTask(WhiteListID.this, () -> {
-                    event.allow();
-                });
+        // 标记符
+        boolean allowed = false;
+        // 热加载白名单
+        storageManager.loadWhiteList();
+        
+        // 判断流程
+        if (whiteList.contains(playerName)) {
+            // 白名单包含此ID，放行
+            allowed = true;
+        } else if (prefixEnable && playerName.startsWith(prefix)) {
+            // 已启用前缀功能且此玩家ID以前缀开头
+            // 切分ID
+            String realName = playerName.substring(prefix.length());
+            // 判断切分后ID是否位于白名单
+            if (whiteList.contains(realName)) {
+                // 放行
+                allowed = true;
             }
+        }
+
+        // 放行判断
+        if (!allowed) {
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST, languageManager.getMessage("notWhitelisted"));
         } else {
             event.allow();
         }

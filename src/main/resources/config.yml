@@ -1,18 +1,26 @@
 # 当前配置文件版本
 # config.yml version
-version: 1.0
+version: 1.10.0
 
-# json或mysql，必选项
-# json or mysql
+# 存储类型，支持json本地存储或mysql数据库存储
+# Storage type, support json local storage or mysql database storage
 storage: json
 
-# 默认语言为中文，具体可用列表请查看 readme.md 的语言支持列表！
+# 插件语言设置, 请参考readme.md中的语言支持列表
 # Plugin languages: Please refer to the language support list in readme.md!
 # English: en_us
 language: zh_hans
 
-# 若存储选项选择mysql则必填下面内容
-# database settings
+# 前缀设置，基岩版间歇泉支持，不懂可无视
+# 开启后若玩家ID以指定前缀开头则判断去除前缀后的ID是否位于白名单内，如位于白名单内则视作拥有白名单
+# prefix settings, bedrock edition support, if you don't know, ignore it
+# if enable and player id starts with the prefix, then judge if the id without the prefix is in the whitelist, if it is, then it is considered to have the whitelist
+prefix_settings:
+  enable: false
+  prefix: "be_"
+
+# MySQL数据库配置，使用json存储时请忽略
+# MySQL database configuration, please ignore when using json storage
 mysql:
   host: localhost
   port: 3306
