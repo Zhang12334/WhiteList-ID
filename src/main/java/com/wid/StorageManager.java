@@ -54,12 +54,13 @@ public class StorageManager {
         if (!file.exists()) {
             return;
         }
-
+        // 读取文件内容
         try {
             String content = new String(Files.readAllBytes(Paths.get(file.getPath())));
             JSONArray jsonArray = new JSONArray(content);
 
             for (int i = 0; i < jsonArray.length(); i++) {
+                // 添加到白名单
                 whiteList.add(jsonArray.getString(i));
             }
             plugin.getLogger().info(languageManager.getMessage("loadedFromJson"));
@@ -71,14 +72,14 @@ public class StorageManager {
 
     public void saveToJSON() {
         File file = new File(plugin.getDataFolder(), "whitelist.json");
-
+        // 打开文件
         try (FileWriter writer = new FileWriter(file)) {
             JSONArray jsonArray = new JSONArray();
-
+            // 添加玩家
             for (String entry : whiteList) {
                 jsonArray.put(entry);
             }
-
+            // 写入文件
             writer.write(jsonArray.toString(4));
             plugin.getLogger().info(languageManager.getMessage("savedToJson"));
 
@@ -91,15 +92,16 @@ public class StorageManager {
         String url = "jdbc:mysql://" + config.getString("mysql.host") + ":" + config.getInt("mysql.port") + "/" + config.getString("mysql.database");
         String user = config.getString("mysql.username");
         String password = config.getString("mysql.password");
-
+        // 连接数据库
         try (Connection conn = DriverManager.getConnection(url, user, password);
              Statement stmt = conn.createStatement()) {
-
+            // 创建表
             String sql = "CREATE TABLE IF NOT EXISTS whitelist (id INT AUTO_INCREMENT, player_name VARCHAR(255), PRIMARY KEY (id))";
             stmt.executeUpdate(sql);
-
+            // 查询表
             ResultSet rs = stmt.executeQuery("SELECT player_name FROM whitelist");
             while (rs.next()) {
+                // 添加到缓存
                 whiteList.add(rs.getString("player_name"));
             }
             plugin.getLogger().info(languageManager.getMessage("loadedFromMySQL"));
@@ -113,12 +115,12 @@ public class StorageManager {
         String url = "jdbc:mysql://" + config.getString("mysql.host") + ":" + config.getInt("mysql.port") + "/" + config.getString("mysql.database") + "?autoReconnect=true";
         String user = config.getString("mysql.username");
         String password = config.getString("mysql.password");
-
+        // 创建数据库连接
         try (Connection conn = DriverManager.getConnection(url, user, password);
              Statement stmt = conn.createStatement()) {
-
+            // 清空表
             stmt.executeUpdate("TRUNCATE TABLE whitelist");
-
+            // 插入数据
             for (String playerName : whiteList) {
                 String sql = "INSERT INTO whitelist (player_name) VALUES ('" + playerName + "')";
                 stmt.executeUpdate(sql);

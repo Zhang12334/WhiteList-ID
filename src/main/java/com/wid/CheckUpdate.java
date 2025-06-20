@@ -35,26 +35,33 @@ public class CheckUpdate {
      * 检查更新
      */
     public void checkUpdate() {
-        String currentVersion = description.getVersion(); // 获取当前版本号
+        String currentVersion = description.getVersion(); // 获取当前插件版本号
 
+        // 使用 GitHub API 获取最新版本信息
         try {
-            // 使用 GitHub API 获取最新版本信息
+            // 返回体
             String response = fetchLatestVersion();
+            // 解析 JSON
             JSONObject json = new JSONObject(response);
-            String latestVersion = json.getString("tag_name"); // 获取最新版本号
-            String releaseNotes = json.getString("body"); // 获取更新内容
+            // 拆分版本号
+            String latestVersion = json.getString("tag_name");
+            // 获取更新日志
+            String releaseNotes = json.getString("body");
 
             // 比较版本号
             if (isVersionGreater(latestVersion, currentVersion)) {
+                // 提示更新版本、内容
                 logger.warning(languageManager.getMessage("updateavailable") + " v" + latestVersion);
                 logger.warning(languageManager.getMessage("updatemessage"));
                 parseMarkdownAndLog(releaseNotes);
                 logger.warning(languageManager.getMessage("updateurl") + DOWNLOAD_URL);
                 logger.warning(languageManager.getMessage("oldversionmaycauseproblem"));
             } else {
+                // 已为最新版本
                 logger.info(languageManager.getMessage("nowusinglatestversion"));
             }
         } catch (Exception e) {
+            // 爆了，提示检查失败
             logger.warning(languageManager.getMessage("checkfailed"));
         }
     }
@@ -65,27 +72,35 @@ public class CheckUpdate {
      * @throws Exception 如果网络请求失败
      */
     private String fetchLatestVersion() throws Exception {
+        // 构建URL
         URL url = new URI(LATEST_VERSION_URL).toURL();
+        // 请求连接
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("User-Agent", "Mozilla/5.0");
         connection.setConnectTimeout(5000);
         connection.setReadTimeout(5000);
 
+        // 判断返回码
         int responseCode = connection.getResponseCode();
         if (responseCode != 200) {
             throw new Exception("HTTP 响应码: " + responseCode);
         }
 
+        // 解析返回内容
         BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         StringBuilder response = new StringBuilder();
         String line;
+        // 读取
         while ((line = reader.readLine()) != null) {
+            // 追加每行内容
             response.append(line);
         }
+        // 关闭流和连接
         reader.close();
         connection.disconnect();
 
+        // 返回内容
         return response.toString();
     }
 
@@ -96,23 +111,28 @@ public class CheckUpdate {
     private void parseMarkdownAndLog(String body) {
         String[] lines = body.split("\n");
         String lastPrefix = "";
-
+        // 遍历每一行
         for (String line : lines) {
+            // 去除空行
             line = line.trim();
             if (line.isEmpty()) continue;
-
+            // 判断行开头
             String output;
             if (line.startsWith("# ")) {
+                // 标题
                 lastPrefix = "🔹";
                 output = lastPrefix + " **" + line.substring(2) + "**";
             } else if (line.equals("---")) {
+                // 分割线
                 lastPrefix = "---";
                 output = "---";
             } else {
+                // 内容
                 lastPrefix = lastPrefix.isEmpty() ? "-" : lastPrefix;
                 output = lastPrefix + " " + line;
             }
-            logger.warning(output);
+            // 输出
+            logger.info(output);
         }
     }
 

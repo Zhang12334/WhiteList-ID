@@ -34,8 +34,8 @@ public class LanguageManager {
             // 中文消息
             messages.put("TranslationContributors", "当前语言: 简体中文 (贡献者: Zhang1233)");
             messages.put("CanNotFoundMeowLibs", "未找到 MeowLibs, 请安装前置依赖 MeowLibs!");
-            messages.put("startup", "MeowUID 已加载!");
-            messages.put("shutdown", "MeowUID 已卸载!");
+            messages.put("startup", "WhiteList-ID 已加载!");
+            messages.put("shutdown", "WhiteList-ID 已卸载!");
             messages.put("nowusingversion", "当前使用版本:");
             messages.put("checkingupdate", "正在检查更新...");
             messages.put("checkfailed", "检查更新失败，请检查你的网络状况!");
@@ -66,8 +66,8 @@ public class LanguageManager {
             // 繁体中文消息
             messages.put("TranslationContributors", "當前语言: 繁體中文 (貢獻者: Zhang1233 & TongYi-Lingma LLM)");
             messages.put("CanNotFoundMeowLibs", "未找到 MeowLibs, 請安裝前置依賴 MeowLibs!");
-            messages.put("startup", "MeowUID 已加载!");
-            messages.put("shutdown", "MeowUID 已卸载!");
+            messages.put("startup", "WhiteList-ID 已加载!");
+            messages.put("shutdown", "WhiteList-ID 已卸载!");
             messages.put("nowusingversion", "目前使用版本:");
             messages.put("checkingupdate", "正在檢查更新...");
             messages.put("checkfailed", "檢查更新失敗，請檢查你的網絡狀態!");
@@ -98,8 +98,8 @@ public class LanguageManager {
             // English messages
             messages.put("TranslationContributors", "Current language: English (Contributors: Zhang1233)");
             messages.put("CanNotFoundMeowLibs", "MeowLibs not found, please install the preceding dependency MeowLibs!");
-            messages.put("startup", "MeowUID has been loaded!");
-            messages.put("shutdown", "MeowUID has been unloaded!");
+            messages.put("startup", "WhiteList-ID has been loaded!");
+            messages.put("shutdown", "WhiteList-ID has been unloaded!");
             messages.put("nowusingversion", "Currently using version:");
             messages.put("checkingupdate", "Checking for updates...");
             messages.put("checkfailed", "Update check failed, please check your network status!");
@@ -130,8 +130,8 @@ public class LanguageManager {
             // 日本語メッセージ
             messages.put("TranslationContributors", "現在の言語: 日本語 (貢献者: Zhang1233 & TongYi-Lingma LLM)");
             messages.put("CanNotFoundMeowLibs", "MeowLibsが見つかりません。プレフィックス依存をインストールしてください!");
-            messages.put("startup", "MeowUIDが読み込まれました!");
-            messages.put("shutdown", "MeowUIDがアンロードされました!");
+            messages.put("startup", "WhiteList-IDが読み込まれました!");
+            messages.put("shutdown", "WhiteList-IDがアンロードされました!");
             messages.put("nowusingversion", "現在使用中のバージョン:");
             messages.put("checkingupdate", "アップデートをチェック中...");
             messages.put("checkfailed", "アップデートチェックに失敗しました。ネットワークの状態を確認してください!");
